@@ -19,7 +19,7 @@ using namespace std;
 //@+others
 //@+node:gcross.20101224191604.1869: ** class OperatorSpace
 //@+node:gcross.20101224191604.1870: *3* (constructors)
-OperatorSpace::OperatorSpace(const unsigned int number_of_operators, const unsigned int number_of_qubits)
+OperatorSpace::OperatorSpace(const unsigned int number_of_qubits, const unsigned int number_of_operators)
     : number_of_operators(number_of_operators)
     , number_of_qubits(number_of_qubits)
     , number_of_variables(number_of_qubits*number_of_operators)

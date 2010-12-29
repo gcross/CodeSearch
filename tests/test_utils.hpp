@@ -110,8 +110,8 @@ template<unsigned int number_of_qubits, unsigned int number_of_operators> void c
                     gatherCodes<number_of_qubits,number_of_operators>(
                         wrapAutoPtr(
                             new OperatorSpace(
-                                    number_of_operators,
-                                    number_of_qubits
+                                    number_of_qubits,
+                                    number_of_operators
                             )
                         )
                     )

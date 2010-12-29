@@ -33,11 +33,11 @@ TEST_SUITE(OperatorSpace) {
 TEST_SUITE(number_of_solutions) {
 
     void runTest
-    (   const unsigned int number_of_operators
-    ,   const unsigned int number_of_qubits
+    (   const unsigned int number_of_qubits
+    ,   const unsigned int number_of_operators
     ,   const unsigned int expected_number_of_solutions
     ) {
-        ASSERT_EQ(expected_number_of_solutions,countSolutions(wrapAutoPtr(new OperatorSpace(number_of_operators,number_of_qubits))));
+        ASSERT_EQ(expected_number_of_solutions,countSolutions(wrapAutoPtr(new OperatorSpace(number_of_qubits,number_of_operators))));
     }
 
     DO_TEST_FOR_1(1,1,4)
@@ -51,13 +51,13 @@ TEST_SUITE(number_of_solutions) {
 TEST_SUITE(correct_order) {
 
     void runTest
-    (   const unsigned int number_of_operators
-    ,   const unsigned int number_of_qubits
+    (   const unsigned int number_of_qubits
+    ,   const unsigned int number_of_operators
     ) {
         unsigned long solution_number = 0u;
         BOOST_FOREACH(
             const OperatorSpace& space,
-            generateSolutionsFor(wrapAutoPtr(new OperatorSpace(number_of_operators,number_of_qubits)))
+            generateSolutionsFor(wrapAutoPtr(new OperatorSpace(number_of_qubits,number_of_operators)))
         ) {
             unsigned long x = solution_number;
             BOOST_FOREACH(unsigned long long i,irange(0u,space.number_of_variables) | reversed) {
@@ -80,10 +80,10 @@ TEST_SUITE(correct_order) {
 TEST_SUITE(correct_operators) {
 
     void runTest
-    (   const unsigned int number_of_operators
-    ,   const unsigned int number_of_qubits
+    (   const unsigned int number_of_qubits
+    ,   const unsigned int number_of_operators
     ) {
-        auto_ptr<OperatorSpace> initial_space_ptr(new OperatorSpace(number_of_operators,number_of_qubits));
+        auto_ptr<OperatorSpace> initial_space_ptr(new OperatorSpace(number_of_qubits,number_of_operators));
         dynamic_operator_vector operators;
         initial_space_ptr->initializeOperators(operators);
         BOOST_FOREACH(
@@ -120,10 +120,10 @@ TEST_SUITE(correct_operators) {
 TEST_SUITE(correct_properties) {
 
     void runTest
-    (   const unsigned int number_of_operators
-    ,   const unsigned int number_of_qubits
+    (   const unsigned int number_of_qubits
+    ,   const unsigned int number_of_operators
     ) {
-        auto_ptr<OperatorSpace> initial_space(new OperatorSpace(number_of_operators,number_of_qubits));
+        auto_ptr<OperatorSpace> initial_space(new OperatorSpace(number_of_qubits,number_of_operators));
         ASSERT_EQ(number_of_operators,initial_space->number_of_operators);
         ASSERT_EQ(number_of_qubits,initial_space->number_of_qubits);
         BOOST_FOREACH(
@@ -159,7 +159,7 @@ TEST_SUITE(correct_codes) {
         , unsigned int number_of_operators
         >
     void runTest() {
-        checkCodes<number_of_qubits,number_of_operators>(wrapAutoPtr(new OperatorSpace(number_of_operators,number_of_qubits)));
+        checkCodes<number_of_qubits,number_of_operators>(wrapAutoPtr(new OperatorSpace(number_of_qubits,number_of_operators)));
     }
 
     DO_TEMPLATE_TEST_FOR(1,1)
