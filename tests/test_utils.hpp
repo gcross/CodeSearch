@@ -14,6 +14,7 @@
 #include <set>
 #include <vector>
 
+#include "solution_iterator.hpp"
 #include "operator_space.hpp"
 
 using namespace CodeQuest;
