@@ -8,6 +8,7 @@
 //@+<< Includes >>
 //@+node:gcross.20101224191604.2720: ** << Includes >>
 #include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/algorithm/equal.hpp>
 #include <gecode/int.hh>
 #include <illuminate.hpp>
 #include <memory>
@@ -21,6 +22,7 @@ using namespace CodeQuest;
 using namespace CodeSearch;
 using namespace Gecode;
 using namespace boost;
+using namespace boost::algorithm;
 using namespace std;
 //@-<< Includes >>
 
@@ -129,7 +131,7 @@ template<unsigned int number_of_qubits, unsigned int number_of_operators> void c
     const set<Code> constrained_space_codes = gatherCodes<number_of_qubits,number_of_operators>(initial_space);
 
     ASSERT_EQ(operator_space_codes.size(),constrained_space_codes.size());
-    ASSERT_TRUE(equal(operator_space_codes.begin(),operator_space_codes.end(),constrained_space_codes.begin()));
+    ASSERT_TRUE(equal(operator_space_codes,constrained_space_codes));
 }
 //@-others
 //@+node:gcross.20101224191604.3436: ** Macros
