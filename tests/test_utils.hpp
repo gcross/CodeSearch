@@ -7,11 +7,13 @@
 
 //@+<< Includes >>
 //@+node:gcross.20101224191604.2720: ** << Includes >>
+#include <boost/lambda/bind.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/equal.hpp>
 #include <gecode/int.hh>
 #include <illuminate.hpp>
 #include <memory>
+#include <ostream>
 #include <set>
 #include <vector>
 
@@ -22,6 +24,7 @@ using namespace CodeQuest;
 using namespace CodeSearch;
 using namespace Gecode;
 using namespace boost;
+using namespace boost::adaptors;
 using namespace boost::algorithm;
 using namespace std;
 //@-<< Includes >>
@@ -33,7 +36,7 @@ struct Code {
     vector<size_t> logical_qubit_distances;
 
     template<typename distance_vector>
-    Code(const int number_of_stabilizers, const int number_of_gauge_qubits, const distance_vector& logical_qubit_distances)
+    Code(const unsigned int number_of_stabilizers, const unsigned int number_of_gauge_qubits, const distance_vector& logical_qubit_distances)
         : number_of_stabilizers(number_of_stabilizers)
         , number_of_gauge_qubits(number_of_gauge_qubits)
         , logical_qubit_distances(logical_qubit_distances.begin(),logical_qubit_distances.end())
@@ -63,6 +66,14 @@ struct Code {
     }
 
 };
+
+inline ostream& operator<<(ostream& out, const Code& code) {
+    out << code.number_of_stabilizers << " " << code.number_of_gauge_qubits << " | ";
+    BOOST_FOREACH(int distance, code.logical_qubit_distances) { out << distance << " "; }
+    return out;
+}
+
+typedef set<Code> CodeSet;
 //@+node:gcross.20101224191604.2722: ** Functions
 long long encodeOperatorSpace(const OperatorSpace& space);
 vector<unsigned long long> gatherSolutions(auto_ptr<OperatorSpace> space);

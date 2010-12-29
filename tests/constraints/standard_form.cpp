@@ -4,8 +4,12 @@
 
 //@+<< Includes >>
 //@+node:gcross.20101229110857.1658: ** << Includes >>
-#include "boost/bind.hpp"
-#include "boost/function.hpp"
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/range/algorithm/copy.hpp>
+#include <boost/range/algorithm/for_each.hpp>
+
 #include "constraints/standard_form.hpp"
 #include "utilities.hpp"
 
@@ -19,17 +23,17 @@ using namespace std;
 
 //@+others
 //@+node:gcross.20101229110857.1667: ** Functions
-static void forEachStandardForm(
-      unsigned int number_of_qubits
-    , unsigned int number_of_operators
+void forEachStandardForm(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
     , function<void (const unsigned int x_bit_diagonal_size
                     ,const unsigned int z_bit_diagonal_size
                     ,auto_ptr<OperatorSpace> space
                     )
               > f
     ) {
-        BOOST_FOREACH(unsigned int x_bit_diagonal_size, irange(0u,min(number_of_qubits,number_of_operators))) {
-            BOOST_FOREACH(unsigned int z_bit_diagonal_size, irange(0u,min(number_of_qubits,number_of_operators)-x_bit_diagonal_size)) {
+        BOOST_FOREACH(unsigned int x_bit_diagonal_size, irange(0u,min(number_of_qubits,number_of_operators)+1)) {
+            BOOST_FOREACH(unsigned int z_bit_diagonal_size, irange(0u,min(number_of_qubits,number_of_operators)+1-x_bit_diagonal_size)) {
                 auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
                 postStandardFormConstraint(*space,x_bit_diagonal_size,z_bit_diagonal_size);
                 f(x_bit_diagonal_size,z_bit_diagonal_size,space);
@@ -73,6 +77,49 @@ TEST_SUITE(number_of_solutions) {
     DO_TEST_FOR(2,2)
     DO_TEST_FOR(3,3)
     DO_TEST_FOR(4,4)
+
+}
+//@+node:gcross.20101229110857.1669: *3* correct codes
+TEST_SUITE(correct_codes) {
+
+    template
+        < const unsigned int number_of_qubits
+        , const unsigned int number_of_operators
+        >
+    void runTest() {
+        set<Code> codes;
+
+        forEachStandardForm(
+             number_of_qubits
+            ,number_of_operators
+            ,bind(
+                 copy<CodeSet,insert_iterator<CodeSet> >
+                ,bind(
+                     gatherCodes<number_of_qubits,number_of_operators>
+                    ,_3
+                 )
+                ,insert_iterator<CodeSet>(codes,codes.begin())
+             )
+        );
+
+        const CodeSet& correct_codes = fetchAllCodes<number_of_qubits,number_of_operators>();
+        ASSERT_EQ(correct_codes.size(),codes.size());
+        ASSERT_TRUE(equal(correct_codes,codes));
+    }
+
+    DO_TEMPLATE_TEST_FOR(1,1)
+    DO_TEMPLATE_TEST_FOR(1,2)
+    DO_TEMPLATE_TEST_FOR(1,3)
+    DO_TEMPLATE_TEST_FOR(2,1)
+    DO_TEMPLATE_TEST_FOR(2,2)
+    DO_TEMPLATE_TEST_FOR(2,3)
+    DO_TEMPLATE_TEST_FOR(2,4)
+    DO_TEMPLATE_TEST_FOR(3,1)
+    DO_TEMPLATE_TEST_FOR(3,2)
+    DO_TEMPLATE_TEST_FOR(3,3)
+    DO_TEMPLATE_TEST_FOR(4,1)
+    DO_TEMPLATE_TEST_FOR(4,2)
+    DO_TEMPLATE_TEST_FOR(5,1)
 
 }
 //@-others
