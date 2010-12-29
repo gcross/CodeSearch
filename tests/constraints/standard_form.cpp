@@ -66,7 +66,7 @@ TEST_SUITE(number_of_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        forEachStandardForm(number_of_qubits,number_of_operators,boost::bind(doCheck,number_of_qubits,number_of_operators,_1,_2,_3));
+        forEachStandardForm(number_of_qubits,number_of_operators,bind(doCheck,number_of_qubits,number_of_operators,_1,_2,_3));
     }
 
     DO_TEST_FOR(1,1)
