@@ -57,6 +57,11 @@ OperatorSpace::OperatorSpace(const bool share, OperatorSpace& s)
         constraints.push_back(constraint.copy(share,s));
     }
 }
+//@+node:gcross.20101229110857.1596: *3* addConstraint
+void OperatorSpace::addConstraint(auto_ptr<Constraint> constraint) {
+    constraints.push_back(constraint.get());
+    constraint.release();
+}
 //@+node:gcross.20101224191604.1871: *3* copy
 Space* OperatorSpace::copy(bool share)
 {
