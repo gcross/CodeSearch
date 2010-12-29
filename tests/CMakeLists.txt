@@ -17,6 +17,7 @@ include_directories(".")
 #@+others
 #@+node:gcross.20101224191604.2734: ** test
 set(test-SOURCES
+    constraints/standard_form
     operator_space
     test_utils
     test_utils_tests
