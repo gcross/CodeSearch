@@ -91,13 +91,11 @@ template<unsigned int number_of_qubits, unsigned int number_of_operators> set<Co
 
     return codes;
 }
-//@+node:gcross.20101229110857.1591: *3* checkCodes
+//@+node:gcross.20101229110857.1670: *3* fetchAllCodes
 typedef map<pair<unsigned int,unsigned int>,set<Code> > CodeTable;
 extern CodeTable operator_space_code_table;
 
-template<unsigned int number_of_qubits, unsigned int number_of_operators> void checkCodes(auto_ptr<OperatorSpace> initial_space) {
-    assert(number_of_qubits == initial_space->number_of_qubits);
-    assert(number_of_operators == initial_space->number_of_operators);
+template<unsigned int number_of_qubits, unsigned int number_of_operators> const set<Code>& fetchAllCodes() {
     typedef CodeTable::const_iterator CodeTablePosition;
 
     const pair<unsigned int,unsigned int> id = make_pair(number_of_operators,number_of_qubits);
@@ -120,8 +118,14 @@ template<unsigned int number_of_qubits, unsigned int number_of_operators> void c
             ).first;
     }
 
-    const set<Code>& operator_space_codes = operator_space_code_position->second;
+    return operator_space_code_position->second;
+}
+//@+node:gcross.20101229110857.1591: *3* checkCodes
+template<unsigned int number_of_qubits, unsigned int number_of_operators> void checkCodes(auto_ptr<OperatorSpace> initial_space) {
+    assert(number_of_qubits == initial_space->number_of_qubits);
+    assert(number_of_operators == initial_space->number_of_operators);
 
+    const set<Code>& operator_space_codes = fetchAllCodes<number_of_qubits,number_of_operators>();
     const set<Code> constrained_space_codes = gatherCodes<number_of_qubits,number_of_operators>(initial_space);
 
     ASSERT_EQ(operator_space_codes.size(),constrained_space_codes.size());
