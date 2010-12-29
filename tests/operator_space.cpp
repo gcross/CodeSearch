@@ -154,17 +154,18 @@ TEST_SUITE(correct_properties) {
 //@+node:gcross.20101224191604.3442: *3* correct codes
 TEST_SUITE(correct_codes) {
 
-    void runTest
-    (   const unsigned int number_of_operators
-    ,   const unsigned int number_of_qubits
-    ) {
-        checkCodes(wrapAutoPtr(new OperatorSpace(number_of_operators,number_of_qubits)));
+    template
+        < unsigned int number_of_qubits
+        , unsigned int number_of_operators
+        >
+    void runTest() {
+        checkCodes<number_of_qubits,number_of_operators>(wrapAutoPtr(new OperatorSpace(number_of_operators,number_of_qubits)));
     }
 
-    DO_TEST_FOR(1,1)
-    DO_TEST_FOR(1,2)
-    DO_TEST_FOR(2,1)
-    DO_TEST_FOR(2,2)
+    DO_TEMPLATE_TEST_FOR(1,1)
+    DO_TEMPLATE_TEST_FOR(1,2)
+    DO_TEMPLATE_TEST_FOR(2,1)
+    DO_TEMPLATE_TEST_FOR(2,2)
 
 }
 //@-others
