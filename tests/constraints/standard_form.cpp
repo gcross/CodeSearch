@@ -74,9 +74,18 @@ TEST_SUITE(number_of_solutions) {
     }
 
     DO_TEST_FOR(1,1)
+    DO_TEST_FOR(1,2)
+    DO_TEST_FOR(1,3)
+    DO_TEST_FOR(2,1)
     DO_TEST_FOR(2,2)
+    DO_TEST_FOR(2,3)
+    DO_TEST_FOR(2,4)
+    DO_TEST_FOR(3,1)
+    DO_TEST_FOR(3,2)
     DO_TEST_FOR(3,3)
-    DO_TEST_FOR(4,4)
+    DO_TEST_FOR(4,1)
+    DO_TEST_FOR(4,2)
+    DO_TEST_FOR(5,1)
 
 }
 //@+node:gcross.20101229110857.1669: *3* correct codes
