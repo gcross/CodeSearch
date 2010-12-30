@@ -88,6 +88,79 @@ TEST_SUITE(number_of_solutions) {
     DO_TEST_FOR(5,1)
 
 }
+//@+node:gcross.20101229110857.2478: *3* correct solutions
+TEST_SUITE(correct_solutions) {
+
+    void doCheck(
+          const unsigned int number_of_qubits
+        , const unsigned int number_of_operators
+        , const unsigned int x_bit_diagonal_size
+        , const unsigned int z_bit_diagonal_size
+        , auto_ptr<OperatorSpace> initial_space
+    ) {
+        const unsigned int total_diagonal_size = x_bit_diagonal_size + z_bit_diagonal_size
+                         , remaining_rows = number_of_operators - total_diagonal_size
+                         , remaining_cols = number_of_qubits - total_diagonal_size;
+        BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
+            { // X matrix
+                const BoolMatrix X_matrix = space.getXMatrix();
+                BOOST_FOREACH(const unsigned int row, irange(0u,x_bit_diagonal_size)) {
+                    BOOST_FOREACH(const unsigned int col, irange(0u,x_bit_diagonal_size)) {
+                        if(row == col) {
+                            ASSERT_EQ(1,X_matrix(col,row).val());
+                        } else {
+                            ASSERT_EQ(0,X_matrix(col,row).val());
+                        }
+                    }
+                }
+                BOOST_FOREACH(const unsigned int row, irange(x_bit_diagonal_size,number_of_operators)) {
+                    BOOST_FOREACH(const unsigned int col, irange(0u,number_of_qubits)) {
+                        ASSERT_EQ(0,X_matrix(col,row).val());
+                    }
+                }
+            }
+            { // Z matrix
+                const BoolMatrix Z_matrix = space.getZMatrix();
+                BOOST_FOREACH(const unsigned int row, irange(x_bit_diagonal_size,total_diagonal_size)) {
+                    BOOST_FOREACH(const unsigned int col, irange(x_bit_diagonal_size,total_diagonal_size)) {
+                        if(row == col) {
+                            ASSERT_EQ(1,Z_matrix(col,row).val());
+                        } else {
+                            ASSERT_EQ(0,Z_matrix(col,row).val());
+                        }
+                    }
+                }
+                BOOST_FOREACH(const unsigned int row, irange(total_diagonal_size,number_of_operators)) {
+                    BOOST_FOREACH(const unsigned int col, irange(x_bit_diagonal_size,number_of_qubits)) {
+                        ASSERT_EQ(0,Z_matrix(col,row).val());
+                    }
+                }
+            }
+        }
+    }
+
+    void runTest(
+        const unsigned int number_of_qubits
+    ,   const unsigned int number_of_operators
+    ) {
+        forEachStandardForm(number_of_qubits,number_of_operators,bind(doCheck,number_of_qubits,number_of_operators,_1,_2,_3));
+    }
+
+    DO_TEST_FOR(1,1)
+    DO_TEST_FOR(1,2)
+    DO_TEST_FOR(1,3)
+    DO_TEST_FOR(2,1)
+    DO_TEST_FOR(2,2)
+    DO_TEST_FOR(2,3)
+    DO_TEST_FOR(2,4)
+    DO_TEST_FOR(3,1)
+    DO_TEST_FOR(3,2)
+    DO_TEST_FOR(3,3)
+    DO_TEST_FOR(4,1)
+    DO_TEST_FOR(4,2)
+    DO_TEST_FOR(5,1)
+
+}
 //@+node:gcross.20101229110857.1669: *3* correct codes
 TEST_SUITE(correct_codes) {
 
