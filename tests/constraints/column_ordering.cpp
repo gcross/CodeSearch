@@ -75,6 +75,49 @@ TEST_SUITE(number_of_solutions) {
     DO_TEST_FOR_2(3,2,3,4*(4+2*6+4)+2*6*4*(4+6)+4*4*4*4)
 
 }
+//@+node:gcross.20101229110857.2484: *3* correct solutions
+TEST_SUITE(correct_solutions) {
+
+    void doCheck(
+          const unsigned int number_of_qubits
+        , const unsigned int number_of_operators
+        , const unsigned int start
+        , const unsigned int end
+        , auto_ptr<OperatorSpace> initial_space
+    ) {
+        BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
+            IntMatrix O_matrix = space.getOMatrix().slice(start,end,0u,number_of_operators);
+            BOOST_FOREACH(const unsigned int col, irange(0u,end-start-1)) {
+                BOOST_FOREACH(const unsigned int row, irange(0u,number_of_operators)) {
+                    ASSERT_TRUE(O_matrix(col,row).val() >= O_matrix(col+1,row).val());
+                    if(O_matrix(col,row).val() > O_matrix(col+1,row).val()) break;
+                }
+            }
+        }
+    }
+
+    void runTest(
+        const unsigned int number_of_qubits
+    ,   const unsigned int number_of_operators
+    ) {
+        forEachColumnOrdering(number_of_qubits,number_of_operators,bind(doCheck,number_of_qubits,number_of_operators,_1,_2,_3));
+    }
+
+    DO_TEST_FOR(1,1)
+    DO_TEST_FOR(1,2)
+    DO_TEST_FOR(1,3)
+    DO_TEST_FOR(2,1)
+    DO_TEST_FOR(2,2)
+    DO_TEST_FOR(2,3)
+    DO_TEST_FOR(2,4)
+    DO_TEST_FOR(3,1)
+    DO_TEST_FOR(3,2)
+    DO_TEST_FOR(3,3)
+    DO_TEST_FOR(4,1)
+    DO_TEST_FOR(4,2)
+    DO_TEST_FOR(5,1)
+
+}
 //@+node:gcross.20101229110857.2468: *3* correct codes
 TEST_SUITE(correct_codes) {
 
