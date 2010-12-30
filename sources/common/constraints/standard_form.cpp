@@ -4,7 +4,13 @@
 
 //@+<< Includes >>
 //@+node:gcross.20101229110857.1645: ** << Includes >>
-#include "constraints/standard_form.hpp"
+#include <boost/foreach.hpp>
+#include <gecode/int.hh>
+#include <gecode/minimodel.hh>
+
+#include "constraints.hpp"
+#include "operator_space.hpp"
+#include "utilities.hpp"
 //@-<< Includes >>
 
 namespace CodeSearch {

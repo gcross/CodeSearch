@@ -44,7 +44,7 @@ struct OperatorSpace : public Space {
     public:
         virtual ~Constraint() {}
     private:
-        virtual auto_ptr<Constraint> copy(const bool share, OperatorSpace& space) const = 0;
+        virtual auto_ptr<Constraint> copy(const bool share, OperatorSpace& space) = 0;
     };
     //@+node:gcross.20101224191604.1852: *3* (fields)
     const unsigned int number_of_operators, number_of_qubits, number_of_variables;

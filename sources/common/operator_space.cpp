@@ -53,8 +53,8 @@ OperatorSpace::OperatorSpace(const bool share, OperatorSpace& s)
     O.update(*this,share,s.O);
     weights.update(*this,share,s.weights);
 
-    BOOST_FOREACH(const Constraint& constraint, s.constraints) {
-        constraints.push_back(constraint.copy(share,s));
+    BOOST_FOREACH(Constraint& constraint, s.constraints) {
+        constraints.push_back(constraint.copy(share,*this));
     }
 }
 //@+node:gcross.20101229110857.1596: *3* addConstraint

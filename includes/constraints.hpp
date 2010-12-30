@@ -1,5 +1,5 @@
 //@+leo-ver=5-thin
-//@+node:gcross.20101229110857.1618: * @thin standard_form.hpp
+//@+node:gcross.20101229110857.1618: * @thin constraints.hpp
 //@@language cplusplus
 
 #ifndef STANDARD_FORM_HPP
@@ -23,6 +23,7 @@ using namespace std;
 //@+others
 //@+node:gcross.20101229110857.1637: ** Functions
 void postStandardFormConstraint(OperatorSpace& space, const unsigned int x_bit_diagonal_size, const unsigned int z_bit_diagonal_size);
+void postColumnOrderingConstraint(OperatorSpace& space, const unsigned int start, const unsigned int end);
 //@-others
 
 }

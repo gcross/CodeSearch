@@ -8,9 +8,7 @@
 <vnodes>
 <v t="gcross.20101224191604.2593"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101224191604.1836"><vh>@path includes</vh>
-<v t="gcross.20101229110857.1597"><vh>@path constraints</vh>
-<v t="gcross.20101229110857.1618"><vh>@thin standard_form.hpp</vh></v>
-</v>
+<v t="gcross.20101229110857.1618"><vh>@thin constraints.hpp</vh></v>
 <v t="gcross.20101224191604.1847"><vh>@thin operator_space.hpp</vh></v>
 <v t="gcross.20101224191604.2705"><vh>@thin solution_iterator.hpp</vh></v>
 <v t="gcross.20101224191604.2760"><vh>@thin utilities.hpp</vh></v>
@@ -20,6 +18,7 @@
 <v t="gcross.20101224191604.1835"><vh>@path common</vh>
 <v t="gcross.20101224191604.2597"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101229110857.1639"><vh>@path constraints</vh>
+<v t="gcross.20101229110857.1676"><vh>@thin column_ordering.cpp</vh></v>
 <v t="gcross.20101229110857.1644"><vh>@thin standard_form.cpp</vh></v>
 </v>
 <v t="gcross.20101224191604.1867"><vh>@thin operator_space.cpp</vh></v>
@@ -30,6 +29,7 @@
 <v t="gcross.20101224191604.2598"><vh>@path tests</vh>
 <v t="gcross.20101224191604.2731"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101229110857.1648"><vh>@path constraints</vh>
+<v t="gcross.20101229110857.2459"><vh>@thin column_ordering.cpp</vh></v>
 <v t="gcross.20101229110857.1657"><vh>@thin standard_form.cpp</vh></v>
 </v>
 <v t="gcross.20101224191604.2647"><vh>@thin operator_space.cpp</vh></v>
@@ -43,7 +43,6 @@
 <t tx="gcross.20101224191604.1835"></t>
 <t tx="gcross.20101224191604.1836"></t>
 <t tx="gcross.20101224191604.2598"></t>
-<t tx="gcross.20101229110857.1597"></t>
 <t tx="gcross.20101229110857.1639"></t>
 <t tx="gcross.20101229110857.1648"></t>
 </tnodes>
