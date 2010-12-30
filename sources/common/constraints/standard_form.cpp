@@ -31,29 +31,33 @@ void postStandardFormConstraint(OperatorSpace& space, const unsigned int x_bit_d
     assert(total_diagonal_size <= number_of_qubits);
     assert(total_diagonal_size <= number_of_operators);
 
-    BoolMatrix X_matrix = space.getXMatrix();
-    BOOST_FOREACH(unsigned int row, irange(0u,x_bit_diagonal_size)) {
-        BOOST_FOREACH(unsigned int col, irange(0u,x_bit_diagonal_size)) {
-            if(row == col) {
-                rel(space,X_matrix(col,row),IRT_EQ,1);
-            } else {
-                rel(space,X_matrix(col,row),IRT_EQ,0);
+    { // X matrix constraints
+        BoolMatrix X_matrix = space.getXMatrix();
+        BOOST_FOREACH(unsigned int row, irange(0u,x_bit_diagonal_size)) {
+            BOOST_FOREACH(unsigned int col, irange(0u,x_bit_diagonal_size)) {
+                if(row == col) {
+                    rel(space,X_matrix(col,row),IRT_EQ,1);
+                } else {
+                    rel(space,X_matrix(col,row),IRT_EQ,0);
+                }
             }
         }
+        rel(space,X_matrix.slice(0,number_of_qubits,x_bit_diagonal_size,number_of_operators),IRT_EQ,0);
     }
-    rel(space,X_matrix.slice(0,number_of_qubits,x_bit_diagonal_size,number_of_operators),IRT_EQ,0);
 
-    BoolMatrix Z_matrix = space.getZMatrix();
-    BOOST_FOREACH(unsigned int row, irange(x_bit_diagonal_size,total_diagonal_size)) {
-        BOOST_FOREACH(unsigned int col, irange(x_bit_diagonal_size,total_diagonal_size)) {
-            if(row == col) {
-                rel(space,Z_matrix(col,row),IRT_EQ,1);
-            } else {
-                rel(space,Z_matrix(col,row),IRT_EQ,0);
+    { // Z matrix constraints
+        BoolMatrix Z_matrix = space.getZMatrix();
+        BOOST_FOREACH(unsigned int row, irange(x_bit_diagonal_size,total_diagonal_size)) {
+            BOOST_FOREACH(unsigned int col, irange(x_bit_diagonal_size,total_diagonal_size)) {
+                if(row == col) {
+                    rel(space,Z_matrix(col,row),IRT_EQ,1);
+                } else {
+                    rel(space,Z_matrix(col,row),IRT_EQ,0);
+                }
             }
         }
+        rel(space,Z_matrix.slice(x_bit_diagonal_size,number_of_qubits,total_diagonal_size,number_of_operators),IRT_EQ,0);
     }
-    rel(space,Z_matrix.slice(x_bit_diagonal_size,number_of_qubits,total_diagonal_size,number_of_operators),IRT_EQ,0);
 }
 //@-others
 
