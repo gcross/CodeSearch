@@ -161,6 +161,10 @@ template<unsigned int number_of_qubits, unsigned int number_of_operators> void c
     TEST_CASE(_##number_of_operators##x##number_of_qubits) { \
         runTest(number_of_operators,number_of_qubits,a); \
     }
+//@+node:gcross.20101229110857.2476: *3* DO_TEST_FOR_2
+#define DO_TEST_FOR_2(number_of_operators,number_of_qubits,a,b) \
+    TEST_CASE(_##number_of_operators##x##number_of_qubits##_##a) { \
+        runTest(number_of_operators,number_of_qubits,a,b); \
     }
 //@-others
 

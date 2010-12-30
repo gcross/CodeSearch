@@ -44,6 +44,37 @@ void forEachColumnOrdering(
 TEST_SUITE(Constraints) { TEST_SUITE(ColumnOrdering) {
 
 //@+others
+//@+node:gcross.20101229110857.2474: *3* number of solutions
+TEST_SUITE(number_of_solutions) {
+
+    void runTest(
+        const unsigned int number_of_qubits
+    ,   const unsigned int number_of_operators
+    ,   const unsigned int number_of_columns
+    ,   const unsigned int expected_number_of_solutions
+    ) {
+        assert(number_of_columns <= number_of_qubits);
+        assert(number_of_columns >= 2);
+        BOOST_FOREACH(const unsigned int start, irange(0u,number_of_qubits-number_of_columns+1)) {
+            const unsigned int end = start + number_of_columns;
+            auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
+            postColumnOrderingConstraint(*space,start,end);
+            const unsigned int number_of_solutions = countSolutions(space);
+            ASSERT_EQ(expected_number_of_solutions,number_of_solutions);
+        }
+    }
+
+    DO_TEST_FOR_2(2,1,2,4+6)
+    DO_TEST_FOR_2(3,1,2,(4+6)*4)
+    DO_TEST_FOR_2(3,1,3,4+2*6+4)
+    DO_TEST_FOR_2(4,1,2,(4+6)*4*4)
+    DO_TEST_FOR_2(4,1,3,(4+2*6+4)*4)
+    DO_TEST_FOR_2(4,1,4,4+3*6+3*4+1)
+    DO_TEST_FOR_2(2,2,2,4*(4+6)+6*16)
+    DO_TEST_FOR_2(3,2,2,(4*(4+6)+6*16)*4*4)
+    DO_TEST_FOR_2(3,2,3,4*(4+2*6+4)+2*6*4*(4+6)+4*4*4*4)
+
+}
 //@+node:gcross.20101229110857.2468: *3* correct codes
 TEST_SUITE(correct_codes) {
 
