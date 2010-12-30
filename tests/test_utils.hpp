@@ -148,18 +148,19 @@ template<unsigned int number_of_qubits, unsigned int number_of_operators> void c
 //@+node:gcross.20101224191604.3436: ** Macros
 //@+node:gcross.20101229110857.1594: *3* DO_TEMPLATE_TEST_FOR
 #define DO_TEMPLATE_TEST_FOR(number_of_operators,number_of_qubits) \
-    TEST_CASE(_##number_of_operators##_##number_of_qubits) { \
+    TEST_CASE(_##number_of_operators##x##number_of_qubits) { \
         runTest<number_of_operators,number_of_qubits>(); \
     }
 //@+node:gcross.20101224191604.3437: *3* DO_TEST_FOR
 #define DO_TEST_FOR(number_of_operators,number_of_qubits) \
-    TEST_CASE(_##number_of_operators##_##number_of_qubits) { \
+    TEST_CASE(_##number_of_operators##x##number_of_qubits) { \
         runTest(number_of_operators,number_of_qubits); \
     }
 //@+node:gcross.20101224191604.3438: *3* DO_TEST_FOR_1
-#define DO_TEST_FOR_1(number_of_operators,number_of_qubits,expected_number_of_solutions) \
-    TEST_CASE(_##number_of_operators##_##number_of_qubits) { \
-        runTest(number_of_operators,number_of_qubits,expected_number_of_solutions); \
+#define DO_TEST_FOR_1(number_of_operators,number_of_qubits,a) \
+    TEST_CASE(_##number_of_operators##x##number_of_qubits) { \
+        runTest(number_of_operators,number_of_qubits,a); \
+    }
     }
 //@-others
 
