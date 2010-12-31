@@ -1,5 +1,5 @@
 //@+leo-ver=5-thin
-//@+node:gcross.20101229110857.2459: * @thin column_ordering.cpp
+//@+node:gcross.20101229110857.2459: * @thin column.cpp
 //@@language cplusplus
 
 //@+<< Includes >>
@@ -35,7 +35,7 @@ void forEachColumnOrdering(
         BOOST_FOREACH(unsigned int start, irange(0u,number_of_qubits)) {
             BOOST_FOREACH(unsigned int end, irange(start+2,number_of_qubits+1)) {
                 auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
-                postColumnOrderingConstraint(*space,start,end);
+                postColumnOrderingConstraint(*space,start,end,0,number_of_operators);
                 f(start,end,space);
             }
         }
@@ -58,7 +58,7 @@ TEST_SUITE(number_of_solutions) {
         BOOST_FOREACH(const unsigned int start, irange(0u,number_of_qubits-number_of_columns+1)) {
             const unsigned int end = start + number_of_columns;
             auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
-            postColumnOrderingConstraint(*space,start,end);
+            postColumnOrderingConstraint(*space,start,end,0,number_of_operators);
             const unsigned int number_of_solutions = countSolutions(space);
             ASSERT_EQ(expected_number_of_solutions,number_of_solutions);
         }
