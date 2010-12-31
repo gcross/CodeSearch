@@ -20,7 +20,7 @@ using namespace Gecode;
 
 //@+others
 //@+node:gcross.20101229110857.2242: ** class ColumnOrderingConstraint
-class ColumnOrderingConstraint : public OperatorSpace::Constraint {
+class ColumnOrderingConstraint : public OperatorSpace::AuxiliaryData {
 //@+others
 //@+node:gcross.20101229110857.2243: *3* (fields)
 private:
@@ -64,8 +64,8 @@ ColumnOrderingConstraint(const bool share, OperatorSpace& space, ColumnOrderingC
     ties.update(space,share,my.ties);
 }
 //@+node:gcross.20101229110857.2452: *3* copy
-virtual auto_ptr<OperatorSpace::Constraint> copy(const bool share, OperatorSpace& space) {
-    return wrapAutoPtr(dynamic_cast<OperatorSpace::Constraint*>(new ColumnOrderingConstraint(share,space,*this)));
+virtual auto_ptr<OperatorSpace::AuxiliaryData> copy(const bool share, OperatorSpace& space) {
+    return wrapAutoPtr(dynamic_cast<OperatorSpace::AuxiliaryData*>(new ColumnOrderingConstraint(share,space,*this)));
 }
 //@-others
 };
@@ -73,7 +73,7 @@ virtual auto_ptr<OperatorSpace::Constraint> copy(const bool share, OperatorSpace
 //@+node:gcross.20101229110857.1680: *3* postColumnOrderingConstraint
 void postColumnOrderingConstraint(OperatorSpace& space, const unsigned int start, const unsigned int end) {
     if(end-start < 2) return;
-    space.addConstraint(wrapAutoPtr(static_cast<OperatorSpace::Constraint*>(new ColumnOrderingConstraint(space,start,end))));
+    space.attachAuxiliaryData(wrapAutoPtr(static_cast<OperatorSpace::AuxiliaryData*>(new ColumnOrderingConstraint(space,start,end))));
 }
 //@-others
 

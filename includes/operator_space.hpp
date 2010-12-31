@@ -39,12 +39,12 @@ struct OperatorSpace : public Space {
 
     //@+others
     //@+node:gcross.20101224191604.3443: *3* (nested classes)
-    class Constraint {
+    class AuxiliaryData {
         friend class OperatorSpace;
     public:
-        virtual ~Constraint() {}
+        virtual ~AuxiliaryData() {}
     private:
-        virtual auto_ptr<Constraint> copy(const bool share, OperatorSpace& space) = 0;
+        virtual auto_ptr<AuxiliaryData> copy(const bool share, OperatorSpace& space) = 0;
     };
     //@+node:gcross.20101224191604.1852: *3* (fields)
     const unsigned int number_of_operators, number_of_qubits, number_of_variables;
@@ -52,7 +52,7 @@ struct OperatorSpace : public Space {
     BoolVarArray X, Z, non_trivial;
     IntVarArray O, weights;
 
-    ptr_vector<Constraint> constraints;
+    ptr_vector<AuxiliaryData> attached_auxiliary_data;
     //@+node:gcross.20101224191604.1853: *3* (constructors)
     OperatorSpace(const unsigned int number_of_operators, const unsigned int number_of_qubits);
     OperatorSpace(const bool share, OperatorSpace& s);
@@ -64,7 +64,7 @@ struct OperatorSpace : public Space {
     BoolMatrix getZMatrix() const { return Matrix<BoolVarArgs>(Z,number_of_qubits,number_of_operators); }
     BoolMatrix getNonTrivialMatrix() const { return Matrix<BoolVarArgs>(non_trivial,number_of_qubits,number_of_operators); }
 
-    void addConstraint(auto_ptr<Constraint> constraint);
+    void attachAuxiliaryData(auto_ptr<AuxiliaryData> auxiliary_data);
 
     //@+others
     //@+node:gcross.20101224191604.3431: *4* computeCode

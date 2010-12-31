@@ -45,7 +45,7 @@ OperatorSpace::OperatorSpace(const bool share, OperatorSpace& s)
     , number_of_operators(s.number_of_operators)
     , number_of_qubits(s.number_of_qubits)
     , number_of_variables(s.number_of_variables)
-    , constraints(s.constraints.size())
+    , attached_auxiliary_data(s.attached_auxiliary_data.size())
 {
     X.update(*this,share,s.X);
     Z.update(*this,share,s.Z);
@@ -53,14 +53,14 @@ OperatorSpace::OperatorSpace(const bool share, OperatorSpace& s)
     O.update(*this,share,s.O);
     weights.update(*this,share,s.weights);
 
-    BOOST_FOREACH(Constraint& constraint, s.constraints) {
-        constraints.push_back(constraint.copy(share,*this));
+    BOOST_FOREACH(AuxiliaryData& auxiliary_data, s.attached_auxiliary_data) {
+        attached_auxiliary_data.push_back(auxiliary_data.copy(share,*this));
     }
 }
-//@+node:gcross.20101229110857.1596: *3* addConstraint
-void OperatorSpace::addConstraint(auto_ptr<Constraint> constraint) {
-    constraints.push_back(constraint.get());
-    constraint.release();
+//@+node:gcross.20101229110857.1596: *3* attachAuxiliaryData
+void OperatorSpace::attachAuxiliaryData(auto_ptr<AuxiliaryData> auxiliary_data) {
+    attached_auxiliary_data.push_back(auxiliary_data.get());
+    auxiliary_data.release();
 }
 //@+node:gcross.20101224191604.1871: *3* copy
 Space* OperatorSpace::copy(bool share)
