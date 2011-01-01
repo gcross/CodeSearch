@@ -3,6 +3,7 @@
 add_library(CodeSearch
     constraints/ordering.cpp
     constraints/ordering/column
+    constraints/ordering/row/weight
     constraints/standard_form
     operator_space
     solution_iterator

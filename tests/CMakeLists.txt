@@ -18,6 +18,7 @@ include_directories(".")
 #@+node:gcross.20101224191604.2734: ** test
 set(test-SOURCES
     constraints/ordering/column
+    constraints/ordering/row/weight
     constraints/standard_form
     operator_space
     test_utils

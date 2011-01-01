@@ -26,6 +26,7 @@ using namespace std;
 //@+node:gcross.20101229110857.1637: ** Functions
 BoolVarArgs postColumnOrderingConstraint(OperatorSpace& space, const unsigned int starting_column, const unsigned int ending_column, const unsigned int starting_row, const unsigned int ending_row);
 BoolVarArgs postOrderingConstraint(OperatorSpace& space, IntMatrix variables, BoolVarArgs initial_ties=BoolVarArgs());
+BoolVarArgs postRowWeightOrderingConstraint(OperatorSpace& space, const unsigned int starting_row, const unsigned int ending_row, BoolVarArgs initial_ties=BoolVarArgs());
 void postStandardFormConstraint(OperatorSpace& space, const unsigned int x_bit_diagonal_size, const unsigned int z_bit_diagonal_size);
 //@-others
 

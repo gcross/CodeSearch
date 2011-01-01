@@ -21,6 +21,9 @@
 <v t="gcross.20101229110857.2512"><vh>@thin ordering.cpp</vh></v>
 <v t="gcross.20101229110857.2525"><vh>@path ordering</vh>
 <v t="gcross.20101229110857.1676"><vh>@thin column.cpp</vh></v>
+<v t="gcross.20101229110857.2527"><vh>@path row</vh>
+<v t="gcross.20101229110857.2534"><vh>@thin weight.cpp</vh></v>
+</v>
 </v>
 <v t="gcross.20101229110857.1644"><vh>@thin standard_form.cpp</vh></v>
 </v>
@@ -34,6 +37,9 @@
 <v t="gcross.20101229110857.1648"><vh>@path constraints</vh>
 <v t="gcross.20101229110857.2526"><vh>@path ordering</vh>
 <v t="gcross.20101229110857.2459"><vh>@thin column.cpp</vh></v>
+<v t="gcross.20101229110857.2553"><vh>@path row</vh>
+<v t="gcross.20101229110857.2561"><vh>@thin weight.cpp</vh></v>
+</v>
 </v>
 <v t="gcross.20101229110857.1657"><vh>@thin standard_form.cpp</vh></v>
 </v>
@@ -52,5 +58,7 @@
 <t tx="gcross.20101229110857.1648"></t>
 <t tx="gcross.20101229110857.2525"></t>
 <t tx="gcross.20101229110857.2526"></t>
+<t tx="gcross.20101229110857.2527"></t>
+<t tx="gcross.20101229110857.2553"></t>
 </tnodes>
 </leo_file>
