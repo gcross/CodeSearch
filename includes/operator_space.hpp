@@ -77,6 +77,15 @@ struct OperatorSpace : public Space {
         qec_ptr->optimize_logical_qubits();
         return qec_ptr;
     }
+    //@+node:gcross.20101229110857.2549: *4* getAuxiliaryData
+    template<typename T> vector<const T*> getAuxiliaryData() const {
+        vector<const T*> auxiliary_data;
+        BOOST_FOREACH(const AuxiliaryData& data, attached_auxiliary_data) {
+            const T* casted_data = dynamic_cast<const T*>(&data);
+            if(casted_data) auxiliary_data.push_back(casted_data);
+        }
+        return auxiliary_data;
+    }
     //@+node:gcross.20101224191604.2797: *4* getOperators
     template<typename operator_vector> auto_ptr<operator_vector> getOperators() const throw() {
         auto_ptr<operator_vector> operators(new operator_vector);

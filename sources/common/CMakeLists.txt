@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:gcross.20101224191604.2597: * @thin CMakeLists.txt
 add_library(CodeSearch
+    column_pauli_sets
     constraints/ordering.cpp
     constraints/ordering/column
     constraints/ordering/row/weight

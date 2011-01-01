@@ -17,6 +17,7 @@ include_directories(".")
 #@+others
 #@+node:gcross.20101224191604.2734: ** test
 set(test-SOURCES
+    column_pauli_sets
     constraints/ordering/column
     constraints/ordering/row/weight
     constraints/standard_form

@@ -8,6 +8,7 @@
 <vnodes>
 <v t="gcross.20101224191604.2593"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101224191604.1836"><vh>@path includes</vh>
+<v t="gcross.20101229110857.2596"><vh>@thin column_pauli_sets.hpp</vh></v>
 <v t="gcross.20101229110857.1618"><vh>@thin constraints.hpp</vh></v>
 <v t="gcross.20101224191604.1847"><vh>@thin operator_space.hpp</vh></v>
 <v t="gcross.20101224191604.2705"><vh>@thin solution_iterator.hpp</vh></v>
@@ -17,6 +18,7 @@
 <v t="gcross.20101224191604.2595"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101224191604.1835"><vh>@path common</vh>
 <v t="gcross.20101224191604.2597"><vh>@thin CMakeLists.txt</vh></v>
+<v t="gcross.20101229110857.2607"><vh>@thin column_pauli_sets.cpp</vh></v>
 <v t="gcross.20101229110857.1639"><vh>@path constraints</vh>
 <v t="gcross.20101229110857.2512"><vh>@thin ordering.cpp</vh></v>
 <v t="gcross.20101229110857.2525"><vh>@path ordering</vh>
@@ -34,6 +36,7 @@
 </v>
 <v t="gcross.20101224191604.2598"><vh>@path tests</vh>
 <v t="gcross.20101224191604.2731"><vh>@thin CMakeLists.txt</vh></v>
+<v t="gcross.20101231214817.2046"><vh>@thin column_pauli_sets.cpp</vh></v>
 <v t="gcross.20101229110857.1648"><vh>@path constraints</vh>
 <v t="gcross.20101229110857.2526"><vh>@path ordering</vh>
 <v t="gcross.20101229110857.2459"><vh>@thin column.cpp</vh></v>
