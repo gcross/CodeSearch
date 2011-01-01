@@ -15,6 +15,7 @@
 <v t="gcross.20101231214817.2106"><vh>@path ordering</vh>
 <v t="gcross.20101231214817.2086"><vh>@thin column.hpp</vh></v>
 <v t="gcross.20101231214817.2107"><vh>@path row</vh>
+<v t="gcross.20101231214817.2135"><vh>@thin pauli_groups.hpp</vh></v>
 <v t="gcross.20101231214817.2112"><vh>@thin weight.hpp</vh></v>
 </v>
 </v>
@@ -33,6 +34,7 @@
 <v t="gcross.20101229110857.2525"><vh>@path ordering</vh>
 <v t="gcross.20101229110857.1676"><vh>@thin column.cpp</vh></v>
 <v t="gcross.20101229110857.2527"><vh>@path row</vh>
+<v t="gcross.20101229110857.2585"><vh>@thin pauli_groups.cpp</vh></v>
 <v t="gcross.20101229110857.2534"><vh>@thin weight.cpp</vh></v>
 </v>
 </v>
@@ -50,6 +52,7 @@
 <v t="gcross.20101229110857.2526"><vh>@path ordering</vh>
 <v t="gcross.20101229110857.2459"><vh>@thin column.cpp</vh></v>
 <v t="gcross.20101229110857.2553"><vh>@path row</vh>
+<v t="gcross.20101231214817.2068"><vh>@thin pauli_groups.cpp</vh></v>
 <v t="gcross.20101229110857.2561"><vh>@thin weight.cpp</vh></v>
 </v>
 </v>

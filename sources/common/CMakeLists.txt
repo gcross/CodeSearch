@@ -4,6 +4,7 @@ add_library(CodeSearch
     column_pauli_sets
     constraints/ordering.cpp
     constraints/ordering/column
+    constraints/ordering/row/pauli_groups
     constraints/ordering/row/weight
     constraints/standard_form
     operator_space
