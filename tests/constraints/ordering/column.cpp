@@ -10,7 +10,7 @@
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 
-#include "constraints.hpp"
+#include "constraints/ordering/column.hpp"
 #include "utilities.hpp"
 
 #include "test_utils.hpp"

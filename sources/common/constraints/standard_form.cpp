@@ -8,7 +8,7 @@
 #include <gecode/int.hh>
 #include <gecode/minimodel.hh>
 
-#include "constraints.hpp"
+#include "constraints/standard_form.hpp"
 #include "operator_space.hpp"
 #include "utilities.hpp"
 //@-<< Includes >>

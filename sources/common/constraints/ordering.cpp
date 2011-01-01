@@ -5,9 +5,8 @@
 //@+<< Includes >>
 //@+node:gcross.20101229110857.2513: ** << Includes >>
 #include <boost/foreach.hpp>
-#include <boost/optional.hpp>
 
-#include "constraints.hpp"
+#include "constraints/ordering.hpp"
 #include "operator_space.hpp"
 #include "utilities.hpp"
 //@-<< Includes >>
