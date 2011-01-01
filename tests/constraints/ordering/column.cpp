@@ -121,31 +121,27 @@ TEST_SUITE(correct_solutions) {
 //@+node:gcross.20101229110857.2468: *3* correct codes
 TEST_SUITE(correct_codes) {
 
-    template
-        < const unsigned int number_of_qubits
-        , const unsigned int number_of_operators
-        >
-    void runTest() {
+    void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
         forEachColumnOrdering(
              number_of_qubits
             ,number_of_operators
-            ,bind(checkCodes<number_of_qubits,number_of_operators>,_3)
+            ,bind(checkCodes,_3)
         );
     }
 
-    DO_TEMPLATE_TEST_FOR(1,1)
-    DO_TEMPLATE_TEST_FOR(1,2)
-    DO_TEMPLATE_TEST_FOR(1,3)
-    DO_TEMPLATE_TEST_FOR(2,1)
-    DO_TEMPLATE_TEST_FOR(2,2)
-    DO_TEMPLATE_TEST_FOR(2,3)
-    DO_TEMPLATE_TEST_FOR(2,4)
-    DO_TEMPLATE_TEST_FOR(3,1)
-    DO_TEMPLATE_TEST_FOR(3,2)
-    DO_TEMPLATE_TEST_FOR(3,3)
-    DO_TEMPLATE_TEST_FOR(4,1)
-    DO_TEMPLATE_TEST_FOR(4,2)
-    DO_TEMPLATE_TEST_FOR(5,1)
+    DO_TEST_FOR(1,1)
+    DO_TEST_FOR(1,2)
+    DO_TEST_FOR(1,3)
+    DO_TEST_FOR(2,1)
+    DO_TEST_FOR(2,2)
+    DO_TEST_FOR(2,3)
+    DO_TEST_FOR(2,4)
+    DO_TEST_FOR(3,1)
+    DO_TEST_FOR(3,2)
+    DO_TEST_FOR(3,3)
+    DO_TEST_FOR(4,1)
+    DO_TEST_FOR(4,2)
+    DO_TEST_FOR(5,1)
 
 }
 //@-others
