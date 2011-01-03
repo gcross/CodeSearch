@@ -91,6 +91,12 @@ struct GatherCodesNotSupported : public std::exception {
     virtual const char* what() const throw() { return error_message.c_str(); }
 };
 //@+node:gcross.20101224191604.2722: ** Functions
+void checkCompatibility(
+      auto_ptr<OperatorSpace> constraint_1_space
+    , auto_ptr<OperatorSpace> constraint_2_space
+    , auto_ptr<OperatorSpace> constraint_12_space
+);
+
 void checkCodes(auto_ptr<OperatorSpace> initial_space);
 
 long long encodeOperatorSpace(const OperatorSpace& space);

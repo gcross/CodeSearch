@@ -8,6 +8,7 @@
 #include <boost/assign.hpp>
 #include <boost/foreach.hpp>
 #include <boost/range/algorithm/copy.hpp>
+#include <boost/range/algorithm/set_algorithm.hpp>
 #include <boost/range/irange.hpp>
 #include <codequest.hpp>
 #include <functional>
@@ -30,9 +31,42 @@ using namespace std;
 //@+others
 //@+node:gcross.20101231214817.2058: ** Typedefs
 typedef map<pair<unsigned int,unsigned int>,set<Code> > CodeTable;
+typedef vector<unsigned long long> Solutions;
 //@+node:gcross.20101229110857.1592: ** Variables
 CodeTable operator_space_code_table;
 //@+node:gcross.20101224191604.2750: ** Functions
+//@+node:gcross.20101231214817.2196: *3* checkCompatibility
+void checkCompatibility(
+      auto_ptr<OperatorSpace> constraint_1_space
+    , auto_ptr<OperatorSpace> constraint_2_space
+    , auto_ptr<OperatorSpace> constraint_12_space
+) {
+    Solutions solutions_intersection;
+    set_intersection(
+        gatherSolutions(constraint_1_space),
+        gatherSolutions(constraint_2_space),
+        insert_iterator<Solutions>(solutions_intersection,solutions_intersection.begin())
+    );
+    Solutions solutions_12 = gatherSolutions(constraint_12_space);
+    {
+        Solutions solutions_difference;
+        set_difference(
+            solutions_intersection,
+            solutions_12,
+            insert_iterator<Solutions>(solutions_difference,solutions_difference.begin())
+        );
+        ASSERT_TRUE(solutions_difference.empty() && "combining the two constraints *removes* solutions");
+    }
+    {
+        Solutions solutions_difference;
+        set_difference(
+            solutions_12,
+            solutions_intersection,
+            insert_iterator<Solutions>(solutions_difference,solutions_difference.begin())
+        );
+        ASSERT_TRUE(solutions_difference.empty() && "combining the two constraints *adds* solutions");
+    }
+}
 //@+node:gcross.20101231214817.2055: *3* checkCodes
 void checkCodes(auto_ptr<OperatorSpace> initial_space) {
     const set<Code>& operator_space_codes = fetchAllCodes(initial_space->number_of_qubits,initial_space->number_of_operators);
