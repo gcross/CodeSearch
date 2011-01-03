@@ -9,6 +9,7 @@
 <v t="gcross.20101224191604.2593"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101224191604.1836"><vh>@path includes</vh>
 <v t="gcross.20101229110857.2596"><vh>@thin column_pauli_sets.hpp</vh></v>
+<v t="gcross.20101231214817.2217"><vh>@thin constraints.hpp</vh></v>
 <v t="gcross.20101231214817.2081"><vh>@path constraints</vh>
 <v t="gcross.20101229110857.1618"><vh>@thin standard_form.hpp</vh></v>
 <v t="gcross.20101231214817.2102"><vh>@thin ordering.hpp</vh></v>
@@ -29,6 +30,7 @@
 <v t="gcross.20101224191604.1835"><vh>@path common</vh>
 <v t="gcross.20101224191604.2597"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101229110857.2607"><vh>@thin column_pauli_sets.cpp</vh></v>
+<v t="gcross.20101231214817.2240"><vh>@thin constraints.cpp</vh></v>
 <v t="gcross.20101229110857.1639"><vh>@path constraints</vh>
 <v t="gcross.20101229110857.2512"><vh>@thin ordering.cpp</vh></v>
 <v t="gcross.20101229110857.2525"><vh>@path ordering</vh>
@@ -78,5 +80,6 @@
 <t tx="gcross.20101231214817.2081"></t>
 <t tx="gcross.20101231214817.2106"></t>
 <t tx="gcross.20101231214817.2107"></t>
+<t tx="gcross.20101231214817.2197"></t>
 </tnodes>
 </leo_file>

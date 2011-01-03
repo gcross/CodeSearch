@@ -1,17 +1,15 @@
 //@+leo-ver=5-thin
-//@+node:gcross.20101229110857.1657: * @thin standard_form.cpp
+//@+node:gcross.20101231214817.2205: * @thin standard_form.cpp
 //@@language cplusplus
 
 //@+<< Includes >>
-//@+node:gcross.20101229110857.1658: ** << Includes >>
-#include <boost/assign/list_of.hpp>
+//@+node:gcross.20101231214817.2206: ** << Includes >>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 
-#include "constraints.hpp"
 #include "constraints/standard_form.hpp"
 #include "utilities.hpp"
 
@@ -20,12 +18,11 @@
 using namespace CodeSearch;
 using namespace Gecode;
 using namespace boost;
-using namespace boost::assign;
 using namespace std;
 //@-<< Includes >>
 
 //@+others
-//@+node:gcross.20101229110857.1667: ** Functions
+//@+node:gcross.20101231214817.2207: ** Functions
 void forEachStandardForm(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
@@ -35,53 +32,19 @@ void forEachStandardForm(
                     )
               > f
     ) {
-        BOOST_FOREACH(const StandardFormParameters& parameters, generateStandardFormsFor(number_of_qubits,number_of_operators)) {
-            f   (parameters.x_bit_diagonal_size
-                ,parameters.z_bit_diagonal_size
-                ,createConstrainedSpace(
-                     number_of_qubits
-                    ,number_of_operators
-                    ,list_of(StandardForm)
-                    ,parameters
-                 )
-                );
+        BOOST_FOREACH(unsigned int x_bit_diagonal_size, irange(0u,min(number_of_qubits,number_of_operators)+1)) {
+            BOOST_FOREACH(unsigned int z_bit_diagonal_size, irange(0u,min(number_of_qubits,number_of_operators)+1-x_bit_diagonal_size)) {
+                auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
+                postStandardFormConstraint(*space,x_bit_diagonal_size,z_bit_diagonal_size);
+                f(x_bit_diagonal_size,z_bit_diagonal_size,space);
+            }
         }
 }
-//@+node:gcross.20101229110857.1659: ** Tests
+//@+node:gcross.20101231214817.2208: ** Tests
 TEST_SUITE(Constraints) { TEST_SUITE(StandardForm) {
 
 //@+others
-//@+node:gcross.20110102182304.1581: *3* number of standard forms
-TEST_SUITE(number_of_standard_forms) {
-
-    void runTest(
-        const unsigned int number_of_qubits
-    ,   const unsigned int number_of_operators
-    ,   const unsigned int expected_number_of_standard_forms
-    ) {
-        unsigned int number_of_standard_forms = 0;
-        forEachStandardForm(number_of_qubits,number_of_operators,++lambda::var(number_of_standard_forms));
-        ASSERT_EQ(expected_number_of_standard_forms,number_of_standard_forms);
-    }
-
-    DO_TEST_FOR_1(1,1,1)
-    DO_TEST_FOR_1(1,2,1)
-    DO_TEST_FOR_1(1,3,1)
-    DO_TEST_FOR_1(2,1,1)
-    DO_TEST_FOR_1(2,2,3)
-    DO_TEST_FOR_1(2,3,3)
-    DO_TEST_FOR_1(3,1,1)
-    DO_TEST_FOR_1(3,2,3)
-    DO_TEST_FOR_1(3,3,6)
-    DO_TEST_FOR_1(3,4,6)
-    DO_TEST_FOR_1(4,1,1)
-    DO_TEST_FOR_1(4,2,3)
-    DO_TEST_FOR_1(4,3,6)
-    DO_TEST_FOR_1(4,4,10)
-    DO_TEST_FOR_1(5,5,15)
-
-}
-//@+node:gcross.20101229110857.1660: *3* number of solutions
+//@+node:gcross.20101231214817.2209: *3* number of solutions
 TEST_SUITE(number_of_solutions) {
 
     void doCheck(
@@ -125,7 +88,7 @@ TEST_SUITE(number_of_solutions) {
     DO_TEST_FOR(5,1)
 
 }
-//@+node:gcross.20101229110857.2478: *3* correct solutions
+//@+node:gcross.20101231214817.2210: *3* correct solutions
 TEST_SUITE(correct_solutions) {
 
     void doCheck(
@@ -198,7 +161,7 @@ TEST_SUITE(correct_solutions) {
     DO_TEST_FOR(5,1)
 
 }
-//@+node:gcross.20101229110857.1669: *3* correct codes
+//@+node:gcross.20101231214817.2211: *3* correct codes
 TEST_SUITE(correct_codes) {
 
     void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
