@@ -12,6 +12,7 @@
 #include "column_pauli_sets.hpp"
 #include "constraints/ordering.hpp"
 #include "constraints/ordering/row/pauli_groups.hpp"
+#include "constraints/standard_form.hpp"
 #include "utilities.hpp"
 //@-<< Includes >>
 
@@ -57,7 +58,7 @@ public:
 IntMatrix getOrderingsMatrix();
 //@-others
 };
-//@+node:gcross.20101231214817.2143: ** function postPauliGroupsRowOrderingConstraint
+//@+node:gcross.20101231214817.2143: ** Functions
 BoolVarArgs postPauliGroupsRowOrderingConstraint(
       OperatorSpace& space
     , const unsigned int starting_column
@@ -65,6 +66,12 @@ BoolVarArgs postPauliGroupsRowOrderingConstraint(
     , const unsigned int starting_row
     , const unsigned int ending_row
     , BoolVarArgs initial_ties = BoolVarArgs()
+);
+
+StandardFormTies postPauliGroupsRowOrderingConstraints(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+    , const StandardFormTies& initial_ties = no_standard_form_ties
 );
 //@-others
 

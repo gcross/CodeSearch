@@ -164,7 +164,8 @@ auto_ptr<OperatorSpace::AuxiliaryData> PauliGroupsRowOrderingData::copy(const bo
 IntMatrix PauliGroupsRowOrderingData::getOrderingsMatrix() {
     return IntMatrix(orderings,number_of_rows,number_of_columns);
 }
-//@+node:gcross.20101229110857.2617: ** function postPauliGroupsRowOrderingConstraint
+//@+node:gcross.20101231214817.2266: ** Functions
+//@+node:gcross.20101229110857.2617: *3* postPauliGroupsRowOrderingConstraint
 BoolVarArgs postPauliGroupsRowOrderingConstraint(
       OperatorSpace& space
     , const unsigned int starting_column
@@ -184,6 +185,50 @@ BoolVarArgs postPauliGroupsRowOrderingConstraint(
     space.attachAuxiliaryData((auto_ptr<OperatorSpace::AuxiliaryData>)pauli_groups_ordering_data);
 
     return final_ties;
+}
+//@+node:gcross.20101231214817.2248: *3* postPauliGroupsRowOrderingConstraints
+StandardFormTies postPauliGroupsRowOrderingConstraints(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+    , const StandardFormTies& initial_ties
+) {
+    const unsigned int
+          number_of_qubits = space.number_of_qubits
+        , number_of_operators = space.number_of_operators
+        , x_bit_diagonal_size = parameters.x_bit_diagonal_size
+        , z_bit_diagonal_size = parameters.z_bit_diagonal_size
+        ;
+
+    return
+        make_tuple(
+         // First region ties
+            postPauliGroupsRowOrderingConstraint(
+                  space
+                , 0
+                , number_of_qubits
+                , 0
+                , x_bit_diagonal_size
+                , initial_ties.get<1>()
+            )
+        ,// Second region ties
+            postPauliGroupsRowOrderingConstraint(
+                  space
+                , 0
+                , number_of_qubits
+                , x_bit_diagonal_size
+                , x_bit_diagonal_size+z_bit_diagonal_size
+                , initial_ties.get<2>()
+            )
+        ,// Third region ties
+            postPauliGroupsRowOrderingConstraint(
+                  space
+                , 0
+                , x_bit_diagonal_size
+                , x_bit_diagonal_size+z_bit_diagonal_size
+                , number_of_operators
+                , initial_ties.get<2>()
+            )
+        );
 }
 //@-others
 

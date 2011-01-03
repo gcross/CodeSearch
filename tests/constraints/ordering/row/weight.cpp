@@ -4,6 +4,7 @@
 
 //@+<< Includes >>
 //@+node:gcross.20101229110857.2562: ** << Includes >>
+#include <boost/assign/list_of.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
@@ -18,11 +19,22 @@
 using namespace CodeSearch;
 using namespace Gecode;
 using namespace boost;
+using namespace boost::assign;
 using namespace std;
 //@-<< Includes >>
 
 //@+others
-//@+node:gcross.20101229110857.2563: ** Functions
+//@+node:gcross.20110102182304.1604: ** Values
+static set<Constraint> weight_row_ordering_constraints = list_of(WeightRowOrdering);
+//@+node:gcross.20101229110857.2564: ** Tests
+TEST_SUITE(Constraints) { TEST_SUITE(RowOrdering) { TEST_SUITE(Weight) {
+
+//@+others
+//@+node:gcross.20110102182304.1605: *3* for each subregion
+TEST_SUITE(for_each_subregion) {
+
+//@+others
+//@+node:gcross.20101229110857.2563: *4* function forEachRowWeightOrdering
 void forEachRowWeightOrdering(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
@@ -35,16 +47,12 @@ void forEachRowWeightOrdering(
         BOOST_FOREACH(unsigned int start, irange(0u,number_of_operators)) {
             BOOST_FOREACH(unsigned int end, irange(start+2,number_of_operators+1)) {
                 auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
-                postRowWeightOrderingConstraint(*space,start,end);
+                postWeightRowOrderingConstraint(*space,start,end);
                 f(start,end,space);
             }
         }
 }
-//@+node:gcross.20101229110857.2564: ** Tests
-TEST_SUITE(Constraints) { TEST_SUITE(RowOrdering) { TEST_SUITE(Weight) {
-
-//@+others
-//@+node:gcross.20101229110857.2565: *3* number of solutions
+//@+node:gcross.20101229110857.2565: *4* number of solutions
 TEST_SUITE(number_of_solutions) {
 
     void runTest(
@@ -58,7 +66,7 @@ TEST_SUITE(number_of_solutions) {
         BOOST_FOREACH(const unsigned int start, irange(0u,number_of_operators-number_of_rows+1)) {
             const unsigned int end = start + number_of_rows;
             auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
-            postRowWeightOrderingConstraint(*space,start,end);
+            postWeightRowOrderingConstraint(*space,start,end);
             const unsigned int number_of_solutions = countSolutions(space);
             ASSERT_EQ(expected_number_of_solutions,number_of_solutions);
         }
@@ -70,7 +78,7 @@ TEST_SUITE(number_of_solutions) {
     DO_TEST_FOR_2(2,2,2,1+(2*3)*(1+2*3)+3*3*4*4)
 
 }
-//@+node:gcross.20101229110857.2566: *3* correct solutions
+//@+node:gcross.20101229110857.2566: *4* correct solutions
 TEST_SUITE(correct_solutions) {
 
     void doCheck(
@@ -104,7 +112,7 @@ TEST_SUITE(correct_solutions) {
     DO_TEST_FOR(4,2)
 
 }
-//@+node:gcross.20101229110857.2567: *3* correct codes
+//@+node:gcross.20101229110857.2567: *4* correct codes
 TEST_SUITE(correct_codes) {
 
     void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
@@ -123,6 +131,43 @@ TEST_SUITE(correct_codes) {
     DO_TEST_FOR(3,2)
     DO_TEST_FOR(3,3)
     DO_TEST_FOR(4,2)
+
+}
+//@-others
+
+}
+//@+node:gcross.20110102182304.1608: *3* for each standard form
+TEST_SUITE(for_each_standard_form) {
+
+//@+others
+//@+node:gcross.20110102182304.1609: *4* correct codes
+TEST_SUITE(correct_codes) {
+
+    void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
+        forEachStandardForm(
+             number_of_qubits
+            ,number_of_operators
+            ,weight_row_ordering_constraints
+            ,bind(checkCodes,_2)
+        );
+    }
+
+    DO_TEST_FOR(1,1)
+    DO_TEST_FOR(1,2)
+    DO_TEST_FOR(1,3)
+    DO_TEST_FOR(2,1)
+    DO_TEST_FOR(2,2)
+    DO_TEST_FOR(2,3)
+    DO_TEST_FOR(2,4)
+    DO_TEST_FOR(3,1)
+    DO_TEST_FOR(3,2)
+    DO_TEST_FOR(3,3)
+    DO_TEST_FOR(4,1)
+    DO_TEST_FOR(4,2)
+    DO_TEST_FOR(5,1)
+
+}
+//@-others
 
 }
 //@-others
