@@ -25,28 +25,8 @@ using namespace std;
 //@-<< Includes >>
 
 //@+others
-//@+node:gcross.20101229110857.1667: ** Functions
-void forEachStandardForm(
-      const unsigned int number_of_qubits
-    , const unsigned int number_of_operators
-    , function<void (const unsigned int x_bit_diagonal_size
-                    ,const unsigned int z_bit_diagonal_size
-                    ,auto_ptr<OperatorSpace> space
-                    )
-              > f
-    ) {
-        BOOST_FOREACH(const StandardFormParameters& parameters, generateStandardFormsFor(number_of_qubits,number_of_operators)) {
-            f   (parameters.x_bit_diagonal_size
-                ,parameters.z_bit_diagonal_size
-                ,createConstrainedSpace(
-                     number_of_qubits
-                    ,number_of_operators
-                    ,list_of(StandardForm)
-                    ,parameters
-                 )
-                );
-        }
-}
+//@+node:gcross.20110102182304.1595: ** Values
+static set<Constraint> standard_form_constraints = list_of(StandardForm);
 //@+node:gcross.20101229110857.1659: ** Tests
 TEST_SUITE(Constraints) { TEST_SUITE(StandardForm) {
 
@@ -60,7 +40,12 @@ TEST_SUITE(number_of_standard_forms) {
     ,   const unsigned int expected_number_of_standard_forms
     ) {
         unsigned int number_of_standard_forms = 0;
-        forEachStandardForm(number_of_qubits,number_of_operators,++lambda::var(number_of_standard_forms));
+        forEachStandardForm(
+             number_of_qubits
+            ,number_of_operators
+            ,standard_form_constraints
+            ,++lambda::var(number_of_standard_forms)
+        );
         ASSERT_EQ(expected_number_of_standard_forms,number_of_standard_forms);
     }
 
@@ -87,11 +72,12 @@ TEST_SUITE(number_of_solutions) {
     void doCheck(
           const unsigned int number_of_qubits
         , const unsigned int number_of_operators
-        , const unsigned int x_bit_diagonal_size
-        , const unsigned int z_bit_diagonal_size
+        , const StandardFormParameters& parameters
         , auto_ptr<OperatorSpace> space
     ) {
-        const unsigned int total_diagonal_size = x_bit_diagonal_size + z_bit_diagonal_size
+        const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
+                         , z_bit_diagonal_size = parameters.z_bit_diagonal_size
+                         , total_diagonal_size = x_bit_diagonal_size + z_bit_diagonal_size
                          , remaining_rows = number_of_operators - total_diagonal_size
                          , remaining_cols = number_of_qubits - total_diagonal_size
                          , number_of_free_bits =
@@ -107,7 +93,12 @@ TEST_SUITE(number_of_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        forEachStandardForm(number_of_qubits,number_of_operators,bind(doCheck,number_of_qubits,number_of_operators,_1,_2,_3));
+        forEachStandardForm(
+             number_of_qubits
+            ,number_of_operators
+            ,standard_form_constraints
+            ,bind(doCheck,number_of_qubits,number_of_operators,_1,_2)
+            );
     }
 
     DO_TEST_FOR(1,1)
@@ -131,11 +122,12 @@ TEST_SUITE(correct_solutions) {
     void doCheck(
           const unsigned int number_of_qubits
         , const unsigned int number_of_operators
-        , const unsigned int x_bit_diagonal_size
-        , const unsigned int z_bit_diagonal_size
+        , const StandardFormParameters& parameters
         , auto_ptr<OperatorSpace> initial_space
     ) {
-        const unsigned int total_diagonal_size = x_bit_diagonal_size + z_bit_diagonal_size
+        const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
+                         , z_bit_diagonal_size = parameters.z_bit_diagonal_size
+                         , total_diagonal_size = x_bit_diagonal_size + z_bit_diagonal_size
                          , remaining_rows = number_of_operators - total_diagonal_size
                          , remaining_cols = number_of_qubits - total_diagonal_size;
         BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
@@ -180,7 +172,17 @@ TEST_SUITE(correct_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        forEachStandardForm(number_of_qubits,number_of_operators,bind(doCheck,number_of_qubits,number_of_operators,_1,_2,_3));
+        forEachStandardForm(
+             number_of_qubits
+            ,number_of_operators
+            ,standard_form_constraints
+            ,bind(doCheck
+                ,number_of_qubits
+                ,number_of_operators
+                ,_1
+                ,_2
+             )
+        );
     }
 
     DO_TEST_FOR(1,1)
@@ -207,11 +209,12 @@ TEST_SUITE(correct_codes) {
         forEachStandardForm(
              number_of_qubits
             ,number_of_operators
+            ,standard_form_constraints
             ,bind(
                  copy<CodeSet,insert_iterator<CodeSet> >
                 ,bind(
                      gatherCodes
-                    ,_3
+                    ,_2
                  )
                 ,insert_iterator<CodeSet>(codes,codes.begin())
              )

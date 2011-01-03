@@ -7,6 +7,7 @@
 
 //@+<< Includes >>
 //@+node:gcross.20101224191604.2720: ** << Includes >>
+#include <boost/function.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/equal.hpp>
@@ -17,6 +18,7 @@
 #include <set>
 #include <vector>
 
+#include "constraints.hpp"
 #include "solution_iterator.hpp"
 #include "operator_space.hpp"
 
@@ -90,9 +92,27 @@ struct GatherCodesNotSupported : public std::exception {
 };
 //@+node:gcross.20101224191604.2722: ** Functions
 void checkCodes(auto_ptr<OperatorSpace> initial_space);
+
 long long encodeOperatorSpace(const OperatorSpace& space);
-const set<Code>& fetchAllCodes(const unsigned int number_of_qubits, const unsigned int number_of_operators);
+
+const set<Code>& fetchAllCodes(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+);
+
+void forEachStandardForm(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint>& constraints
+    , function<void (const StandardFormParameters& parameters
+                    ,auto_ptr<OperatorSpace> space
+                    )
+              > f
+
+);
+
 set<Code> gatherCodes(auto_ptr<OperatorSpace> initial_space);
+
 vector<unsigned long long> gatherSolutions(auto_ptr<OperatorSpace> space);
 //@+node:gcross.20101224191604.3436: ** Macros
 //@+node:gcross.20101229110857.1594: *3* DO_TEMPLATE_TEST_FOR

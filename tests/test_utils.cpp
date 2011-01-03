@@ -76,6 +76,27 @@ const set<Code>& fetchAllCodes(const unsigned int number_of_qubits, const unsign
 
     return operator_space_code_position->second;
 }
+//@+node:gcross.20110102182304.1594: *3* forEachStandardForm
+void forEachStandardForm(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint>& constraints
+    , function<void (const StandardFormParameters& parameters
+                    ,auto_ptr<OperatorSpace> space
+                    )
+              > f
+    ) {
+        BOOST_FOREACH(const StandardFormParameters& parameters, generateStandardFormsFor(number_of_qubits,number_of_operators)) {
+            f   (parameters
+                ,createConstrainedSpace(
+                     number_of_qubits
+                    ,number_of_operators
+                    ,constraints
+                    ,parameters
+                 )
+                );
+        }
+}
 //@+node:gcross.20101231214817.2053: *3* gatherCodes
 template<unsigned int number_of_qubits, unsigned int number_of_operators> set<Code> gatherCodesImpl(auto_ptr<OperatorSpace> initial_space) {
     assert(number_of_qubits == initial_space->number_of_qubits);
