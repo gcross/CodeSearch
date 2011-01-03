@@ -27,6 +27,12 @@ BoolVarArgs postOrderingConstraint(
     , IntMatrix variables
     , BoolVarArgs initial_ties=BoolVarArgs()
 );
+
+BoolVarArgs postOrderingConstraint(
+      OperatorSpace& space
+    , BoolMatrix variables
+    , BoolVarArgs initial_ties=BoolVarArgs()
+);
 //@-others
 
 }

@@ -7,6 +7,8 @@
 
 //@+<< Includes >>
 //@+node:gcross.20101229110857.1619: ** << Includes >>
+#include <boost/tuple/tuple.hpp>
+
 #include "operator_space.hpp"
 //@-<< Includes >>
 
@@ -21,6 +23,10 @@ using namespace std;
 //@-<< Usings >>
 
 //@+others
+//@+node:gcross.20110102182304.1573: ** Typedefs
+typedef tuple<BoolVarArgs,BoolVarArgs,BoolVarArgs> StandardFormTies;
+//@+node:gcross.20110102182304.1574: ** Values
+extern const StandardFormTies no_standard_form_ties;
 //@+node:gcross.20110102182304.1571: ** Classes
 //@+node:gcross.20101231214817.2153: *3* StandardFormParameters
 struct StandardFormParameters {

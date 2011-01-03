@@ -21,6 +21,8 @@ using namespace Gecode;
 //@-<< Usings >>
 
 //@+others
+//@+node:gcross.20101231214817.2263: ** Values
+const StandardFormTies no_standard_form_ties = make_tuple(BoolVarArgs(),BoolVarArgs(),BoolVarArgs());
 //@+node:gcross.20110102182304.1566: ** struct StandardFormParameters
 //@+node:gcross.20110102182304.1579: *3* (constructors)
 StandardFormParameters::StandardFormParameters(

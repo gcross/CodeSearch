@@ -7,6 +7,7 @@
 
 //@+<< Includes >>
 //@+node:gcross.20101231214817.2087: ** << Includes >>
+#include "constraints/standard_form.hpp"
 #include "operator_space.hpp"
 //@-<< Includes >>
 
@@ -28,7 +29,10 @@ BoolVarArgs postColumnOrderingConstraint(
     , const unsigned int ending_column
     , const unsigned int starting_row
     , const unsigned int ending_row
+    , BoolVarArgs initial_ties=BoolVarArgs()
 );
+
+StandardFormTies postColumnOrderingConstraints(OperatorSpace& space, const StandardFormParameters& parameters);
 //@-others
 
 }
