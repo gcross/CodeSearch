@@ -11,6 +11,7 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/equal.hpp>
+#include <boost/range/irange.hpp>
 #include <gecode/int.hh>
 #include <illuminate.hpp>
 #include <memory>
@@ -51,7 +52,7 @@ struct Code {
         if(number_of_gauge_qubits > c.number_of_gauge_qubits) return false;
         if(logical_qubit_distances.size() < c.logical_qubit_distances.size()) return true;
         if(logical_qubit_distances.size() > c.logical_qubit_distances.size()) return false;
-        for(int i = 0; i < logical_qubit_distances.size(); ++i) {
+        BOOST_FOREACH(const unsigned int i, irange((size_t)0u,logical_qubit_distances.size())) {
             if(logical_qubit_distances[i] < c.logical_qubit_distances[i]) return true;
             if(logical_qubit_distances[i] > c.logical_qubit_distances[i]) return false;
         }
@@ -61,7 +62,7 @@ struct Code {
         if(number_of_stabilizers != c.number_of_stabilizers) return false;
         if(number_of_gauge_qubits != c.number_of_gauge_qubits) return false;
         if(logical_qubit_distances.size() != c.logical_qubit_distances.size()) return false;
-        for(int i = 0; i < logical_qubit_distances.size(); ++i) {
+        BOOST_FOREACH(const unsigned int i, irange((size_t)0u,logical_qubit_distances.size())) {
             if(logical_qubit_distances[i] != c.logical_qubit_distances[i]) return false;
         }
         return true;
