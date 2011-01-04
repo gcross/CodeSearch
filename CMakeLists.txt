@@ -3,7 +3,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (CodeCategorize)
 
-find_package( Boost 1.43 COMPONENTS thread )
+find_package( Boost 1.45 COMPONENTS thread )
 link_directories ( ${Boost_LIBRARY_DIRS} )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 
