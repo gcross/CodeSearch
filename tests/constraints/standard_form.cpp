@@ -78,7 +78,6 @@ TEST_SUITE(number_of_solutions) {
         const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
                          , z_bit_diagonal_size = parameters.z_bit_diagonal_size
                          , total_diagonal_size = x_bit_diagonal_size + z_bit_diagonal_size
-                         , remaining_rows = number_of_operators - total_diagonal_size
                          , remaining_cols = number_of_qubits - total_diagonal_size
                          , number_of_free_bits =
                                 x_bit_diagonal_size*(2*(number_of_qubits - x_bit_diagonal_size) + number_of_operators)
@@ -128,8 +127,7 @@ TEST_SUITE(correct_solutions) {
         const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
                          , z_bit_diagonal_size = parameters.z_bit_diagonal_size
                          , total_diagonal_size = x_bit_diagonal_size + z_bit_diagonal_size
-                         , remaining_rows = number_of_operators - total_diagonal_size
-                         , remaining_cols = number_of_qubits - total_diagonal_size;
+                         ;
         BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
             { // X matrix
                 const BoolMatrix X_matrix = space.getXMatrix();
