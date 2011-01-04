@@ -47,8 +47,7 @@ StandardFormTies postWeightRowOrderingConstraints(
     , const StandardFormTies& initial_ties
 ) {
     const unsigned int
-          number_of_qubits = space.number_of_qubits
-        , number_of_operators = space.number_of_operators
+          number_of_operators = space.number_of_operators
         , x_bit_diagonal_size = parameters.x_bit_diagonal_size
         , z_bit_diagonal_size = parameters.z_bit_diagonal_size
         ;
