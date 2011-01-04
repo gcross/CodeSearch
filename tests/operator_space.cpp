@@ -61,9 +61,9 @@ TEST_SUITE(correct_order) {
         ) {
             unsigned long x = solution_number;
             BOOST_FOREACH(unsigned long long i,irange(0u,space.number_of_variables) | reversed) {
-                ASSERT_EQ(x%2,space.X[i].val());
+                ASSERT_EQ(x%2,(unsigned int)space.X[i].val());
                 x >>= 1;
-                ASSERT_EQ(x%2,space.Z[i].val());
+                ASSERT_EQ(x%2,(unsigned int)space.Z[i].val());
                 x >>= 1;
             }
             ++solution_number;
@@ -139,7 +139,7 @@ TEST_SUITE(correct_properties) {
                 BOOST_FOREACH(unsigned int j, irange(0u,number_of_qubits)) {
                     correct_weight += non_trivial_matrix(j,i).val();
                 }
-                ASSERT_EQ(correct_weight,space.weights[i].val());
+                ASSERT_EQ(correct_weight,(unsigned int)space.weights[i].val());
             }
         }
     }
