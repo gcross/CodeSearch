@@ -10,6 +10,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/type_traits/add_lvalue_reference.hpp>
 #include <boost/utility.hpp>
 #include <codequest.hpp>
 #include <memory>
@@ -34,7 +35,10 @@ class SolutionIterator
             <   SolutionIterator
             ,   OperatorSpace const
             ,   single_pass_traversal_tag
-> {
+            ,   add_lvalue_reference<OperatorSpace const>::type
+            ,   unsigned long long
+            >
+{
 
     //@+others
     //@+node:gcross.20101224191604.2711: *3* (fields)
