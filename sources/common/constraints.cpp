@@ -42,10 +42,10 @@ auto_ptr<OperatorSpace> createConstrainedSpace(
     }
     BOOST_FOREACH(const Constraint constraint, constraints) {
         switch(constraint) {
-            WeightRowOrdering:
+            case WeightRowOrdering:
                 current_ties = postWeightRowOrderingConstraints(*space,parameters,current_ties);
                 break;
-            PauliGroupsRowOrdering:
+            case PauliGroupsRowOrdering:
                 current_ties = postPauliGroupsRowOrderingConstraints(*space,parameters,current_ties);
                 break;
         }
