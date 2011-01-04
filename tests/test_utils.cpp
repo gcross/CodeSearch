@@ -167,6 +167,7 @@ vector<unsigned long long> gatherSolutions(auto_ptr<OperatorSpace> initial_space
         generateSolutionsFor(initial_space) | transformed(encodeOperatorSpace),
         back_inserter(solutions)
     );
+    return solutions;
 }
 //@-others
 //@-leo
