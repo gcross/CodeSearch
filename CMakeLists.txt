@@ -7,6 +7,12 @@ find_package( Boost 1.43 COMPONENTS thread )
 link_directories ( ${Boost_LIBRARY_DIRS} )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 
+if(UNIX)
+    if(CMAKE_COMPILER_IS_GNUCC)
+         add_definitions(-Wall)
+    endif(CMAKE_COMPILER_IS_GNUCC)
+endif(UNIX)
+
 if( NOT CMAKE_BUILD_TYPE )
 set( CMAKE_BUILD_TYPE "RelWithDebInfo" )
 endif ()
