@@ -48,6 +48,8 @@ auto_ptr<OperatorSpace> createConstrainedSpace(
             case PauliGroupsRowOrdering:
                 current_ties = postPauliGroupsRowOrderingConstraints(*space,parameters,current_ties);
                 break;
+            default:
+                assert(!"Should never reach here.");
         }
     }
     return space;
