@@ -27,6 +27,16 @@ using namespace std;
 //@+others
 //@+node:gcross.20110102182304.1596: ** Values
 static set<Constraint> column_ordering_constraints = list_of(ColumnOrdering);
+//@+node:gcross.20110104191728.1579: ** function checkCorrectness
+template<typename Matrix> void checkCorrectness(Matrix matrix) {
+    if(matrix.width() <= 1 || matrix.height() <= 0) return;
+    BOOST_FOREACH(const int col, irange(0,matrix.width()-1)) {
+        BOOST_FOREACH(const int row, irange(0,matrix.height())) {
+            ASSERT_TRUE(matrix(col,row).val() >= matrix(col+1,row).val());
+            if(matrix(col,row).val() > matrix(col+1,row).val()) break;
+        }
+    }
+}
 //@+node:gcross.20101229110857.2467: ** Tests
 TEST_SUITE(Constraints) { TEST_SUITE(ColumnOrdering) {
 
@@ -50,6 +60,24 @@ void forEachColumnOrdering(
                 auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
                 postColumnOrderingConstraint(*space,start,end,0,number_of_operators);
                 f(start,end,space);
+            }
+        }
+}
+//@+node:gcross.20110104191728.1578: *4* function forEachColumnOrderingSolution
+void forEachColumnOrderingSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (const unsigned int start
+                    ,const unsigned int end
+                    ,const OperatorSpace& space
+                    )
+              > f
+    ) {
+        BOOST_FOREACH(unsigned int start, irange(0u,number_of_qubits)) {
+            BOOST_FOREACH(unsigned int end, irange(start+2,number_of_qubits+1)) {
+                auto_ptr<OperatorSpace> initial_space(new OperatorSpace(number_of_qubits,number_of_operators));
+                postColumnOrderingConstraint(*initial_space,start,end,0,number_of_operators);
+                for_each(generateSolutionsFor(initial_space),bind(f,start,end,_1));
             }
         }
 }
@@ -87,29 +115,23 @@ TEST_SUITE(number_of_solutions) {
 //@+node:gcross.20101229110857.2484: *4* correct solutions
 TEST_SUITE(correct_solutions) {
 
-    void doCheck(
-          const unsigned int number_of_qubits
-        , const unsigned int number_of_operators
-        , const unsigned int start
-        , const unsigned int end
-        , auto_ptr<OperatorSpace> initial_space
-    ) {
-        BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
-            IntMatrix O_matrix = space.getOMatrix().slice(start,end,0u,number_of_operators);
-            BOOST_FOREACH(const unsigned int col, irange(0u,end-start-1)) {
-                BOOST_FOREACH(const unsigned int row, irange(0u,number_of_operators)) {
-                    ASSERT_TRUE(O_matrix(col,row).val() >= O_matrix(col+1,row).val());
-                    if(O_matrix(col,row).val() > O_matrix(col+1,row).val()) break;
-                }
-            }
-        }
-    }
-
     void runTest(
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        forEachColumnOrdering(number_of_qubits,number_of_operators,bind(doCheck,number_of_qubits,number_of_operators,_1,_2,_3));
+        forEachColumnOrderingSolution(
+             number_of_qubits
+            ,number_of_operators
+            ,bind(checkCorrectness<IntMatrix>
+                ,bind(&IntMatrix::slice
+                    ,bind(&OperatorSpace::getOMatrix,_3)
+                    ,_1
+                    ,_2
+                    ,0u
+                    ,number_of_operators
+                 )
+             )
+        );
     }
 
     DO_TEST_FOR(1,1)
@@ -160,7 +182,68 @@ TEST_SUITE(correct_codes) {
 TEST_SUITE(for_each_standard_form) {
 
 //@+others
-//@+node:gcross.20110102182304.1592: *4* correct codes
+//@+node:gcross.20110102182304.1592: *4* correct solutions
+TEST_SUITE(correct_solutions) {
+
+    void doCheck(
+         const unsigned int number_of_qubits
+        ,const unsigned int number_of_operators
+        ,const StandardFormParameters& parameters
+        ,const OperatorSpace& space
+    ) {
+        const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
+                         , z_bit_diagonal_size = parameters.z_bit_diagonal_size
+                         ;
+        checkCorrectness<BoolMatrix>(space.getZMatrix().slice(
+             0
+            ,x_bit_diagonal_size
+            ,0
+            ,number_of_operators
+        ));
+        checkCorrectness<IntMatrix>(space.getOMatrix().slice(
+             x_bit_diagonal_size+z_bit_diagonal_size
+            ,number_of_qubits
+            ,0
+            ,x_bit_diagonal_size+z_bit_diagonal_size
+        ));
+        checkCorrectness<IntMatrix>(space.getOMatrix().slice(
+             x_bit_diagonal_size
+            ,x_bit_diagonal_size+z_bit_diagonal_size
+            ,0
+            ,x_bit_diagonal_size
+        ));
+    }
+
+    void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
+        forEachStandardFormSolution(
+             number_of_qubits
+            ,number_of_operators
+            ,column_ordering_constraints
+            ,bind(doCheck
+                ,number_of_qubits
+                ,number_of_operators
+                ,_1
+                ,_2
+             )
+        );
+    }
+
+    DO_TEST_FOR(1,1)
+    DO_TEST_FOR(1,2)
+    DO_TEST_FOR(1,3)
+    DO_TEST_FOR(2,1)
+    DO_TEST_FOR(2,2)
+    DO_TEST_FOR(2,3)
+    DO_TEST_FOR(2,4)
+    DO_TEST_FOR(3,1)
+    DO_TEST_FOR(3,2)
+    DO_TEST_FOR(3,3)
+    DO_TEST_FOR(4,1)
+    DO_TEST_FOR(4,2)
+    DO_TEST_FOR(5,1)
+
+}
+//@+node:gcross.20110104191728.1583: *4* correct codes
 TEST_SUITE(correct_codes) {
 
     void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {

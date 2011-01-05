@@ -6,8 +6,12 @@
 //@+node:gcross.20101224191604.2749: ** << Includes >>
 #include <algorithm>
 #include <boost/assign.hpp>
+#include <boost/bind.hpp>
+#include <boost/bind/protect.hpp>
+#include <boost/lambda/lambda.hpp>
 #include <boost/foreach.hpp>
 #include <boost/range/algorithm/copy.hpp>
+#include <boost/range/algorithm/for_each.hpp>
 #include <boost/range/irange.hpp>
 #include <codequest.hpp>
 #include <functional>
@@ -95,6 +99,33 @@ void forEachStandardForm(
                     ,parameters
                  )
                 );
+        }
+}
+//@+node:gcross.20110104191728.1581: *3* forEachStandardFormSolution
+void forEachStandardFormSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint>& constraints
+    , function<void (const StandardFormParameters& parameters
+                    ,const OperatorSpace& space
+                    )
+              > f
+    ) {
+        BOOST_FOREACH(const StandardFormParameters& parameters, generateStandardFormsFor(number_of_qubits,number_of_operators)) {
+            for_each(
+                 generateSolutionsFor(
+                    createConstrainedSpace(
+                         number_of_qubits
+                        ,number_of_operators
+                        ,constraints
+                        ,parameters
+                    )
+                 )
+                ,bind(f
+                    ,parameters
+                    ,_1
+                 )
+            );
         }
 }
 //@+node:gcross.20101231214817.2053: *3* gatherCodes
