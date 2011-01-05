@@ -26,6 +26,17 @@ using namespace std;
 //@+others
 //@+node:gcross.20110102182304.1604: ** Values
 static set<Constraint> weight_row_ordering_constraints = list_of(WeightRowOrdering);
+//@+node:gcross.20110104191728.1586: ** function checkCorrectness
+void checkCorrectness(
+      const OperatorSpace& space
+    , const unsigned int start
+    , const unsigned int end
+) {
+    if(end <= start) return;
+    BOOST_FOREACH(const unsigned int row, irange(start,end-1)) {
+        ASSERT_TRUE(space.weights[row].val() >= space.weights[row+1].val());
+    }
+}
 //@+node:gcross.20101229110857.2564: ** Tests
 TEST_SUITE(Constraints) { TEST_SUITE(RowOrdering) { TEST_SUITE(Weight) {
 
@@ -49,6 +60,24 @@ void forEachRowWeightOrdering(
                 auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
                 postWeightRowOrderingConstraint(*space,start,end);
                 f(start,end,space);
+            }
+        }
+}
+//@+node:gcross.20110104191728.1585: *4* function forEachRowWeightOrderingSolution
+void forEachRowWeightOrderingSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (const OperatorSpace& space
+                    ,const unsigned int start
+                    ,const unsigned int end
+                    )
+              > f
+    ) {
+        BOOST_FOREACH(unsigned int start, irange(0u,number_of_operators)) {
+            BOOST_FOREACH(unsigned int end, irange(start+2,number_of_operators+1)) {
+                auto_ptr<OperatorSpace> initial_space(new OperatorSpace(number_of_qubits,number_of_operators));
+                postWeightRowOrderingConstraint(*initial_space,start,end);
+                for_each(generateSolutionsFor(initial_space),bind(f,_1,start,end));
             }
         }
 }
@@ -81,25 +110,15 @@ TEST_SUITE(number_of_solutions) {
 //@+node:gcross.20101229110857.2566: *4* correct solutions
 TEST_SUITE(correct_solutions) {
 
-    void doCheck(
-          const unsigned int number_of_qubits
-        , const unsigned int number_of_operators
-        , const unsigned int start
-        , const unsigned int end
-        , auto_ptr<OperatorSpace> initial_space
-    ) {
-        BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
-            BOOST_FOREACH(const unsigned int row, irange(start,end-1)) {
-                ASSERT_TRUE(space.weights[row].val() >= space.weights[row+1].val());
-            }
-        }
-    }
-
     void runTest(
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        forEachRowWeightOrdering(number_of_qubits,number_of_operators,bind(doCheck,number_of_qubits,number_of_operators,_1,_2,_3));
+        forEachRowWeightOrderingSolution(
+             number_of_qubits
+            ,number_of_operators
+            ,checkCorrectness
+        );
     }
 
     DO_TEST_FOR(1,2)
@@ -140,6 +159,64 @@ TEST_SUITE(correct_codes) {
 TEST_SUITE(for_each_standard_form) {
 
 //@+others
+//@+node:gcross.20110104191728.1588: *4* correct solutions
+TEST_SUITE(correct_solutions) {
+
+    void doCheck(
+         const unsigned int number_of_qubits
+        ,const unsigned int number_of_operators
+        ,const StandardFormParameters& parameters
+        ,const OperatorSpace& space
+    ) {
+        const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
+                         , z_bit_diagonal_size = parameters.z_bit_diagonal_size
+                         ;
+        checkCorrectness(
+              space
+            , 0
+            , x_bit_diagonal_size
+        );
+        checkCorrectness(
+              space
+            , x_bit_diagonal_size
+            , x_bit_diagonal_size+z_bit_diagonal_size
+        );
+        checkCorrectness(
+              space
+            , x_bit_diagonal_size+z_bit_diagonal_size
+            , number_of_operators
+        );
+    }
+
+    void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
+        forEachStandardFormSolution(
+             number_of_qubits
+            ,number_of_operators
+            ,weight_row_ordering_constraints
+            ,bind(doCheck
+                ,number_of_qubits
+                ,number_of_operators
+                ,_1
+                ,_2
+             )
+        );
+    }
+
+    DO_TEST_FOR(1,1)
+    DO_TEST_FOR(1,2)
+    DO_TEST_FOR(1,3)
+    DO_TEST_FOR(2,1)
+    DO_TEST_FOR(2,2)
+    DO_TEST_FOR(2,3)
+    DO_TEST_FOR(2,4)
+    DO_TEST_FOR(3,1)
+    DO_TEST_FOR(3,2)
+    DO_TEST_FOR(3,3)
+    DO_TEST_FOR(4,1)
+    DO_TEST_FOR(4,2)
+    DO_TEST_FOR(5,1)
+
+}
 //@+node:gcross.20110102182304.1609: *4* correct codes
 TEST_SUITE(correct_codes) {
 
