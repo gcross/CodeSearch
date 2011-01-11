@@ -8,15 +8,14 @@
 <vnodes>
 <v t="gcross.20101224191604.2593"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101224191604.1836"><vh>@path includes</vh>
-<v t="gcross.20101229110857.2596"><vh>@thin column_pauli_sets.hpp</vh></v>
 <v t="gcross.20101231214817.2217"><vh>@thin constraints.hpp</vh></v>
 <v t="gcross.20101231214817.2081"><vh>@path constraints</vh>
 <v t="gcross.20101229110857.1618"><vh>@thin standard_form.hpp</vh></v>
 <v t="gcross.20101231214817.2102"><vh>@thin ordering.hpp</vh></v>
 <v t="gcross.20101231214817.2106"><vh>@path ordering</vh>
 <v t="gcross.20101231214817.2086"><vh>@thin column.hpp</vh></v>
+<v t="gcross.20110110132650.1591"><vh>@thin row.hpp</vh></v>
 <v t="gcross.20101231214817.2107"><vh>@path row</vh>
-<v t="gcross.20101231214817.2135"><vh>@thin pauli_groups.hpp</vh></v>
 <v t="gcross.20101231214817.2112"><vh>@thin weight.hpp</vh></v>
 </v>
 </v>
@@ -29,14 +28,13 @@
 <v t="gcross.20101224191604.2595"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101224191604.1835"><vh>@path common</vh>
 <v t="gcross.20101224191604.2597"><vh>@thin CMakeLists.txt</vh></v>
-<v t="gcross.20101229110857.2607"><vh>@thin column_pauli_sets.cpp</vh></v>
 <v t="gcross.20101231214817.2240"><vh>@thin constraints.cpp</vh></v>
 <v t="gcross.20101229110857.1639"><vh>@path constraints</vh>
 <v t="gcross.20101229110857.2512"><vh>@thin ordering.cpp</vh></v>
 <v t="gcross.20101229110857.2525"><vh>@path ordering</vh>
 <v t="gcross.20101229110857.1676"><vh>@thin column.cpp</vh></v>
+<v t="gcross.20110110132650.1601"><vh>@thin row.cpp</vh></v>
 <v t="gcross.20101229110857.2527"><vh>@path row</vh>
-<v t="gcross.20101229110857.2585"><vh>@thin pauli_groups.cpp</vh></v>
 <v t="gcross.20101229110857.2534"><vh>@thin weight.cpp</vh></v>
 </v>
 </v>
