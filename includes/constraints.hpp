@@ -26,13 +26,31 @@ using namespace std;
 
 //@+others
 //@+node:gcross.20101231214817.2220: ** enum Constraint
-enum Constraint { StandardForm, ColumnOrdering, WeightRowOrdering, PauliGroupsRowOrdering };
-//@+node:gcross.20101231214817.2221: ** function createConstrainedSpace
+enum Constraint { StandardForm, ColumnOrdering, WeightRowOrderingConstraint };
+//@+node:gcross.20101231214817.2221: ** Functions
 auto_ptr<OperatorSpace> createConstrainedSpace(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
-    , set<Constraint> constraints
+    , const set<Constraint>& constraints
     , const StandardFormParameters& parameters
+);
+
+BoolVarArgs postColumnOrderingConstraintOnRegion(
+      OperatorSpace& space
+    , BoolMatrix variables
+    , BoolVarArgs initial_ties=BoolVarArgs()
+);
+
+BoolVarArgs postOrderingConstraint(
+      OperatorSpace& space
+    , IntMatrix variables
+    , BoolVarArgs initial_ties=BoolVarArgs()
+);
+
+BoolVarArgs postOrderingConstraint(
+      OperatorSpace& space
+    , BoolMatrix variables
+    , BoolVarArgs initial_ties=BoolVarArgs()
 );
 //@-others
 

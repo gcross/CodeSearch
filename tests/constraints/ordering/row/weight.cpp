@@ -45,42 +45,6 @@ TEST_SUITE(Constraints) { TEST_SUITE(RowOrdering) { TEST_SUITE(Weight) {
 TEST_SUITE(for_each_subregion) {
 
 //@+others
-//@+node:gcross.20101229110857.2563: *4* function forEachRowWeightOrdering
-void forEachRowWeightOrdering(
-      const unsigned int number_of_qubits
-    , const unsigned int number_of_operators
-    , function<void (const unsigned int start
-                    ,const unsigned int end
-                    ,auto_ptr<OperatorSpace> space
-                    )
-              > f
-    ) {
-        BOOST_FOREACH(unsigned int start, irange(0u,number_of_operators)) {
-            BOOST_FOREACH(unsigned int end, irange(start+2,number_of_operators+1)) {
-                auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
-                postWeightRowOrderingConstraint(*space,start,end);
-                f(start,end,space);
-            }
-        }
-}
-//@+node:gcross.20110104191728.1585: *4* function forEachRowWeightOrderingSolution
-void forEachRowWeightOrderingSolution(
-      const unsigned int number_of_qubits
-    , const unsigned int number_of_operators
-    , function<void (const OperatorSpace& space
-                    ,const unsigned int start
-                    ,const unsigned int end
-                    )
-              > f
-    ) {
-        BOOST_FOREACH(unsigned int start, irange(0u,number_of_operators)) {
-            BOOST_FOREACH(unsigned int end, irange(start+2,number_of_operators+1)) {
-                auto_ptr<OperatorSpace> initial_space(new OperatorSpace(number_of_qubits,number_of_operators));
-                postWeightRowOrderingConstraint(*initial_space,start,end);
-                for_each(generateSolutionsFor(initial_space),bind(f,_1,start,end));
-            }
-        }
-}
 //@+node:gcross.20101229110857.2565: *4* number of solutions
 TEST_SUITE(number_of_solutions) {
 
@@ -135,10 +99,10 @@ TEST_SUITE(correct_solutions) {
 TEST_SUITE(correct_codes) {
 
     void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
-        forEachRowWeightOrdering(
+        forEachRegion(
              number_of_qubits
             ,number_of_operators
-            ,bind(checkCodes,_3)
+            ,bind(checkCodes,_1)
         );
     }
 

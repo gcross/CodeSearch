@@ -18,6 +18,7 @@
 #include <memory>
 #include <ostream>
 #include <set>
+#include <sstream>
 #include <vector>
 
 #include "constraints.hpp"
@@ -48,34 +49,14 @@ struct Code {
         , logical_qubit_distances(logical_qubit_distances.begin(),logical_qubit_distances.end())
     { }
 
-    bool operator<(const Code& c) const {
-        if(number_of_stabilizers < c.number_of_stabilizers) return true;
-        if(number_of_stabilizers > c.number_of_stabilizers) return false;
-        if(number_of_gauge_qubits < c.number_of_gauge_qubits) return true;
-        if(number_of_gauge_qubits > c.number_of_gauge_qubits) return false;
-        if(logical_qubit_distances.size() < c.logical_qubit_distances.size()) return true;
-        if(logical_qubit_distances.size() > c.logical_qubit_distances.size()) return false;
-        BOOST_FOREACH(const unsigned int i, irange((size_t)0u,logical_qubit_distances.size())) {
-            if(logical_qubit_distances[i] < c.logical_qubit_distances[i]) return true;
-            if(logical_qubit_distances[i] > c.logical_qubit_distances[i]) return false;
-        }
-        return false;
-    }
-    bool operator==(const Code& c) const {
-        if(number_of_stabilizers != c.number_of_stabilizers) return false;
-        if(number_of_gauge_qubits != c.number_of_gauge_qubits) return false;
-        if(logical_qubit_distances.size() != c.logical_qubit_distances.size()) return false;
-        BOOST_FOREACH(const unsigned int i, irange((size_t)0u,logical_qubit_distances.size())) {
-            if(logical_qubit_distances[i] != c.logical_qubit_distances[i]) return false;
-        }
-        return true;
-    }
+    bool operator<(const Code& c) const;
+    bool operator==(const Code& c) const;
+    string toString() const;
 
 };
 
 inline ostream& operator<<(ostream& out, const Code& code) {
-    out << code.number_of_stabilizers << " " << code.number_of_gauge_qubits << " | ";
-    BOOST_FOREACH(int distance, code.logical_qubit_distances) { out << distance << " "; }
+    out << code.toString();
     return out;
 }
 
@@ -97,6 +78,8 @@ struct GatherCodesNotSupported : public std::exception {
 //@+node:gcross.20101224191604.2722: ** Functions
 void checkCodes(auto_ptr<OperatorSpace> initial_space);
 
+void checkCorrectBoolMatrixOrdering(const BoolMatrix& matrix);
+void checkCorrectIntMatrixOrdering(const IntMatrix& matrix);
 void checkCorrectOrdering(const matrix<unsigned int>& matrix);
 
 long long encodeOperatorSpace(const OperatorSpace& space);
@@ -104,6 +87,70 @@ long long encodeOperatorSpace(const OperatorSpace& space);
 const set<Code>& fetchAllCodes(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
+);
+
+void forEachZMatrix(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,BoolMatrix region
+                    )
+              > postZMatrixConstraint
+    , function<void (auto_ptr<OperatorSpace> initial_space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > checkAllZMatrixSolutions
+);
+
+void forEachZMatrixSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,BoolMatrix region
+                    )
+              > postZMatrixConstraint
+    , function<void (const BoolMatrix& region)> checkZMatrix
+);
+
+void forEachConstrainedRegion(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > postConstraint
+    , function<void (auto_ptr<OperatorSpace> initial_space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > checkAllSolutions
+);
+
+void forEachConstrainedRegionSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > postConstraint
+    , function<void (OperatorSpace& space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > checkSolution
 );
 
 void forEachStandardForm(
@@ -142,6 +189,32 @@ vector<unsigned long long> gatherSolutions(auto_ptr<OperatorSpace> space);
     TEST_CASE(_##number_of_operators##x##number_of_qubits) { \
         runTest(number_of_operators,number_of_qubits); \
     }
+//@+node:gcross.20110112003748.1546: *3* DO_X_TESTS
+#define DO_USUAL_TESTS \
+    DO_TEST_FOR(1,1) \
+    DO_TEST_FOR(1,2) \
+    DO_TEST_FOR(1,3) \
+    DO_TEST_FOR(2,1) \
+    DO_TEST_FOR(2,2) \
+    DO_TEST_FOR(2,3) \
+    DO_TEST_FOR(2,4) \
+    DO_TEST_FOR(3,1) \
+    DO_TEST_FOR(3,2) \
+    DO_TEST_FOR(3,3) \
+    DO_TEST_FOR(4,1) \
+    DO_TEST_FOR(4,2) \
+    DO_TEST_FOR(5,1)
+
+#define DO_STANDARD_FORM_TESTS \
+    DO_TEST_FOR(1,1) \
+    DO_TEST_FOR(2,1) \
+    DO_TEST_FOR(2,2) \
+    DO_TEST_FOR(3,1) \
+    DO_TEST_FOR(3,2) \
+    DO_TEST_FOR(3,3) \
+    DO_TEST_FOR(4,1) \
+    DO_TEST_FOR(4,2) \
+    DO_TEST_FOR(5,1)
 //@+node:gcross.20101224191604.3438: *3* DO_TEST_FOR_1
 #define DO_TEST_FOR_1(number_of_operators,number_of_qubits,a) \
     TEST_CASE(_##number_of_operators##x##number_of_qubits) { \

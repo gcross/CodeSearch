@@ -2,10 +2,6 @@
 #@+node:gcross.20101224191604.2597: * @thin CMakeLists.txt
 add_library(CodeSearch
     constraints.cpp
-    constraints/ordering.cpp
-    constraints/ordering/column
-    constraints/ordering/row/pauli_groups
-    constraints/ordering/row/weight
     constraints/standard_form
     operator_space
     solution_iterator
