@@ -45,6 +45,16 @@ void checkCodes(auto_ptr<OperatorSpace> initial_space) {
     ASSERT_EQ(operator_space_codes.size(),constrained_space_codes.size());
     ASSERT_TRUE(equal(operator_space_codes,constrained_space_codes));
 }
+//@+node:gcross.20110110211728.1589: *3* checkCorrectOrdering
+void checkCorrectOrdering(const matrix<unsigned int>& ordering_matrix) {
+    if(ordering_matrix.size1() <= 1 || ordering_matrix.size2() <= 0) return;
+    BOOST_FOREACH(const size_t col, irange((size_t)0u,ordering_matrix.size1()-1u)) {
+        BOOST_FOREACH(const size_t row, irange((size_t)0u,ordering_matrix.size2())) {
+            ASSERT_TRUE(ordering_matrix(col,row) >= ordering_matrix(col+1,row));
+            if(ordering_matrix(col,row) > ordering_matrix(col+1,row)) break;
+        }
+    }
+}
 //@+node:gcross.20101224191604.4005: *3* encodeOperatorSpace
 long long encodeOperatorSpace(const OperatorSpace& space) {
     unsigned long long solution = 0u;

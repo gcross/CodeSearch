@@ -8,6 +8,7 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 
@@ -22,18 +23,20 @@ using namespace Gecode;
 using namespace boost;
 using namespace boost::assign;
 using namespace std;
+
+using boost::numeric::ublas::matrix;
 //@-<< Includes >>
 
 //@+others
 //@+node:gcross.20110102182304.1596: ** Values
 static set<Constraint> column_ordering_constraints = list_of(ColumnOrdering);
 //@+node:gcross.20110104191728.1579: ** function checkCorrectness
-template<typename Matrix> void checkCorrectness(Matrix matrix) {
-    if(matrix.width() <= 1 || matrix.height() <= 0) return;
-    BOOST_FOREACH(const int col, irange(0,matrix.width()-1)) {
-        BOOST_FOREACH(const int row, irange(0,matrix.height())) {
-            ASSERT_TRUE(matrix(col,row).val() >= matrix(col+1,row).val());
-            if(matrix(col,row).val() > matrix(col+1,row).val()) break;
+template<typename Matrix> void checkCorrectness(Matrix operator_matrix) {
+    if(operator_matrix.width() <= 1 || operator_matrix.height() <= 0) return;
+    matrix<unsigned int> ordering_matrix(operator_matrix.width(),operator_matrix.height());
+    BOOST_FOREACH(const int col, irange(0,operator_matrix.width()-1)) {
+        BOOST_FOREACH(const int row, irange(0,operator_matrix.height())) {
+            ordering_matrix(col,row) = operator_matrix(col,row).val();
         }
     }
 }

@@ -9,6 +9,7 @@
 //@+node:gcross.20101224191604.2720: ** << Includes >>
 #include <boost/function.hpp>
 #include <boost/lambda/bind.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/equal.hpp>
 #include <boost/range/irange.hpp>
@@ -30,6 +31,8 @@ using namespace boost;
 using namespace boost::adaptors;
 using namespace boost::algorithm;
 using namespace std;
+
+using boost::numeric::ublas::matrix;
 //@-<< Includes >>
 
 //@+others
@@ -93,6 +96,8 @@ struct GatherCodesNotSupported : public std::exception {
 };
 //@+node:gcross.20101224191604.2722: ** Functions
 void checkCodes(auto_ptr<OperatorSpace> initial_space);
+
+void checkCorrectOrdering(const matrix<unsigned int>& matrix);
 
 long long encodeOperatorSpace(const OperatorSpace& space);
 
