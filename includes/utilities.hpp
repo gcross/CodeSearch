@@ -27,6 +27,8 @@ using namespace std;
 
 //@+others
 //@+node:gcross.20101224191604.2762: ** Functions
+IntMatrix channelMatrix(Space& space,const BoolMatrix& matrix);
+
 unsigned long long countSolutions(auto_ptr<OperatorSpace> space, const Search::Options& options = Search::Options::def);
 
 template<typename T> auto_ptr<T> wrapAutoPtr(T* ptr) { return auto_ptr<T>(ptr); }

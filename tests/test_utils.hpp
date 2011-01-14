@@ -82,9 +82,14 @@ void checkCorrectBoolMatrixOrdering(const BoolMatrix& matrix);
 void checkCorrectIntMatrixOrdering(const IntMatrix& matrix);
 void checkCorrectOrdering(const matrix<unsigned int>& matrix);
 
+matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> > matrices);
 matrix<unsigned int> concatenateBoolMatricesVertically(vector<BoolMatrix> matrices);
+matrix<unsigned int> concatenateIntMatricesVertically(vector<IntMatrix> matrices);
 
 long long encodeOperatorSpace(const OperatorSpace& space);
+
+matrix<unsigned int> extractFromBoolMatrix(const BoolMatrix& m);
+matrix<unsigned int> extractFromIntMatrix(const IntMatrix& m);
 
 const set<Code>& fetchAllCodes(
       const unsigned int number_of_qubits
