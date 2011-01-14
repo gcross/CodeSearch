@@ -124,41 +124,18 @@ TEST_SUITE(correct_solutions) {
             const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
                              , z_bit_diagonal_size = parameters.z_bit_diagonal_size
                              ;
-            const BoolMatrix X_matrix = space.getXMatrix()
-                           , Z_matrix = space.getZMatrix()
-                           ;
-            {
-                matrix<unsigned int> correct_ordering(
-                     number_of_qubits-x_bit_diagonal_size
-                    ,number_of_operators+x_bit_diagonal_size
-                );
-                BOOST_FOREACH(const unsigned int col, irange(0u,number_of_qubits-x_bit_diagonal_size)) {
-                    BOOST_FOREACH(const unsigned int row, irange(0u,number_of_operators)) {
-                        correct_ordering(col,row) = Z_matrix(col+x_bit_diagonal_size,row).val();
-                    }
-                }
-                BOOST_FOREACH(const unsigned int col, irange(0u,number_of_qubits-x_bit_diagonal_size)) {
-                    BOOST_FOREACH(const unsigned int row, irange(0u,x_bit_diagonal_size)) {
-                        correct_ordering(col,number_of_operators+row) = X_matrix(col+x_bit_diagonal_size,row).val();
-                    }
-                }
-                checkCorrectOrdering(correct_ordering);
-            }
-            {
-                matrix<unsigned int> correct_ordering(
-                     x_bit_diagonal_size-z_bit_diagonal_size
-                    ,2*z_bit_diagonal_size
-                );
-                BOOST_FOREACH(const unsigned int col, irange(0u,x_bit_diagonal_size-z_bit_diagonal_size)) {
-                    BOOST_FOREACH(const unsigned int row, irange(0u,z_bit_diagonal_size)) {
-                        correct_ordering(col,row) = Z_matrix(col+x_bit_diagonal_size,row).val();
-                    }
-                    BOOST_FOREACH(const unsigned int row, irange(0u,number_of_operators-x_bit_diagonal_size)) {
-                        correct_ordering(col,z_bit_diagonal_size+row) = Z_matrix(col+x_bit_diagonal_size,row+x_bit_diagonal_size).val();
-                    }
-                }
-                checkCorrectOrdering(correct_ordering);
-            }
+            checkCorrectOrdering(
+                concatenateBoolMatricesVertically(
+                    list_of(space.getZMatrix().slice(x_bit_diagonal_size,number_of_qubits,0u,number_of_operators))
+                           (space.getXMatrix().slice(x_bit_diagonal_size,number_of_qubits,0u,x_bit_diagonal_size))
+                )
+            );
+            checkCorrectOrdering(
+                concatenateBoolMatricesVertically(
+                    list_of(space.getZMatrix().slice(x_bit_diagonal_size,z_bit_diagonal_size,0u,z_bit_diagonal_size))
+                           (space.getZMatrix().slice(x_bit_diagonal_size,z_bit_diagonal_size,x_bit_diagonal_size,number_of_operators))
+                )
+            );
         } BOOST_LOCAL_FUNCTION_END(checkSolution)
         forEachStandardFormSolution(
              number_of_qubits
