@@ -111,7 +111,29 @@ void checkCorrectOrdering(const matrix<unsigned int>& ordering_matrix) {
         }
     }
 }
-//@+node:gcross.20110114113432.1705: *3* concatenateBoolMatricesVertically
+//@+node:gcross.20110114113432.1705: *3* concatenateXMatricesVertically
+matrix<unsigned int> concatenateIntMatricesVertically(vector<IntMatrix> matrices) {
+    if(matrices.size() == 0) return matrix<unsigned int>(0,0);
+    const unsigned int width = (unsigned int)matrices[0].width();
+    unsigned int height = 0;
+    BOOST_FOREACH(const IntMatrix& matrix, matrices) {
+        assert((unsigned int)matrix.width() == width);
+        height += matrix.height();
+    }
+    if(width == 0 || height == 0) return matrix<unsigned int>(0,0);
+    matrix<unsigned int> concatenated_matrix(width,height);
+    unsigned int current_row = 0;
+    BOOST_FOREACH(const IntMatrix& matrix, matrices) {
+        BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)matrix.height())) {
+            BOOST_FOREACH(const unsigned int col, irange(0u,width)) {
+                concatenated_matrix(col,current_row) = matrix(col,row).val();
+            }
+            ++current_row;
+        }
+    }
+    return concatenated_matrix;
+}
+
 matrix<unsigned int> concatenateBoolMatricesVertically(vector<BoolMatrix> matrices) {
     if(matrices.size() == 0) return matrix<unsigned int>(0,0);
     const unsigned int width = (unsigned int)matrices[0].width();

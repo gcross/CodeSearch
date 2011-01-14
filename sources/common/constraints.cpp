@@ -184,13 +184,7 @@ BoolVarArgs postOrderingConstraint(OperatorSpace& space, IntMatrix variables, Bo
 }
 
 BoolVarArgs postOrderingConstraint(OperatorSpace& space, BoolMatrix variables, BoolVarArgs initial_ties) {
-    if(variables.width() <= 1 || variables.height() <= 0) return initial_ties;
-
-    BoolVarArgs vars = variables.get_array();
-    IntVarArgs vars_as_ints(space,vars.size(),0,1);
-    BOOST_FOREACH(const unsigned int i, irange(0u,(unsigned int)vars.size())) { channel(space,vars[i],vars_as_ints[i]); }
-    IntMatrix variables_as_ints(vars_as_ints,variables.width(),variables.height());
-    return postOrderingConstraint(space,variables_as_ints,initial_ties);
+    return postOrderingConstraint(space,channelMatrix(space,variables),initial_ties);
 }
 //@+node:gcross.20110112003748.1549: *3* postRowOrderingConstraints
 StandardFormTies postRowOrderingConstraints(

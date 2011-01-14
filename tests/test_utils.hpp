@@ -83,6 +83,7 @@ void checkCorrectIntMatrixOrdering(const IntMatrix& matrix);
 void checkCorrectOrdering(const matrix<unsigned int>& matrix);
 
 matrix<unsigned int> concatenateBoolMatricesVertically(vector<BoolMatrix> matrices);
+matrix<unsigned int> concatenateIntMatricesVertically(vector<IntMatrix> matrices);
 
 long long encodeOperatorSpace(const OperatorSpace& space);
 
