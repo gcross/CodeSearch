@@ -82,26 +82,6 @@ void checkCodes(auto_ptr<OperatorSpace> initial_space) {
     }
 }
 //@+node:gcross.20110110211728.1589: *3* checkCorrectXOrdering
-void checkCorrectBoolMatrixOrdering(const BoolMatrix& ordering_matrix) {
-    if(ordering_matrix.width() <= 1 || ordering_matrix.height() <= 0) return;
-    BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)ordering_matrix.width()-1u)) {
-        BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)ordering_matrix.height())) {
-            ASSERT_TRUE(ordering_matrix(col,row).val() >= ordering_matrix(col+1,row).val());
-            if(ordering_matrix(col,row).val() > ordering_matrix(col+1,row).val()) break;
-        }
-    }
-}
-
-void checkCorrectIntMatrixOrdering(const IntMatrix& ordering_matrix) {
-    if(ordering_matrix.width() <= 1 || ordering_matrix.height() <= 0) return;
-    BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)ordering_matrix.width()-1u)) {
-        BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)ordering_matrix.height())) {
-            ASSERT_TRUE(ordering_matrix(col,row).val() >= ordering_matrix(col+1,row).val());
-            if(ordering_matrix(col,row).val() > ordering_matrix(col+1,row).val()) break;
-        }
-    }
-}
-
 void checkCorrectOrdering(const matrix<unsigned int>& ordering_matrix) {
     if(ordering_matrix.size1() <= 1 || ordering_matrix.size2() <= 0) return;
     BOOST_FOREACH(const size_t col, irange((size_t)0u,ordering_matrix.size1()-1u)) {
@@ -111,22 +91,30 @@ void checkCorrectOrdering(const matrix<unsigned int>& ordering_matrix) {
         }
     }
 }
+
+void checkCorrectBoolMatrixOrdering(const BoolMatrix& ordering_matrix) {
+    return checkCorrectOrdering(extractFromBoolMatrix(ordering_matrix));
+}
+
+void checkCorrectIntMatrixOrdering(const IntMatrix& ordering_matrix) {
+    return checkCorrectOrdering(extractFromIntMatrix(ordering_matrix));
+}
 //@+node:gcross.20110114113432.1705: *3* concatenateXMatricesVertically
-matrix<unsigned int> concatenateIntMatricesVertically(vector<IntMatrix> matrices) {
+matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> > matrices) {
     if(matrices.size() == 0) return matrix<unsigned int>(0,0);
-    const unsigned int width = (unsigned int)matrices[0].width();
-    unsigned int height = 0;
-    BOOST_FOREACH(const IntMatrix& matrix, matrices) {
-        assert((unsigned int)matrix.width() == width);
-        height += matrix.height();
+    const size_t width = matrices[0].size1();
+    size_t height = 0u;
+    BOOST_FOREACH(const matrix<unsigned int>& m, matrices) {
+        assert(m.size1() == width);
+        height += m.size2();
     }
     if(width == 0 || height == 0) return matrix<unsigned int>(0,0);
     matrix<unsigned int> concatenated_matrix(width,height);
     unsigned int current_row = 0;
-    BOOST_FOREACH(const IntMatrix& matrix, matrices) {
-        BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)matrix.height())) {
-            BOOST_FOREACH(const unsigned int col, irange(0u,width)) {
-                concatenated_matrix(col,current_row) = matrix(col,row).val();
+    BOOST_FOREACH(const matrix<unsigned int>& m, matrices) {
+        BOOST_FOREACH(const size_t row, irange((size_t)0u,m.size2())) {
+            BOOST_FOREACH(const size_t col, irange((size_t)0u,width)) {
+                concatenated_matrix(col,current_row) = m(col,row);
             }
             ++current_row;
         }
@@ -134,26 +122,16 @@ matrix<unsigned int> concatenateIntMatricesVertically(vector<IntMatrix> matrices
     return concatenated_matrix;
 }
 
+matrix<unsigned int> concatenateIntMatricesVertically(vector<IntMatrix> matrices) {
+    vector<matrix<unsigned int> > matrices_;
+    copy(matrices | transformed(extractFromIntMatrix),back_inserter(matrices_));
+    return concatenateMatricesVertically(matrices_);
+}
+
 matrix<unsigned int> concatenateBoolMatricesVertically(vector<BoolMatrix> matrices) {
-    if(matrices.size() == 0) return matrix<unsigned int>(0,0);
-    const unsigned int width = (unsigned int)matrices[0].width();
-    unsigned int height = 0;
-    BOOST_FOREACH(const BoolMatrix& matrix, matrices) {
-        assert((unsigned int)matrix.width() == width);
-        height += matrix.height();
-    }
-    if(width == 0 || height == 0) return matrix<unsigned int>(0,0);
-    matrix<unsigned int> concatenated_matrix(width,height);
-    unsigned int current_row = 0;
-    BOOST_FOREACH(const BoolMatrix& matrix, matrices) {
-        BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)matrix.height())) {
-            BOOST_FOREACH(const unsigned int col, irange(0u,width)) {
-                concatenated_matrix(col,current_row) = matrix(col,row).val();
-            }
-            ++current_row;
-        }
-    }
-    return concatenated_matrix;
+    vector<matrix<unsigned int> > matrices_;
+    copy(matrices | transformed(extractFromBoolMatrix),back_inserter(matrices_));
+    return concatenateMatricesVertically(matrices_);
 }
 //@+node:gcross.20101224191604.4005: *3* encodeOperatorSpace
 long long encodeOperatorSpace(const OperatorSpace& space) {
@@ -163,6 +141,26 @@ long long encodeOperatorSpace(const OperatorSpace& space) {
         solution += space.O[i].val();
     }
     return solution;
+}
+//@+node:gcross.20110114154616.2070: *3* extractFromXMatrix
+matrix<unsigned int> extractFromBoolMatrix(const BoolMatrix& m) {
+    matrix<unsigned int> extracted_matrix(m.width(),m.height());
+    BOOST_FOREACH(const size_t col, irange((size_t)0u,extracted_matrix.size1())) {
+        BOOST_FOREACH(const size_t row, irange((size_t)0u,extracted_matrix.size2())) {
+            extracted_matrix(col,row) = m(col,row).val();
+        }
+    }
+    return extracted_matrix;
+}
+
+matrix<unsigned int> extractFromIntMatrix(const IntMatrix& m) {
+    matrix<unsigned int> extracted_matrix(m.width(),m.height());
+    BOOST_FOREACH(const size_t col, irange((size_t)0u,extracted_matrix.size1())) {
+        BOOST_FOREACH(const size_t row, irange((size_t)0u,extracted_matrix.size2())) {
+            extracted_matrix(col,row) = m(col,row).val();
+        }
+    }
+    return extracted_matrix;
 }
 //@+node:gcross.20101231214817.2057: *3* fetchAllCodes
 const set<Code>& fetchAllCodes(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
