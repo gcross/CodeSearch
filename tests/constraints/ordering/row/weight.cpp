@@ -78,7 +78,7 @@ TEST_SUITE(correct_solutions) {
         ) {
             vector<unsigned int> weights;
             BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)matrix.height())) {
-                unsigned int weight;
+                unsigned int weight = 0;
                 BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)matrix.width())) {
                     if(matrix(col,row).val() > 0) ++weight;
                 }
@@ -86,8 +86,7 @@ TEST_SUITE(correct_solutions) {
             }
             if(!is_sorted(weights | reversed)) {
                 ostringstream message;
-                message << "Bad weight order:";
-                BOOST_FOREACH(const unsigned int weight, weights) { message << " " << weight; }
+                message << "Bad weight order:";  for_each(weights,lambda::var(message) << " " << lambda::_1);
                 FATALLY_FAIL(message.str());
             }
         } BOOST_LOCAL_FUNCTION_END(checkOMatrix)
