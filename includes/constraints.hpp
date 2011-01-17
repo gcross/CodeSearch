@@ -26,7 +26,7 @@ using namespace std;
 
 //@+others
 //@+node:gcross.20101231214817.2220: ** enum Constraint
-enum Constraint { StandardForm, ColumnOrdering, WeightRowOrderingConstraint };
+enum Constraint { StandardForm, ColumnOrdering, WeightRowOrdering };
 //@+node:gcross.20101231214817.2221: ** Functions
 auto_ptr<OperatorSpace> createConstrainedSpace(
       const unsigned int number_of_qubits
@@ -50,6 +50,13 @@ BoolVarArgs postOrderingConstraint(
 BoolVarArgs postOrderingConstraint(
       OperatorSpace& space
     , BoolMatrix variables
+    , BoolVarArgs initial_ties=BoolVarArgs()
+);
+
+BoolVarArgs postWeightRowOrderingConstraintOnRegion(
+      OperatorSpace& space
+    , const unsigned int maximum_value
+    , IntMatrix region
     , BoolVarArgs initial_ties=BoolVarArgs()
 );
 //@-others

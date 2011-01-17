@@ -36,19 +36,14 @@ StandardFormTies postColumnOrderingConstraints(
 StandardFormTies postRowOrderingConstraints(
       function<BoolVarArgs
         ( OperatorSpace& space
-        , BoolMatrix region
+        , unsigned int upper_bound
+        , IntMatrix region
         , BoolVarArgs initial_ties
         )
       > postConstraintForRegion
     , OperatorSpace& space
     , const StandardFormParameters& parameters
     , StandardFormTies initial_ties=no_standard_form_ties
-);
-
-BoolVarArgs postWeightRowOrderingConstraintOnRegion(
-      OperatorSpace& space
-    , BoolMatrix region
-    , BoolVarArgs initial_ties=BoolVarArgs()
 );
 //@-<< Function declaration >>
 
@@ -58,11 +53,12 @@ const static map<
      Constraint
     ,function<BoolVarArgs
         ( OperatorSpace& space
-        , BoolMatrix region
+        , unsigned int upper_bound
+        , IntMatrix region
         , BoolVarArgs initial_ties
         )
       >
-    > constraint_posters = map_list_of(WeightRowOrderingConstraint,postWeightRowOrderingConstraintOnRegion);
+    > constraint_posters = map_list_of(WeightRowOrdering,postWeightRowOrderingConstraintOnRegion);
 //@+node:gcross.20110112003748.1547: ** Functions
 //@+node:gcross.20101231214817.2245: *3* createConstraintedSpace
 auto_ptr<OperatorSpace> createConstrainedSpace(
@@ -190,7 +186,8 @@ BoolVarArgs postOrderingConstraint(OperatorSpace& space, BoolMatrix variables, B
 StandardFormTies postRowOrderingConstraints(
       function<BoolVarArgs
         ( OperatorSpace& space
-        , BoolMatrix region
+        , unsigned int upper_bound
+        , IntMatrix region
         , BoolVarArgs initial_ties
         )
       > postConstraintForRegion
@@ -204,55 +201,49 @@ StandardFormTies postRowOrderingConstraints(
         , x_bit_diagonal_size = parameters.x_bit_diagonal_size
         , z_bit_diagonal_size = parameters.z_bit_diagonal_size
         ;
-    BoolMatrix X_matrix = space.getXMatrix()
-             , Z_matrix = space.getZMatrix()
-             ;
+    BoolMatrix Z_matrix = space.getZMatrix();
+    IntMatrix  O_matrix = space.getOMatrix();
     return make_pair(
           postConstraintForRegion(
               space
-            , Z_matrix.slice(
+            , 2
+            , channelMatrix(space,Z_matrix.slice(
                   z_bit_diagonal_size
                 , number_of_qubits
                 , x_bit_diagonal_size
                 , number_of_operators
-              )
+              ))
             , postConstraintForRegion(
                   space
-                , Z_matrix.slice(
+                , 2
+                , channelMatrix(space,Z_matrix.slice(
                       z_bit_diagonal_size
                     , x_bit_diagonal_size
                     , 0
                     , z_bit_diagonal_size
-                  )
+                  ))
                 , postConstraintForRegion(
                       space
-                    , Z_matrix.slice(
+                    , 4
+                    , O_matrix.slice(
                           x_bit_diagonal_size
                         , number_of_qubits
                         , 0
                         , x_bit_diagonal_size
                       )
-                    , postConstraintForRegion(
-                          space
-                        , X_matrix.slice(
-                              x_bit_diagonal_size
-                            , number_of_qubits
-                            , 0
-                            , x_bit_diagonal_size
-                          )
-                        , initial_ties.first
-                      )
+                    , initial_ties.first
                   )
               )
           )
         , postConstraintForRegion(
               space
-            , Z_matrix.slice(
+            , 2
+            , channelMatrix(space,Z_matrix.slice(
                   x_bit_diagonal_size
                 , number_of_qubits
                 , z_bit_diagonal_size
                 , x_bit_diagonal_size
-              )
+              ))
             , initial_ties.second
           )
     );
@@ -260,13 +251,22 @@ StandardFormTies postRowOrderingConstraints(
 //@+node:gcross.20110112003748.1554: *3* postWeightRowOrderingConstraintOnRegion
 BoolVarArgs postWeightRowOrderingConstraintOnRegion(
       OperatorSpace& space
-    , BoolMatrix region
-    , BoolVarArgs initial_ties
+    , const unsigned int maximum_value
+    , const IntMatrix region
+    , const BoolVarArgs initial_ties
 ) {
-    IntVarArgs weights(space,region.height(),0,region.width());
-    BOOST_FOREACH(const unsigned int i, irange(0u,(unsigned int)region.height())) {
-        linear(space,region.row(i),IRT_EQ,weights[i]);
+    IntVarArgs region_vars = region.get_array();
+    BoolVarArgs non_trivial(space,region_vars.size(),0,1);
+    BOOST_FOREACH(const unsigned int i, irange(0u,(unsigned int)region_vars.size())) {
+        rel(space,region_vars[i],IRT_GR,0,non_trivial[i]);
     }
+
+    IntVarArgs weights(space,region.height(),0,region.width());
+    BoolMatrix non_trivial_matrix(non_trivial,region.width(),region.height());
+    BOOST_FOREACH(const unsigned int i, irange(0u,(unsigned int)region.height())) {
+        linear(space,non_trivial_matrix.row(i),IRT_EQ,weights[i]);
+    }
+
     return postOrderingConstraint(
          space
         ,IntMatrix(

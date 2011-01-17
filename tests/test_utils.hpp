@@ -82,6 +82,16 @@ void checkCorrectBoolMatrixOrdering(const BoolMatrix& matrix);
 void checkCorrectIntMatrixOrdering(const IntMatrix& matrix);
 void checkCorrectOrdering(const matrix<unsigned int>& matrix);
 
+void checkRowOrderings(
+      function<matrix<unsigned int>
+        ( const unsigned int maximum_value
+        , const matrix<unsigned int>& region
+        )
+      > getOrdering
+    , const StandardFormParameters& parameters
+    , const OperatorSpace& space
+);
+
 matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> > matrices);
 matrix<unsigned int> concatenateBoolMatricesVertically(vector<BoolMatrix> matrices);
 matrix<unsigned int> concatenateIntMatricesVertically(vector<IntMatrix> matrices);
@@ -94,6 +104,32 @@ matrix<unsigned int> extractFromIntMatrix(const IntMatrix& m);
 const set<Code>& fetchAllCodes(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
+);
+
+void forEachOMatrix(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,IntMatrix region
+                    )
+              > postOMatrixConstraint
+    , function<void (auto_ptr<OperatorSpace> initial_space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > checkAllSolutions
+);
+
+void forEachOMatrixSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,IntMatrix region
+                    )
+              > postOMatrixConstraint
+    , function<void (const IntMatrix& region)> checkOMatrix
 );
 
 void forEachZMatrix(

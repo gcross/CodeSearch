@@ -99,6 +99,50 @@ void checkCorrectBoolMatrixOrdering(const BoolMatrix& ordering_matrix) {
 void checkCorrectIntMatrixOrdering(const IntMatrix& ordering_matrix) {
     return checkCorrectOrdering(extractFromIntMatrix(ordering_matrix));
 }
+//@+node:gcross.20110114154616.2071: *3* checkRowOrderings
+void checkRowOrderings(
+      function<matrix<unsigned int>
+        ( const unsigned int maximum_value
+        , const matrix<unsigned int>& region
+        )
+      > getOrdering
+    , const StandardFormParameters& parameters
+    , const OperatorSpace& space
+) {
+    const unsigned int number_of_qubits = space.number_of_qubits
+                     , number_of_operators = space.number_of_operators
+                     , x_bit_diagonal_size = parameters.x_bit_diagonal_size
+                     , z_bit_diagonal_size = parameters.z_bit_diagonal_size
+                     ;
+    const IntMatrix O_matrix = space.getOMatrix();
+    const BoolMatrix Z_matrix = space.getZMatrix();
+    checkCorrectOrdering(concatenateMatricesVertically(
+        list_of(getOrdering(4,extractFromIntMatrix(O_matrix.slice(
+                  x_bit_diagonal_size
+                , number_of_qubits
+                , 0
+                , x_bit_diagonal_size
+               ))))
+               (getOrdering(2,extractFromBoolMatrix(Z_matrix.slice(
+                  z_bit_diagonal_size
+                , x_bit_diagonal_size
+                , 0
+                , z_bit_diagonal_size
+               ))))
+               (getOrdering(2,extractFromBoolMatrix(Z_matrix.slice(
+                  z_bit_diagonal_size
+                , number_of_qubits
+                , x_bit_diagonal_size
+                , number_of_operators
+               ))))
+    ));
+    checkCorrectOrdering(getOrdering(2,extractFromBoolMatrix(Z_matrix.slice(
+                  x_bit_diagonal_size
+                , number_of_qubits
+                , z_bit_diagonal_size
+                , x_bit_diagonal_size
+    ))));
+}
 //@+node:gcross.20110114113432.1705: *3* concatenateXMatricesVertically
 matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> > matrices) {
     if(matrices.size() == 0) return matrix<unsigned int>(0,0);
@@ -187,6 +231,72 @@ const set<Code>& fetchAllCodes(const unsigned int number_of_qubits, const unsign
     }
 
     return operator_space_code_position->second;
+}
+//@+node:gcross.20110114154616.2066: *3* forEachOMatrix
+void forEachOMatrix(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,IntMatrix region
+                    )
+              > postOMatrixConstraint
+    , function<void (auto_ptr<OperatorSpace> initial_space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > checkAllSolutions
+) {
+    BOOST_LOCAL_FUNCTION(
+        (void) (postConstraint)(
+            (OperatorSpace&)(initial_space)
+            (const unsigned int)(start_column)
+            (const unsigned int)(end_column)
+            (const unsigned int)(start_row)
+            (const unsigned int)(end_row)
+            (const bind)((postOMatrixConstraint))
+        )
+    ) {
+        postOMatrixConstraint(initial_space,initial_space.getOMatrix().slice(start_column,end_column,start_row,end_row));
+    } BOOST_LOCAL_FUNCTION_END(postConstraint)
+    forEachConstrainedRegion(
+         number_of_qubits
+        ,number_of_operators
+        ,postConstraint
+        ,checkAllSolutions
+    );
+}
+//@+node:gcross.20110114154616.2068: *3* forEachOMatrixSolution
+void forEachOMatrixSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,IntMatrix region
+                    )
+              > postOMatrixConstraint
+    , function<void (const IntMatrix& region)> checkOMatrix
+) {
+    BOOST_LOCAL_FUNCTION(
+        (void) (checkAllSolutions)(
+            (auto_ptr<OperatorSpace>)(initial_space)
+            (const unsigned int)(start_column)
+            (const unsigned int)(end_column)
+            (const unsigned int)(start_row)
+            (const unsigned int)(end_row)
+            (const bind)((checkOMatrix))
+        )
+    ) {
+        BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
+            checkOMatrix(space.getOMatrix().slice(start_column,end_column,start_row,end_row));
+        }
+    } BOOST_LOCAL_FUNCTION_END(checkAllSolutions)
+    forEachOMatrix(
+         number_of_qubits
+        ,number_of_operators
+        ,postOMatrixConstraint
+        ,checkAllSolutions
+    );
 }
 //@+node:gcross.20110111130332.2153: *3* forEachZMatrix
 void forEachZMatrix(
