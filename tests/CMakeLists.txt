@@ -20,6 +20,7 @@ set(test-SOURCES
     constraints/ordering/column
     constraints/standard_form
     operator_space
+    constraints/ordering/row/weight
     test_utils
     test_utils_tests
 )
