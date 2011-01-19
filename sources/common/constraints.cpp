@@ -229,7 +229,7 @@ StandardFormTies postRowOrderingConstraints(
                           x_bit_diagonal_size
                         , number_of_qubits
                         , 0
-                        , x_bit_diagonal_size
+                        , z_bit_diagonal_size
                       )
                     , initial_ties.first
                   )

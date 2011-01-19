@@ -121,7 +121,7 @@ void checkRowOrderings(
                   x_bit_diagonal_size
                 , number_of_qubits
                 , 0
-                , x_bit_diagonal_size
+                , z_bit_diagonal_size
                ))))
                (getOrdering(2,extractFromBoolMatrix(Z_matrix.slice(
                   z_bit_diagonal_size
