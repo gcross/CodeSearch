@@ -47,11 +47,12 @@ class StandardFormIterator
     //@+others
     //@+node:gcross.20101231214817.2273: *4* (fields)
     protected:
+        const unsigned int maximum_diagonal_size;
         optional<StandardFormParameters> parameters;
     //@+node:gcross.20101231214817.2274: *4* (constructors)
     public:
         StandardFormIterator();
-        StandardFormIterator(const unsigned int number_of_operators);
+        StandardFormIterator(const unsigned int number_of_qubits, const unsigned int number_of_operators);
     //@+node:gcross.20101231214817.2275: *4* (methods)
     public:
         const StandardFormParameters& dereference() const;
@@ -76,7 +77,7 @@ struct BadStandardFormParameters : public std::exception {
     virtual ~BadStandardFormParameters() throw() { }
 };
 //@+node:gcross.20101229110857.1637: ** Functions
-iterator_range<StandardFormIterator> generateStandardFormsFor(const unsigned int number_of_operators);
+iterator_range<StandardFormIterator> generateStandardFormsFor(const unsigned int number_of_operators, const unsigned int number_of_qubits);
 
 void postStandardFormConstraint(OperatorSpace& space, const StandardFormParameters& parameters);
 //@-others

@@ -233,6 +233,7 @@ vector<unsigned long long> gatherSolutions(auto_ptr<OperatorSpace> space);
     DO_TEST_FOR(3,1) \
     DO_TEST_FOR(3,2) \
     DO_TEST_FOR(3,3) \
+    DO_TEST_FOR(3,4) \
     DO_TEST_FOR(4,1) \
     DO_TEST_FOR(4,2) \
     DO_TEST_FOR(5,1)

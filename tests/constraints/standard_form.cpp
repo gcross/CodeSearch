@@ -37,23 +37,29 @@ TEST_SUITE(Constraints) { TEST_SUITE(StandardForm) {
 //@+node:gcross.20110102182304.1581: *3* number of standard forms
 TEST_SUITE(number_of_standard_forms) {
 
-    void runTest(const unsigned int number_of_operators) {
-        ASSERT_EQ(number_of_operators/2+1,distance(StandardFormIterator(number_of_operators),StandardFormIterator()));
+    void runTest(
+          const unsigned int number_of_qubits
+        , const unsigned int number_of_operators
+    ) {
+        const unsigned int maximum_diagonal_size = min(number_of_qubits,number_of_operators);
+        ASSERT_EQ(
+             maximum_diagonal_size-(number_of_operators/2+1)
+            ,distance(StandardFormIterator(number_of_qubits,number_of_operators),StandardFormIterator())
+        );
     }
 
-    TEST_CASE(_1) { runTest(1); }
-    TEST_CASE(_2) { runTest(2); }
-    TEST_CASE(_3) { runTest(3); }
-    TEST_CASE(_4) { runTest(4); }
-    TEST_CASE(_5) { runTest(5); }
+    DO_STANDARD_FORM_TESTS
 
 }
 //@+node:gcross.20110114090455.1475: *3* correct standard forms
 TEST_SUITE(correct_standard_forms) {
 
-    void runTest(const unsigned int number_of_operators) {
+    void runTest(
+          const unsigned int number_of_qubits
+        , const unsigned int number_of_operators
+    ) {
         vector<StandardFormParameters> parameters_list;
-        copy(generateStandardFormsFor(number_of_operators),back_inserter(parameters_list));
+        copy(generateStandardFormsFor(number_of_qubits,number_of_operators),back_inserter(parameters_list));
         unsigned int correct_x_bit_diagonal_size = (number_of_operators+1)/2
                    , correct_z_bit_diagonal_size = number_of_operators-correct_x_bit_diagonal_size
                    ;
@@ -71,11 +77,7 @@ TEST_SUITE(correct_standard_forms) {
         }
     }
 
-    TEST_CASE(_1) { runTest(1); }
-    TEST_CASE(_2) { runTest(2); }
-    TEST_CASE(_3) { runTest(3); }
-    TEST_CASE(_4) { runTest(4); }
-    TEST_CASE(_5) { runTest(5); }
+    DO_STANDARD_FORM_TESTS
 
 }
 //@+node:gcross.20101229110857.1660: *3* number of solutions

@@ -59,11 +59,16 @@ bool StandardFormParameters::operator==(const StandardFormParameters& other) con
 //@+node:gcross.20101231214817.2281: ** class StandardFormIterator
 //@+node:gcross.20101231214817.2282: *3* (constructors)
 StandardFormIterator::StandardFormIterator()
-  : parameters(none)
+  : maximum_diagonal_size(0)
+  , parameters(none)
 { }
 
-StandardFormIterator::StandardFormIterator(const unsigned int number_of_operators)
-  : parameters(StandardFormParameters((number_of_operators+1)/2,number_of_operators-(number_of_operators+1)/2))
+StandardFormIterator::StandardFormIterator(const unsigned int number_of_qubits,const unsigned int number_of_operators)
+  : maximum_diagonal_size(min(number_of_qubits,number_of_operators))
+  , parameters(StandardFormParameters(
+         (number_of_operators+1)/2
+        ,number_of_operators-(number_of_operators+1)/2)
+    )
 { }
 //@+node:gcross.20101231214817.2283: *3* dereference
 const StandardFormParameters& StandardFormIterator::dereference() const {
@@ -79,7 +84,7 @@ void StandardFormIterator::increment() {
     unsigned int  &x_bit_diagonal_size = parameters->x_bit_diagonal_size
                 , &z_bit_diagonal_size = parameters->z_bit_diagonal_size
                 ;
-    if(z_bit_diagonal_size == 0) {
+    if(x_bit_diagonal_size == maximum_diagonal_size) {
         parameters = none;
     } else {
         ++x_bit_diagonal_size;
@@ -88,8 +93,8 @@ void StandardFormIterator::increment() {
 }
 //@+node:gcross.20110102182304.1575: ** Functions
 //@+node:gcross.20110102182304.1578: *3* generateStandardFormsFor
-iterator_range<StandardFormIterator> generateStandardFormsFor(const unsigned int number_of_operators) {
-    return iterator_range<StandardFormIterator>(StandardFormIterator(number_of_operators),StandardFormIterator());
+iterator_range<StandardFormIterator> generateStandardFormsFor(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
+    return iterator_range<StandardFormIterator>(StandardFormIterator(number_of_qubits,number_of_operators),StandardFormIterator());
 }
 //@+node:gcross.20101229110857.1647: *3* postStandardFormConstraint
 void postStandardFormConstraint(OperatorSpace& space, const StandardFormParameters& parameters) {
