@@ -19,6 +19,7 @@ include_directories(".")
 set(test-SOURCES
     constraints/all
     constraints/ordering/column
+    constraints/non_trivial_columns
     constraints/standard_form
     operator_space
     constraints/ordering/row/weight

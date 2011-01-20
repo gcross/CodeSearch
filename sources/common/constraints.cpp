@@ -38,6 +38,11 @@ StandardFormTies postColumnOrderingConstraints(
     , StandardFormTies initial_ties=no_standard_form_ties
 );
 
+void postNonTrivialColumnsConstraints(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+);
+
 StandardFormTies postRowOrderingConstraints(
       function<BoolVarArgs
         ( OperatorSpace& space
@@ -78,19 +83,23 @@ auto_ptr<OperatorSpace> createConstrainedSpace(
     StandardFormTies current_ties = no_standard_form_ties;
     BOOST_FOREACH(const Constraint constraint, constraints) {
         switch(constraint) {
-            case StandardForm:
-                postStandardFormConstraint(*space,parameters);
-                break;
             case ColumnOrdering:
                 current_ties = postColumnOrderingConstraints(*space,parameters);
                 break;
-            default:
+            case NonTrivialColumns:
+                postNonTrivialColumnsConstraints(*space,parameters);
+                break;
+            case StandardForm:
+                postStandardFormConstraint(*space,parameters);
+                break;
+            case WeightRowOrdering:
                 current_ties = postRowOrderingConstraints(
                      constraint_posters.find(constraint)->second
                     ,*space
                     ,parameters
                     ,current_ties
                 );
+                break;
         }
     }
     return space;
@@ -202,6 +211,45 @@ StandardFormTies postColumnOrderingConstraints(
                     ,z_bit_diagonal_size
                  )
              )
+         )
+    );
+}
+//@+node:gcross.20110120115216.2054: *3* postNonTrivialColumnsConstraintOnRegion
+void postNonTrivialColumnsConstraintOnRegion(
+      OperatorSpace& space
+    , BoolMatrix variables
+) {
+    BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)variables.width())) {
+        rel(space,BOT_OR,variables.col(col),1);
+    }
+}
+//@+node:gcross.20110120115216.2056: *3* postNonTrivialColumnsConstraints
+void postNonTrivialColumnsConstraints(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+) {
+    const unsigned int
+          number_of_qubits = space.number_of_qubits
+        , number_of_operators = space.number_of_operators
+        , x_bit_diagonal_size = parameters.x_bit_diagonal_size
+        , z_bit_diagonal_size = parameters.z_bit_diagonal_size
+        ;
+    postNonTrivialColumnsConstraintOnRegion(
+         space
+        ,space.getZMatrix().slice(
+             z_bit_diagonal_size
+            ,number_of_qubits
+            ,0u
+            ,number_of_operators
+         )
+    );
+    postNonTrivialColumnsConstraintOnRegion(
+         space
+        ,space.getXMatrix().slice(
+             x_bit_diagonal_size
+            ,number_of_qubits
+            ,0u
+            ,x_bit_diagonal_size
          )
     );
 }

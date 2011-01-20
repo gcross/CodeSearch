@@ -27,7 +27,12 @@ using namespace std;
 
 //@+others
 //@+node:gcross.20101231214817.2220: ** enum Constraint
-enum Constraint { StandardForm, ColumnOrdering, WeightRowOrdering };
+enum Constraint {
+      ColumnOrdering
+    , NonTrivialColumns
+    , StandardForm
+    , WeightRowOrdering
+    };
 
 extern const set<Constraint> all_constraints;
 //@+node:gcross.20101231214817.2221: ** Functions
@@ -64,6 +69,11 @@ BoolVarArgs postColumnOrderingConstraintOnRegion(
       OperatorSpace& space
     , BoolMatrix variables
     , BoolVarArgs initial_ties=BoolVarArgs()
+);
+
+void postNonTrivialColumnsConstraintOnRegion(
+      OperatorSpace& space
+    , BoolMatrix variables
 );
 
 BoolVarArgs postOrderingConstraint(
