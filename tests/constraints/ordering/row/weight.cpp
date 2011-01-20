@@ -138,6 +138,7 @@ TEST_SUITE(correct_solutions) {
             (matrix<unsigned int>) (getOrdering)(
                 (const unsigned int)(maximum_bound)
                 (const matrix<unsigned int>&)(region)
+                (const bind)((number_of_qubits) (number_of_operators))
             )
         ) {
             matrix<unsigned int> ordering(region.size2(),1);
