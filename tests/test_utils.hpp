@@ -238,6 +238,7 @@ inline unsigned long long power(const unsigned long long base, unsigned int expo
     DO_TEST_FOR(1,1) \
     DO_TEST_FOR(2,1) \
     DO_TEST_FOR(2,2) \
+    DO_TEST_FOR(2,3) \
     DO_TEST_FOR(3,1) \
     DO_TEST_FOR(3,2) \
     DO_TEST_FOR(3,3) \
