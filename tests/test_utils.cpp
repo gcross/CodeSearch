@@ -144,6 +144,13 @@ void checkRowOrderings(
                 , x_bit_diagonal_size
     ))));
 }
+//@+node:gcross.20110120115216.2076: *3* choose
+unsigned long long choose(const unsigned int n,const unsigned int k) {
+    unsigned long long total = 1;
+    for(unsigned int i = n; i > n-k; --i) total *= i;
+    for(unsigned int i = 1u; i <= k; ++i) total /= i;
+    return total;
+}
 //@+node:gcross.20110114113432.1705: *3* concatenateXMatricesVertically
 matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> > matrices) {
     if(matrices.size() == 0) return matrix<unsigned int>(0,0);

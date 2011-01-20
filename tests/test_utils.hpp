@@ -92,6 +92,8 @@ void checkRowOrderings(
     , const OperatorSpace& space
 );
 
+unsigned long long choose(const unsigned int n,const unsigned int k);
+
 matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> > matrices);
 matrix<unsigned int> concatenateBoolMatricesVertically(vector<BoolMatrix> matrices);
 matrix<unsigned int> concatenateIntMatricesVertically(vector<IntMatrix> matrices);
