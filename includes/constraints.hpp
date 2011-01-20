@@ -27,6 +27,8 @@ using namespace std;
 //@+others
 //@+node:gcross.20101231214817.2220: ** enum Constraint
 enum Constraint { StandardForm, ColumnOrdering, WeightRowOrdering };
+
+extern const set<Constraint> all_constraints;
 //@+node:gcross.20101231214817.2221: ** Functions
 auto_ptr<OperatorSpace> createConstrainedSpace(
       const unsigned int number_of_qubits
