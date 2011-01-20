@@ -38,21 +38,11 @@ enum Pauli { I = 0, X = 1, Z = 2, Y = 3 };
 struct OperatorSpace : public Space {
 
     //@+others
-    //@+node:gcross.20101224191604.3443: *3* (nested classes)
-    class AuxiliaryData {
-        friend class OperatorSpace;
-    public:
-        virtual ~AuxiliaryData() {}
-    private:
-        virtual auto_ptr<AuxiliaryData> copy(const bool share, OperatorSpace& space) = 0;
-    };
     //@+node:gcross.20101224191604.1852: *3* (fields)
     const unsigned int number_of_operators, number_of_qubits, number_of_variables;
 
     BoolVarArray X, Z, non_trivial;
     IntVarArray O, weights;
-
-    ptr_vector<AuxiliaryData> attached_auxiliary_data;
     //@+node:gcross.20101224191604.1853: *3* (constructors)
     OperatorSpace(const unsigned int number_of_operators, const unsigned int number_of_qubits);
     OperatorSpace(const bool share, OperatorSpace& s);
@@ -64,8 +54,6 @@ struct OperatorSpace : public Space {
     BoolMatrix getZMatrix() const { return Matrix<BoolVarArgs>(Z,number_of_qubits,number_of_operators); }
     BoolMatrix getNonTrivialMatrix() const { return Matrix<BoolVarArgs>(non_trivial,number_of_qubits,number_of_operators); }
 
-    void attachAuxiliaryData(auto_ptr<AuxiliaryData> auxiliary_data);
-
     //@+others
     //@+node:gcross.20101224191604.3431: *4* computeCode
     template<typename qec_t> auto_ptr<qec_t> computeCode() const throw() {
@@ -76,15 +64,6 @@ struct OperatorSpace : public Space {
         auto_ptr<qec_t> qec_ptr = computeCode<qec_t>();
         qec_ptr->optimize_logical_qubits();
         return qec_ptr;
-    }
-    //@+node:gcross.20101229110857.2549: *4* getAuxiliaryData
-    template<typename T> vector<const T*> getAuxiliaryData() const {
-        vector<const T*> auxiliary_data;
-        BOOST_FOREACH(const AuxiliaryData& data, attached_auxiliary_data) {
-            const T* casted_data = dynamic_cast<const T*>(&data);
-            if(casted_data) auxiliary_data.push_back(casted_data);
-        }
-        return auxiliary_data;
     }
     //@+node:gcross.20101224191604.2797: *4* getOperators
     template<typename operator_vector> auto_ptr<operator_vector> getOperators() const throw() {
