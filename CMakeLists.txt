@@ -3,13 +3,15 @@
 cmake_minimum_required (VERSION 2.6)
 project (CodeCategorize)
 
+SET(Boost_ADDITIONAL_VERSIONS "1.43" "1.43.0" "1.44" "1.44.0" "1.45" "1.45.0")
+
 find_package( Boost 1.45 COMPONENTS thread )
 link_directories ( ${Boost_LIBRARY_DIRS} )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 
 if(UNIX)
     if(CMAKE_COMPILER_IS_GNUCC)
-         add_definitions(-Wall)
+         add_definitions(-Wall -Wno-strict-aliasing)
     endif(CMAKE_COMPILER_IS_GNUCC)
 endif(UNIX)
 
