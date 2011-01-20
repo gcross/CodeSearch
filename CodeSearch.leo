@@ -24,6 +24,11 @@
 <v t="gcross.20101224191604.3363"><vh>@thin solution_iterator.cpp</vh></v>
 <v t="gcross.20101224191604.2768"><vh>@thin utilities.cpp</vh></v>
 </v>
+<v t="gcross.20110119165120.1745"><vh>@path programs</vh>
+<v t="gcross.20110119165120.2302"><vh>@thin CMakeLists.txt</vh></v>
+<v t="gcross.20110119165120.2298"><vh>@thin count-solutions.cpp</vh></v>
+<v t="gcross.20110119165120.2306"><vh>@thin count-all-solutions.cpp</vh></v>
+</v>
 </v>
 <v t="gcross.20101224191604.2598"><vh>@path tests</vh>
 <v t="gcross.20101224191604.2731"><vh>@thin CMakeLists.txt</vh></v>
@@ -51,5 +56,6 @@
 <t tx="gcross.20101229110857.1648"></t>
 <t tx="gcross.20101229110857.2526"></t>
 <t tx="gcross.20101229110857.2553"></t>
+<t tx="gcross.20110119165120.1745"></t>
 </tnodes>
 </leo_file>
