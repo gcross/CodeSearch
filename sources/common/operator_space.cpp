@@ -45,22 +45,12 @@ OperatorSpace::OperatorSpace(const bool share, OperatorSpace& s)
     , number_of_operators(s.number_of_operators)
     , number_of_qubits(s.number_of_qubits)
     , number_of_variables(s.number_of_variables)
-    , attached_auxiliary_data(s.attached_auxiliary_data.size())
 {
     X.update(*this,share,s.X);
     Z.update(*this,share,s.Z);
     non_trivial.update(*this,share,s.non_trivial);
     O.update(*this,share,s.O);
     weights.update(*this,share,s.weights);
-
-    BOOST_FOREACH(AuxiliaryData& auxiliary_data, s.attached_auxiliary_data) {
-        attached_auxiliary_data.push_back(auxiliary_data.copy(share,*this));
-    }
-}
-//@+node:gcross.20101229110857.1596: *3* attachAuxiliaryData
-void OperatorSpace::attachAuxiliaryData(auto_ptr<AuxiliaryData> auxiliary_data) {
-    attached_auxiliary_data.push_back(auxiliary_data.get());
-    auxiliary_data.release();
 }
 //@+node:gcross.20101224191604.1871: *3* copy
 Space* OperatorSpace::copy(bool share)
