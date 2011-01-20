@@ -105,7 +105,7 @@ void forEachStandardForm(
                     )
               > checkAllSolutions
     ) {
-        BOOST_FOREACH(const StandardFormParameters& parameters, generateStandardFormsFor(number_of_operators)) {
+        BOOST_FOREACH(const StandardFormParameters& parameters, generateStandardFormsFor(number_of_qubits,number_of_operators)) {
             checkAllSolutions(
                  parameters
                 ,createConstrainedSpace(
