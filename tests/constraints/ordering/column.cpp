@@ -74,7 +74,7 @@ TEST_SUITE(correct_solutions) {
         forEachZMatrixSolution(
              number_of_qubits
             ,number_of_operators
-            ,postColumnOrderingConstraintOnRegion
+            ,bind(postColumnOrderingConstraintOnRegion,_1,_2,BoolVarArgs())
             ,checkCorrectBoolMatrixOrdering
         );
     }
@@ -92,7 +92,7 @@ TEST_SUITE(correct_codes) {
         forEachZMatrix(
              number_of_qubits
             ,number_of_operators
-            ,postColumnOrderingConstraintOnRegion
+            ,bind(postColumnOrderingConstraintOnRegion,_1,_2,BoolVarArgs())
             ,bind(checkCodes,_1)
         );
     }
