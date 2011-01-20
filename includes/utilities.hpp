@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "operator_space.hpp"
+#include "constraints/standard_form.hpp"
 //@-<< Includes >>
 
 namespace CodeSearch {

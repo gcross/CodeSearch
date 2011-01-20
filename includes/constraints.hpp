@@ -7,6 +7,7 @@
 
 //@+<< Includes >>
 //@+node:gcross.20101231214817.2218: ** << Includes >>
+#include <boost/function.hpp>
 #include <memory>
 #include <set>
 
@@ -35,6 +36,28 @@ auto_ptr<OperatorSpace> createConstrainedSpace(
     , const unsigned int number_of_operators
     , const set<Constraint>& constraints
     , const StandardFormParameters& parameters
+);
+
+void forEachStandardForm(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint>& constraints
+    , function<void (const StandardFormParameters& parameters
+                    ,auto_ptr<OperatorSpace> space
+                    )
+              > f
+
+);
+
+void forEachStandardFormSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint>& constraints
+    , function<void (const StandardFormParameters& parameters
+                    ,const OperatorSpace& space
+                    )
+              > f
+
 );
 
 BoolVarArgs postColumnOrderingConstraintOnRegion(
