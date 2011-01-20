@@ -201,6 +201,12 @@ void forEachConstrainedRegionSolution(
 set<Code> gatherCodes(auto_ptr<OperatorSpace> initial_space);
 
 vector<unsigned long long> gatherSolutions(auto_ptr<OperatorSpace> space);
+
+inline unsigned long long power(const unsigned long long base, unsigned int exponent) {
+    unsigned long long result = 1;
+    while(exponent-- > 0) result *= base;
+    return result;
+}
 //@+node:gcross.20101224191604.3436: ** Macros
 //@+node:gcross.20101229110857.1594: *3* DO_TEMPLATE_TEST_FOR
 #define DO_TEMPLATE_TEST_FOR(number_of_operators,number_of_qubits) \
