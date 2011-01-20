@@ -147,11 +147,15 @@ void checkRowOrderings(
 //@+node:gcross.20110114113432.1705: *3* concatenateXMatricesVertically
 matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> > matrices) {
     if(matrices.size() == 0) return matrix<unsigned int>(0,0);
-    const size_t width = matrices[0].size1();
-    size_t height = 0u;
+    size_t width = 0u
+         , height = 0u;
     BOOST_FOREACH(const matrix<unsigned int>& m, matrices) {
         if(m.size1() == 0 || m.size2() == 0) continue;
-        assert(m.size1() == width);
+        if(width == 0u) {
+            width = m.size1();
+        } else {
+            assert(m.size1() == width);
+        }
         height += m.size2();
     }
     if(width == 0 || height == 0) return matrix<unsigned int>(0,0);
