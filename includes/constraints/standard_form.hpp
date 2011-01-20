@@ -8,6 +8,7 @@
 //@+<< Includes >>
 //@+node:gcross.20101229110857.1619: ** << Includes >>
 #include <boost/optional.hpp>
+#include <set>
 #include <utility>
 
 #include "operator_space.hpp"

@@ -5,15 +5,19 @@
 //@+<< Includes >>
 //@+node:gcross.20101231214817.2241: ** << Includes >>
 #include <boost/assign/list_of.hpp>
+#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/function.hpp>
+#include <boost/range/algorithm/for_each.hpp>
 #include <gecode/int.hh>
 #include <gecode/minimodel.hh>
 #include <map>
 
+#include "boost/local/function.hpp"
 #include "constraints.hpp"
 #include "constraints/standard_form.hpp"
 #include "operator_space.hpp"
+#include "solution_iterator.hpp"
 #include "utilities.hpp"
 //@-<< Includes >>
 
@@ -22,6 +26,7 @@ namespace CodeSearch {
 //@+<< Usings >>
 //@+node:gcross.20101231214817.2242: ** << Usings >>
 using namespace Gecode;
+using namespace boost;
 using namespace boost::assign;
 //@-<< Usings >>
 
@@ -89,6 +94,57 @@ auto_ptr<OperatorSpace> createConstrainedSpace(
         }
     }
     return space;
+}
+//@+node:gcross.20110119165120.1744: *3* forEachStandardForm
+void forEachStandardForm(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint>& constraints
+    , function<void (const StandardFormParameters& parameters
+                    ,auto_ptr<OperatorSpace> space
+                    )
+              > checkAllSolutions
+    ) {
+        BOOST_FOREACH(const StandardFormParameters& parameters, generateStandardFormsFor(number_of_operators)) {
+            checkAllSolutions(
+                 parameters
+                ,createConstrainedSpace(
+                     number_of_qubits
+                    ,number_of_operators
+                    ,constraints
+                    ,parameters
+                 )
+            );
+        }
+}
+//@+node:gcross.20110119165120.1740: *3* forEachStandardFormSolution
+void forEachStandardFormSolution(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint>& constraints
+    , function<void (const StandardFormParameters& parameters
+                    ,const OperatorSpace& space
+                    )
+              > checkSolution
+) {
+    BOOST_LOCAL_FUNCTION(
+        (void) (checkAllSolutions)(
+            (const StandardFormParameters&)(parameters)
+            (auto_ptr<OperatorSpace>)(initial_space)
+            (const bind)((checkSolution))
+        )
+    ) {
+        for_each(
+             generateSolutionsFor(initial_space)
+            ,bind(checkSolution,parameters,_1)
+        );
+    } BOOST_LOCAL_FUNCTION_END(checkAllSolutions)
+    forEachStandardForm(
+         number_of_qubits
+        ,number_of_operators
+        ,constraints
+        ,checkAllSolutions
+    );
 }
 //@+node:gcross.20110112003748.1559: *3* postColumnOrderingConstraintOnRegion
 BoolVarArgs postColumnOrderingConstraintOnRegion(OperatorSpace& space, BoolMatrix variables, BoolVarArgs initial_ties) {

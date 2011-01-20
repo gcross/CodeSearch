@@ -18,6 +18,7 @@
 #include <map>
 
 #include "boost/local/function.hpp"
+#include "constraints.hpp"
 #include "solution_iterator.hpp"
 #include "utilities.hpp"
 #include "test_utils.hpp"
@@ -442,57 +443,6 @@ void forEachConstrainedRegionSolution(
         , number_of_operators
         , postConstraint
         , checkAllSolutions
-    );
-}
-//@+node:gcross.20110102182304.1594: *3* forEachStandardForm
-void forEachStandardForm(
-      const unsigned int number_of_qubits
-    , const unsigned int number_of_operators
-    , const set<Constraint>& constraints
-    , function<void (const StandardFormParameters& parameters
-                    ,auto_ptr<OperatorSpace> space
-                    )
-              > checkAllSolutions
-    ) {
-        BOOST_FOREACH(const StandardFormParameters& parameters, generateStandardFormsFor(number_of_operators)) {
-            checkAllSolutions(
-                 parameters
-                ,createConstrainedSpace(
-                     number_of_qubits
-                    ,number_of_operators
-                    ,constraints
-                    ,parameters
-                 )
-            );
-        }
-}
-//@+node:gcross.20110104191728.1581: *3* forEachStandardFormSolution
-void forEachStandardFormSolution(
-      const unsigned int number_of_qubits
-    , const unsigned int number_of_operators
-    , const set<Constraint>& constraints
-    , function<void (const StandardFormParameters& parameters
-                    ,const OperatorSpace& space
-                    )
-              > checkSolution
-) {
-    BOOST_LOCAL_FUNCTION(
-        (void) (checkAllSolutions)(
-            (const StandardFormParameters&)(parameters)
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (const bind)((checkSolution))
-        )
-    ) {
-        for_each(
-             generateSolutionsFor(initial_space)
-            ,bind(checkSolution,parameters,_1)
-        );
-    } BOOST_LOCAL_FUNCTION_END(checkAllSolutions)
-    forEachStandardForm(
-         number_of_qubits
-        ,number_of_operators
-        ,constraints
-        ,checkAllSolutions
     );
 }
 //@+node:gcross.20101231214817.2053: *3* gatherCodes

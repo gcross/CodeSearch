@@ -196,28 +196,6 @@ void forEachConstrainedRegionSolution(
               > checkSolution
 );
 
-void forEachStandardForm(
-      const unsigned int number_of_qubits
-    , const unsigned int number_of_operators
-    , const set<Constraint>& constraints
-    , function<void (const StandardFormParameters& parameters
-                    ,auto_ptr<OperatorSpace> space
-                    )
-              > f
-
-);
-
-void forEachStandardFormSolution(
-      const unsigned int number_of_qubits
-    , const unsigned int number_of_operators
-    , const set<Constraint>& constraints
-    , function<void (const StandardFormParameters& parameters
-                    ,const OperatorSpace& space
-                    )
-              > f
-
-);
-
 set<Code> gatherCodes(auto_ptr<OperatorSpace> initial_space);
 
 vector<unsigned long long> gatherSolutions(auto_ptr<OperatorSpace> space);
