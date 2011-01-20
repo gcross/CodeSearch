@@ -26,12 +26,12 @@ using namespace std;
 //@+node:gcross.20110119165120.2308: ** main
 int main(int argc, char** argv) {
     if(argc != 2) {
-        cout << "Usage: count-solutions <# of qubits>" << endl;
+        cout << "Usage: count-all-solutions <# of qubits>" << endl;
         return 1;
     }
     const unsigned int number_of_qubits = atoi(argv[1]);
     unsigned long long total_number_of_solutions = 0;
-    BOOST_FOREACH(const unsigned int number_of_operators, irange(1u,2*number_of_qubits-1)) {
+    BOOST_FOREACH(const unsigned int number_of_operators, irange(1u,2*number_of_qubits)) {
         cout << number_of_operators << ": ";
         cout.flush();
         unsigned long long number_of_solutions = 0;
