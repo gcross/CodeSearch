@@ -149,6 +149,7 @@ matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> >
     const size_t width = matrices[0].size1();
     size_t height = 0u;
     BOOST_FOREACH(const matrix<unsigned int>& m, matrices) {
+        if(m.size1() == 0 || m.size2() == 0) continue;
         assert(m.size1() == width);
         height += m.size2();
     }
@@ -156,6 +157,7 @@ matrix<unsigned int> concatenateMatricesVertically(vector<matrix<unsigned int> >
     matrix<unsigned int> concatenated_matrix(width,height);
     unsigned int current_row = 0;
     BOOST_FOREACH(const matrix<unsigned int>& m, matrices) {
+        if(m.size1() == 0 || m.size2() == 0) continue;
         BOOST_FOREACH(const size_t row, irange((size_t)0u,m.size2())) {
             BOOST_FOREACH(const size_t col, irange((size_t)0u,width)) {
                 concatenated_matrix(col,current_row) = m(col,row);
