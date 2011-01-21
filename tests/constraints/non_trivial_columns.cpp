@@ -30,6 +30,16 @@ using namespace std;
 //@+others
 //@+node:gcross.20110120115216.2068: ** Values
 const static set<Constraint> non_trivial_columns_only_constraints = list_of(NonTrivialColumns);
+//@+node:gcross.20110120115216.2138: ** function checkRegion
+void checkRegion(const BoolMatrix& region) {
+    BOOST_FOREACH(unsigned int col, irange(0u,(unsigned int)region.width())) {
+        unsigned int number_of_bits = 0;
+        BOOST_FOREACH(unsigned int row, irange(0u,(unsigned int)region.height())) {
+            number_of_bits += region(col,row).val();
+        }
+        ASSERT_TRUE(number_of_bits > 0);
+    }
+}
 //@+node:gcross.20110120115216.2069: ** Tests
 TEST_SUITE(Constraints) { TEST_SUITE(NonTrivialColumns) {
 
@@ -88,24 +98,11 @@ TEST_SUITE(correct_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        BOOST_LOCAL_FUNCTION(
-            (void) (checkSolution)(
-                (const BoolMatrix&)(region)
-            )
-        ) {
-            BOOST_FOREACH(unsigned int col, irange(0u,(unsigned int)region.width())) {
-                unsigned int number_of_bits = 0;
-                BOOST_FOREACH(unsigned int row, irange(0u,(unsigned int)region.height())) {
-                    number_of_bits += region(col,row).val();
-                }
-                ASSERT_TRUE(number_of_bits > 0);
-            }
-        } BOOST_LOCAL_FUNCTION_END(checkSolution)
         forEachZMatrixSolution(
              number_of_qubits
             ,number_of_operators
             ,postNonTrivialColumnsConstraintOnRegion
-            ,checkSolution
+            ,checkRegion
             );
     }
 
@@ -136,23 +133,8 @@ TEST_SUITE(correct_solutions) {
             const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
                              , z_bit_diagonal_size = parameters.z_bit_diagonal_size
                              ;
-            const BoolMatrix X_matrix = space.getXMatrix()
-                            , Z_matrix = space.getZMatrix()
-                            ;
-            BOOST_FOREACH(unsigned int col, irange(z_bit_diagonal_size,number_of_qubits)) {
-                unsigned int number_of_bits = 0;
-                BOOST_FOREACH(unsigned int row, irange(0u,number_of_operators)) {
-                    number_of_bits += Z_matrix(col,row).val();
-                }
-                ASSERT_TRUE(number_of_bits > 0);
-            }
-            BOOST_FOREACH(unsigned int col, irange(x_bit_diagonal_size,number_of_qubits)) {
-                unsigned int number_of_bits = 0;
-                BOOST_FOREACH(unsigned int row, irange(0u,x_bit_diagonal_size)) {
-                    number_of_bits += X_matrix(col,row).val();
-                }
-                ASSERT_TRUE(number_of_bits > 0);
-            }
+            checkRegion(space.getZMatrix().slice(z_bit_diagonal_size,number_of_qubits,0u,number_of_operators));
+            checkRegion(space.getXMatrix().slice(x_bit_diagonal_size,number_of_qubits,0u,x_bit_diagonal_size));
         } BOOST_LOCAL_FUNCTION_END(checkSolution)
         forEachStandardFormSolution(
              number_of_qubits
