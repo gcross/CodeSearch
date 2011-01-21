@@ -70,7 +70,12 @@ const static map<
       >
     > constraint_posters = map_list_of(WeightRowOrdering,postWeightRowOrderingConstraintOnRegion);
 
-extern const set<Constraint> all_constraints = list_of(StandardForm)(ColumnOrdering)(WeightRowOrdering);
+extern const set<Constraint> all_constraints =
+    list_of (ColumnOrdering)
+            (NonTrivialColumns)
+            (StandardForm)
+            (WeightRowOrdering)
+    ;
 //@+node:gcross.20110112003748.1547: ** Functions
 //@+node:gcross.20101231214817.2245: *3* createConstraintedSpace
 auto_ptr<OperatorSpace> createConstrainedSpace(
