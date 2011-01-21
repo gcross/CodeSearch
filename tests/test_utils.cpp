@@ -50,6 +50,40 @@ void checkCodes(auto_ptr<OperatorSpace> initial_space) {
         FAIL(string("Missing code: ") + code.toString());
     }
 }
+//@+node:gcross.20110120115216.2112: *3* checkCodesForConstraints
+void checkCodesForConstraints(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint> constraints
+) {
+    const set<Code>& operator_space_codes = fetchAllCodes(number_of_qubits,number_of_operators);
+    set<Code> constrained_space_codes;
+
+    BOOST_LOCAL_FUNCTION(
+        (void) (process)(
+            (const StandardFormParameters&)(parameters)
+            (auto_ptr<OperatorSpace>)(initial_space)
+            (bind)((&constrained_space_codes))
+        )
+    ) {
+        const set<Code> codes = gatherCodes(initial_space);
+        constrained_space_codes.insert(codes.begin(),codes.end());
+    } BOOST_LOCAL_FUNCTION_END(process)
+
+    forEachStandardForm(
+         number_of_qubits
+        ,number_of_operators
+        ,constraints
+        ,process
+    );
+
+    vector<Code> missing_codes;
+    set_difference(operator_space_codes,constrained_space_codes,back_inserter(missing_codes));
+
+    BOOST_FOREACH(const Code& code, missing_codes) {
+        FAIL(string("Missing code: ") + code.toString());
+    }
+}
 //@+node:gcross.20110110211728.1589: *3* checkCorrectXOrdering
 void checkCorrectOrdering(const matrix<unsigned int>& ordering_matrix) {
     if(ordering_matrix.size1() <= 1 || ordering_matrix.size2() <= 0) return;

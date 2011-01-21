@@ -40,6 +40,12 @@ using boost::numeric::ublas::matrix;
 //@+node:gcross.20101224191604.2722: ** Functions
 void checkCodes(auto_ptr<OperatorSpace> initial_space);
 
+void checkCodesForConstraints(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint> constraints
+);
+
 void checkCorrectBoolMatrixOrdering(const BoolMatrix& matrix);
 void checkCorrectIntMatrixOrdering(const IntMatrix& matrix);
 void checkCorrectOrdering(const matrix<unsigned int>& matrix);
@@ -159,8 +165,6 @@ void forEachConstrainedRegionSolution(
                     )
               > checkSolution
 );
-
-set<Code> gatherCodes(auto_ptr<OperatorSpace> initial_space);
 
 vector<unsigned long long> gatherSolutions(auto_ptr<OperatorSpace> space);
 

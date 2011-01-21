@@ -185,11 +185,10 @@ TEST_SUITE(correct_solutions) {
 TEST_SUITE(correct_codes) {
 
     void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
-        forEachStandardForm(
+        checkCodesForConstraints(
              number_of_qubits
             ,number_of_operators
             ,standard_form_only_constraints
-            ,bind(checkCodes,_2)
         );
     }
 
