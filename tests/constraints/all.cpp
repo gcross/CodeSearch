@@ -43,14 +43,7 @@ TEST_SUITE(correct_codes) {
         );
     }
 
-    DO_TEST_FOR(2,2)
-    DO_TEST_FOR(2,3)
-    DO_TEST_FOR(3,2)
-    DO_TEST_FOR(3,3)
-    DO_TEST_FOR(3,4)
-    DO_TEST_FOR(4,2)
-    DO_TEST_FOR(4,3)
-    DO_TEST_FOR(5,2)
+    DO_NON_TRIVIAL_STANDARD_FORM_TESTS
 
 }
 //@-others
