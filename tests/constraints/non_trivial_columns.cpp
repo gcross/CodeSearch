@@ -29,7 +29,7 @@ using namespace std;
 
 //@+others
 //@+node:gcross.20110120115216.2068: ** Values
-const static set<Constraint> non_trivial_columns_only_constraints = list_of(NonTrivialColumns);
+const static set<Constraint> non_trivial_columns_only_constraints = list_of(XAndZ);
 //@+node:gcross.20110120115216.2138: ** function checkRegion
 void checkRegion(const BoolMatrix& region) {
     BOOST_FOREACH(unsigned int col, irange(0u,(unsigned int)region.width())) {
@@ -41,7 +41,7 @@ void checkRegion(const BoolMatrix& region) {
     }
 }
 //@+node:gcross.20110120115216.2069: ** Tests
-TEST_SUITE(Constraints) { TEST_SUITE(NonTrivialColumns) {
+TEST_SUITE(Constraints) { TEST_SUITE(XAndZ) {
 
 //@+others
 //@+node:gcross.20110120115216.2077: *3* for each subregion
@@ -83,7 +83,7 @@ TEST_SUITE(number_of_solutions) {
         forEachZMatrix(
              number_of_qubits
             ,number_of_operators
-            ,postNonTrivialColumnsConstraintOnRegion
+            ,postXAndZConstraintOnRegion
             ,checkAllSolutions
             );
     }
@@ -101,7 +101,7 @@ TEST_SUITE(correct_solutions) {
         forEachZMatrixSolution(
              number_of_qubits
             ,number_of_operators
-            ,postNonTrivialColumnsConstraintOnRegion
+            ,postXAndZConstraintOnRegion
             ,checkRegion
             );
     }

@@ -16,10 +16,11 @@ include_directories(".")
 
 set(test-SOURCES
     constraints/all
+    constraints/every_column_has
     constraints/ordering/column
-    constraints/non_trivial_columns
     constraints/ordering/row/weight
     constraints/standard_form
+    constraints/y_before_x
     operator_space
     test_utils_tests
 

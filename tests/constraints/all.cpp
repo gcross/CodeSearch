@@ -40,6 +40,7 @@ TEST_SUITE(correct_codes) {
              number_of_qubits
             ,number_of_operators
             ,all_constraints
+            ,true
         );
     }
 

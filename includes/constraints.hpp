@@ -29,9 +29,11 @@ using namespace std;
 //@+node:gcross.20101231214817.2220: ** enum Constraint
 enum Constraint {
       ColumnOrdering
-    , NonTrivialColumns
+    , EveryColumnHasX
+    , EveryColumnHasZ
     , StandardForm
     , WeightRowOrdering
+    , YBeforeX
     };
 
 extern const set<Constraint> all_constraints;
@@ -79,9 +81,10 @@ BoolVarArgs postColumnOrderingConstraintOnRegion(
     , BoolVarArgs initial_ties=BoolVarArgs()
 );
 
-void postNonTrivialColumnsConstraintOnRegion(
-      OperatorSpace& space
-    , BoolMatrix variables
+void postEveryColumnHasOConstraintOnRegion(
+      int O
+    , OperatorSpace& space
+    , IntMatrix region
 );
 
 BoolVarArgs postOrderingConstraint(
@@ -101,6 +104,16 @@ BoolVarArgs postWeightRowOrderingConstraintOnRegion(
     , const unsigned int maximum_value
     , IntMatrix region
     , BoolVarArgs initial_ties=BoolVarArgs()
+);
+
+void postXAndZConstraintOnRegion(
+      OperatorSpace& space
+    , IntMatrix variables
+);
+
+void postYBeforeXConstraintOnRegion(
+      OperatorSpace& space
+    , IntMatrix region
 );
 //@-others
 

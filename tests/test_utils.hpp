@@ -81,6 +81,20 @@ const set<Code>& fetchAllCodes(
     , const bool ignore_solutions_with_trivial_columns=false
 );
 
+void forEachOMatrix(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,IntMatrix region
+                    )
+              > postOMatrixConstraint
+    , function<void (auto_ptr<OperatorSpace> initial_space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > checkAllSolutions
 );
 
 void forEachOMatrix(
@@ -97,6 +111,8 @@ void forEachOMatrix(
                     ,const unsigned int end_row
                     )
               > checkAllSolutions
+    , const unsigned int number_of_rows
+    , const unsigned int number_of_columns
 );
 
 void forEachOMatrixSolution(
@@ -180,6 +196,8 @@ inline unsigned long long power(const unsigned long long base, unsigned int expo
     while(exponent-- > 0) result *= base;
     return result;
 }
+
+template<typename T> T square(T x) { return x*x; }
 //@+node:gcross.20101224191604.3436: ** Macros
 //@+node:gcross.20101229110857.1594: *3* DO_TEMPLATE_TEST_FOR
 #define DO_TEMPLATE_TEST_FOR(number_of_operators,number_of_qubits) \
@@ -215,9 +233,22 @@ inline unsigned long long power(const unsigned long long base, unsigned int expo
     DO_TEST_FOR(3,1) \
     DO_TEST_FOR(3,2) \
     DO_TEST_FOR(3,3) \
+    DO_TEST_FOR(3,4) \
     DO_TEST_FOR(4,1) \
     DO_TEST_FOR(4,2) \
-    DO_TEST_FOR(5,1)
+    DO_TEST_FOR(4,3) \
+    DO_TEST_FOR(5,1) \
+    DO_TEST_FOR(5,2)
+
+#define DO_NON_TRIVIAL_STANDARD_FORM_TESTS \
+    DO_TEST_FOR(2,2) \
+    DO_TEST_FOR(2,3) \
+    DO_TEST_FOR(3,2) \
+    DO_TEST_FOR(3,3) \
+    DO_TEST_FOR(3,4) \
+    DO_TEST_FOR(4,2) \
+    DO_TEST_FOR(4,3) \
+    DO_TEST_FOR(5,2)
 //@+node:gcross.20101224191604.3438: *3* DO_TEST_FOR_1
 #define DO_TEST_FOR_1(number_of_operators,number_of_qubits,a) \
     TEST_CASE(_##number_of_operators##x##number_of_qubits) { \
@@ -227,6 +258,11 @@ inline unsigned long long power(const unsigned long long base, unsigned int expo
 #define DO_TEST_FOR_2(number_of_operators,number_of_qubits,a,b) \
     TEST_CASE(_##number_of_operators##x##number_of_qubits##_##a) { \
         runTest(number_of_operators,number_of_qubits,a,b); \
+    }
+//@+node:gcross.20110120115216.2142: *3* DO_TEST_FOR_3
+#define DO_TEST_FOR_3(number_of_operators,number_of_qubits,a,b,c) \
+    TEST_CASE(_##number_of_operators##x##number_of_qubits##_##a##_##b) { \
+        runTest(number_of_operators,number_of_qubits,a,b,c); \
     }
 //@-others
 

@@ -37,14 +37,15 @@
 <v t="gcross.20101224191604.2731"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20101229110857.1648"><vh>@path constraints</vh>
 <v t="gcross.20110119165120.1730"><vh>@thin all.cpp</vh></v>
+<v t="gcross.20110120115216.2066"><vh>@thin every_column_has.cpp</vh></v>
 <v t="gcross.20101229110857.2526"><vh>@path ordering</vh>
 <v t="gcross.20101229110857.2459"><vh>@thin column.cpp</vh></v>
 <v t="gcross.20101229110857.2553"><vh>@path row</vh>
 <v t="gcross.20110114154616.2052"><vh>@thin weight.cpp</vh></v>
 </v>
 </v>
-<v t="gcross.20110120115216.2066"><vh>@thin non_trivial_columns.cpp</vh></v>
 <v t="gcross.20101229110857.1657"><vh>@thin standard_form.cpp</vh></v>
+<v t="gcross.20110120115216.2128"><vh>@thin y_before_x.cpp</vh></v>
 </v>
 <v t="gcross.20101224191604.2647"><vh>@thin operator_space.cpp</vh></v>
 <v t="gcross.20101224191604.2719"><vh>@thin test_utils.hpp</vh></v>

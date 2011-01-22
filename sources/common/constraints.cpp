@@ -35,10 +35,14 @@ using namespace boost::assign;
 StandardFormTies postColumnOrderingConstraints(
       OperatorSpace& space
     , const StandardFormParameters& parameters
-    , StandardFormTies initial_ties=no_standard_form_ties
 );
 
-void postNonTrivialColumnsConstraints(
+void postEveryColumnHasXConstraint(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+);
+
+void postEveryColumnHasZConstraint(
       OperatorSpace& space
     , const StandardFormParameters& parameters
 );
@@ -55,11 +59,33 @@ StandardFormTies postRowOrderingConstraints(
     , const StandardFormParameters& parameters
     , StandardFormTies initial_ties=no_standard_form_ties
 );
+
+void postYBeforeXConstraints(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+);
 //@-<< Function declaration >>
 
 //@+others
 //@+node:gcross.20110112003748.1550: ** Values
-const static map<
+typedef map<
+     Constraint
+    ,function<void
+        ( OperatorSpace& space
+        , const StandardFormParameters& parameters
+        )
+      >
+    > ConstraintMap ;
+
+const static ConstraintMap constraint_posters =
+        map_list_of
+            (EveryColumnHasX,postEveryColumnHasXConstraint)
+            (EveryColumnHasZ,postEveryColumnHasZConstraint)
+            (StandardForm,postStandardFormConstraint)
+            (YBeforeX,postYBeforeXConstraints)
+        ;
+
+typedef map<
      Constraint
     ,function<BoolVarArgs
         ( OperatorSpace& space
@@ -68,16 +94,23 @@ const static map<
         , BoolVarArgs initial_ties
         )
       >
-    > constraint_posters = map_list_of(WeightRowOrdering,postWeightRowOrderingConstraintOnRegion);
+    > RowOrderingConstraintMap;
+
+const static RowOrderingConstraintMap row_ordering_constraint_posters =
+        map_list_of
+            (WeightRowOrdering,postWeightRowOrderingConstraintOnRegion)
+        ;
 
 extern const set<Constraint> all_constraints =
     list_of (ColumnOrdering)
-            (NonTrivialColumns)
+            (EveryColumnHasX)
+            (EveryColumnHasZ)
             (StandardForm)
             (WeightRowOrdering)
+            (YBeforeX)
     ;
 //@+node:gcross.20110112003748.1547: ** Functions
-//@+node:gcross.20101231214817.2245: *3* createConstraintedSpace
+//@+node:gcross.20101231214817.2245: *3* createConstrainedSpace
 auto_ptr<OperatorSpace> createConstrainedSpace(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
@@ -87,25 +120,32 @@ auto_ptr<OperatorSpace> createConstrainedSpace(
     auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
     StandardFormTies current_ties = no_standard_form_ties;
     BOOST_FOREACH(const Constraint constraint, constraints) {
-        switch(constraint) {
-            case ColumnOrdering:
-                current_ties = postColumnOrderingConstraints(*space,parameters);
-                break;
-            case NonTrivialColumns:
-                postNonTrivialColumnsConstraints(*space,parameters);
-                break;
-            case StandardForm:
-                postStandardFormConstraint(*space,parameters);
-                break;
-            case WeightRowOrdering:
+        // Special case: column ordering
+        if(constraint == ColumnOrdering) {
+            assert(current_ties.first.size() == 0);
+            assert(current_ties.second.size() == 0);
+            current_ties = postColumnOrderingConstraints(*space,parameters);
+            continue;
+        }
+        {// Special case: row ordering
+            RowOrderingConstraintMap::const_iterator poster = row_ordering_constraint_posters.find(constraint);
+            if(poster != row_ordering_constraint_posters.end()) {
                 current_ties = postRowOrderingConstraints(
-                     constraint_posters.find(constraint)->second
+                     poster->second
                     ,*space
                     ,parameters
                     ,current_ties
                 );
-                break;
+                continue;
+            }
         }
+        {// Normal case
+            ConstraintMap::const_iterator poster = constraint_posters.find(constraint);
+            assert(poster != constraint_posters.end());
+            poster->second(*space,parameters);
+            continue;
+        }
+        assert(!"Should never make it here");
     }
     return space;
 }
@@ -198,7 +238,6 @@ BoolVarArgs postColumnOrderingConstraintOnRegion(OperatorSpace& space, BoolMatri
 StandardFormTies postColumnOrderingConstraints(
       OperatorSpace& space
     , const StandardFormParameters& parameters
-    , StandardFormTies initial_ties
 ) {
     const unsigned int
           number_of_qubits = space.number_of_qubits
@@ -249,44 +288,43 @@ StandardFormTies postColumnOrderingConstraints(
          )
     );
 }
-//@+node:gcross.20110120115216.2054: *3* postNonTrivialColumnsConstraintOnRegion
-void postNonTrivialColumnsConstraintOnRegion(
-      OperatorSpace& space
-    , BoolMatrix variables
+//@+node:gcross.20110121100120.1550: *3* postEveryColumnHasOConstraintOnRegion
+void postEveryColumnHasOConstraintOnRegion(
+      int O
+    , OperatorSpace& space
+    , IntMatrix region
 ) {
-    BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)variables.width())) {
-        rel(space,BOT_OR,variables.col(col),1);
+    BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)region.width())) {
+        BoolVarArgs equals_O(space,region.height(),0,1);
+        BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)region.height())) {
+            rel(space,region(col,row),IRT_EQ,O,equals_O[row]);
+        }
+        rel(space,BOT_OR,equals_O,1);
     }
 }
-//@+node:gcross.20110120115216.2056: *3* postNonTrivialColumnsConstraints
-void postNonTrivialColumnsConstraints(
+//@+node:gcross.20110121100120.1552: *3* postEveryColumnHasXConstraint
+void postEveryColumnHasXConstraint(
       OperatorSpace& space
     , const StandardFormParameters& parameters
 ) {
-    const unsigned int
-          number_of_qubits = space.number_of_qubits
-        , number_of_operators = space.number_of_operators
-        , x_bit_diagonal_size = parameters.x_bit_diagonal_size
-        , z_bit_diagonal_size = parameters.z_bit_diagonal_size
-        ;
-    postNonTrivialColumnsConstraintOnRegion(
-         space
-        ,space.getZMatrix().slice(
-             z_bit_diagonal_size
-            ,number_of_qubits
-            ,0u
-            ,number_of_operators
-         )
-    );
-    postNonTrivialColumnsConstraintOnRegion(
-         space
-        ,space.getXMatrix().slice(
-             x_bit_diagonal_size
-            ,number_of_qubits
-            ,0u
-            ,x_bit_diagonal_size
-         )
-    );
+    postEveryColumnHasOConstraintOnRegion(X,space,space.getOMatrix().slice(
+         parameters.x_bit_diagonal_size
+        ,space.number_of_qubits
+        ,0u
+        ,parameters.x_bit_diagonal_size
+    ));
+}
+//@+node:gcross.20110121100120.1554: *3* postEveryColumnHasZConstraint
+void postEveryColumnHasZConstraint(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+) {
+    postEveryColumnHasOConstraintOnRegion(Z,space,space.getOMatrix().slice(
+         parameters.z_bit_diagonal_size
+        ,space.number_of_qubits
+        ,0u
+        ,space.number_of_operators
+    ));
 }
 //@+node:gcross.20110112003748.1556: *3* postOrderingConstraint
 BoolVarArgs postOrderingConstraint(OperatorSpace& space, IntMatrix variables, BoolVarArgs initial_ties) {
@@ -416,6 +454,94 @@ BoolVarArgs postWeightRowOrderingConstraintOnRegion(
             ,1
          )
         ,initial_ties
+    );
+}
+//@+node:gcross.20110120115216.2054: *3* postXAndZConstraintOnRegion
+void postXAndZConstraintOnRegion(
+      OperatorSpace& space
+    , IntMatrix region
+) {
+    static DFA::Transition t[] =
+        {{0,0,0}
+        ,{0,1,1}
+        ,{0,2,2}
+        ,{0,3,0}
+        ,{1,0,1}
+        ,{1,1,1}
+        ,{1,2,3}
+        ,{1,3,1}
+        ,{2,0,2}
+        ,{2,1,3}
+        ,{2,2,2}
+        ,{2,3,2}
+        ,{3,0,3}
+        ,{3,1,3}
+        ,{3,2,3}
+        ,{3,3,3}
+        ,{-1,-1,-1}
+        };
+    static int f[] = {3,-1};
+    static DFA d(0,t,f);
+
+    BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)region.width())) {
+        extensional(space,region.col(col),d);
+    }
+}
+//@+node:gcross.20110120115216.2056: *3* postXAndZConstraints
+void postXAndZConstraints(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+) {
+    postXAndZConstraintOnRegion(
+         space
+        ,space.getOMatrix().slice(
+             parameters.z_bit_diagonal_size
+            ,space.number_of_qubits
+            ,0u
+            ,space.number_of_operators
+         )
+    );
+}
+//@+node:gcross.20110120115216.2113: *3* postYBeforeXConstraintOnRegion
+void postYBeforeXConstraintOnRegion(
+      OperatorSpace& space
+    , IntMatrix region
+) {
+    static DFA::Transition t[] =
+        {{0,0,0}
+        ,{0,1,1}
+        ,{0,2,0}
+        ,{0,3,2}
+        ,{1,0,1}
+        ,{1,1,1}
+        ,{1,2,1}
+        ,{1,3,1}
+        ,{2,0,2}
+        ,{2,1,2}
+        ,{2,2,2}
+        ,{2,3,2}
+        ,{-1,-1,-1}
+        };
+    static int f[] = {0,1,-1};
+    static DFA d(0,t,f);
+
+    BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)region.width())) {
+        extensional(space,region.col(col),d);
+    }
+}
+//@+node:gcross.20110120115216.2117: *3* postYBeforeXConstraints
+void postYBeforeXConstraints(
+      OperatorSpace& space
+    , const StandardFormParameters& parameters
+) {
+    postYBeforeXConstraintOnRegion(
+         space
+        ,space.getOMatrix().slice(
+             parameters.x_bit_diagonal_size
+            ,space.number_of_qubits
+            ,0u
+            ,parameters.x_bit_diagonal_size
+         )
     );
 }
 //@-others
