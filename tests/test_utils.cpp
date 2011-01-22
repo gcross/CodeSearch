@@ -399,10 +399,10 @@ void forEachConstrainedRegion(
                     )
               > runTest
 ) {
-    BOOST_FOREACH(const unsigned int start_column, irange(0u,number_of_qubits-1)) {
-        BOOST_FOREACH(const unsigned int end_column, irange(start_column+1,number_of_qubits)) {
-            BOOST_FOREACH(const unsigned int start_row, irange(0u,number_of_operators-1)) {
-                BOOST_FOREACH(const unsigned int end_row, irange(start_row+1,number_of_operators)) {
+    BOOST_FOREACH(const unsigned int start_column, irange(0u,number_of_qubits)) {
+        BOOST_FOREACH(const unsigned int end_column, irange(start_column+1,number_of_qubits+1)) {
+            BOOST_FOREACH(const unsigned int start_row, irange(0u,number_of_operators)) {
+                BOOST_FOREACH(const unsigned int end_row, irange(start_row+1,number_of_operators+1)) {
                     auto_ptr<OperatorSpace> space(new OperatorSpace(number_of_qubits,number_of_operators));
                     postConstraint(*space,start_column,end_column,start_row,end_row);
                     runTest(space,start_column,end_column,start_row,end_row);
