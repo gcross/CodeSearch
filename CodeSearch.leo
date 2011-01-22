@@ -28,7 +28,7 @@
 <v t="gcross.20110119165120.2302"><vh>@thin CMakeLists.txt</vh></v>
 <v t="gcross.20110119165120.2298"><vh>@thin count-solutions.cpp</vh></v>
 <v t="gcross.20110119165120.2306"><vh>@thin count-all-solutions.cpp</vh></v>
-<v t="gcross.20110120115216.2084"><vh>@thin print-codes.cpp</vh></v>
+<v t="gcross.20110120115216.2084"><vh>@thin print-code-summaries.cpp</vh></v>
 <v t="gcross.20110119225928.1517"><vh>@thin print-solutions.cpp</vh></v>
 </v>
 </v>
