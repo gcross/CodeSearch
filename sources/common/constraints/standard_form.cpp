@@ -122,7 +122,8 @@ void postStandardFormConstraint(OperatorSpace& space, const StandardFormParamete
             }
         }
     }
-    rel(space,space.getXMatrix().slice(0,number_of_qubits,x_bit_diagonal_size,number_of_operators),IRT_EQ,0);
+    rel(space,X_matrix.slice(x_bit_diagonal_size,number_of_qubits,0,z_bit_diagonal_size),IRT_EQ,0);
+    rel(space,X_matrix.slice(0,number_of_qubits,x_bit_diagonal_size,number_of_operators),IRT_EQ,0);
     BOOST_FOREACH(const unsigned int col, irange(0u,z_bit_diagonal_size)) {
         BOOST_FOREACH(const unsigned int row, irange(0u,z_bit_diagonal_size)) {
             if(col == row) {
@@ -132,7 +133,7 @@ void postStandardFormConstraint(OperatorSpace& space, const StandardFormParamete
             }
         }
     }
-    rel(space,space.getZMatrix().slice(0,z_bit_diagonal_size,0,x_bit_diagonal_size),IRT_EQ,0);
+    rel(space,Z_matrix.slice(0,z_bit_diagonal_size,0,x_bit_diagonal_size),IRT_EQ,0);
 }
 //@-others
 

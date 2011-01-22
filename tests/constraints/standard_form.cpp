@@ -97,8 +97,8 @@ TEST_SUITE(number_of_solutions) {
             const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
                              , z_bit_diagonal_size = parameters.z_bit_diagonal_size
                              , number_of_free_bits =
-                                  (number_of_qubits-x_bit_diagonal_size)*(number_of_operators+x_bit_diagonal_size)
-                                + (x_bit_diagonal_size-z_bit_diagonal_size)*(number_of_operators-1)
+                                  (number_of_qubits-z_bit_diagonal_size)*number_of_operators
+                                + (number_of_qubits-x_bit_diagonal_size-1)*(x_bit_diagonal_size-z_bit_diagonal_size)
                              , expected_number_of_solutions = 1 << number_of_free_bits
                              , observed_number_of_solutions = countSolutions(initial_space)
                              ;
@@ -138,8 +138,13 @@ TEST_SUITE(correct_solutions) {
                     }
                 }
             }
-            BOOST_FOREACH(const unsigned int row, irange(x_bit_diagonal_size,number_of_operators)) {
-                BOOST_FOREACH(const unsigned int col, irange(0u,number_of_qubits)) {
+            BOOST_FOREACH(const unsigned int col, irange(x_bit_diagonal_size,number_of_qubits)) {
+                BOOST_FOREACH(const unsigned int row,irange(0u,z_bit_diagonal_size)) {
+                    ASSERT_EQ(0,X_matrix(col,row).val());
+                }
+            }
+            BOOST_FOREACH(const unsigned int col, irange(0u,number_of_qubits)) {
+                BOOST_FOREACH(const unsigned int row,irange(x_bit_diagonal_size,number_of_operators)) {
                     ASSERT_EQ(0,X_matrix(col,row).val());
                 }
             }
