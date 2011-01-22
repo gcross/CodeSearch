@@ -14,19 +14,17 @@ endmacro(makeTestProgram)
 include_directories(".")
 #@-<< Includes >>
 
-#@+others
-#@+node:gcross.20101224191604.2734: ** test
 set(test-SOURCES
     constraints/all
     constraints/ordering/column
     constraints/non_trivial_columns
+    constraints/ordering/row/weight
     constraints/standard_form
     operator_space
-    constraints/ordering/row/weight
-    test_utils
     test_utils_tests
+
+    test_utils
 )
 
 makeTestProgram(test)
-#@-others
 #@-leo
