@@ -38,12 +38,16 @@ using boost::numeric::ublas::matrix;
 
 //@+others
 //@+node:gcross.20101224191604.2722: ** Functions
-void checkCodes(auto_ptr<OperatorSpace> initial_space);
+void checkCodes(
+      auto_ptr<OperatorSpace> initial_space
+    , const bool ignore_solutions_with_trivial_columns=false
+);
 
 void checkCodesForConstraints(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
     , const set<Constraint> constraints
+    , const bool ignore_solutions_with_trivial_columns=false
 );
 
 void checkCorrectBoolMatrixOrdering(const BoolMatrix& matrix);
@@ -74,6 +78,9 @@ matrix<unsigned int> extractFromIntMatrix(const IntMatrix& m);
 const set<Code>& fetchAllCodes(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
+    , const bool ignore_solutions_with_trivial_columns=false
+);
+
 );
 
 void forEachOMatrix(

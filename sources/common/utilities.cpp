@@ -5,7 +5,9 @@
 //@+<< Includes >>
 //@+node:gcross.20101224191604.2769: ** << Includes >>
 #include <boost/assign/list_of.hpp>
+#include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/algorithm/for_each.hpp>
@@ -85,7 +87,10 @@ unsigned long long countSolutions(auto_ptr<OperatorSpace> initial_space, const S
     return distance(SolutionIterator(initial_space,options),SolutionIterator());
 }
 //@+node:gcross.20110120115216.2090: *3* gatherCodes
-template<unsigned int number_of_qubits, unsigned int number_of_operators> static set<Code> gatherCodesImpl(auto_ptr<OperatorSpace> initial_space) {
+template<unsigned int number_of_qubits, unsigned int number_of_operators> static set<Code> gatherCodesImpl(
+      auto_ptr<OperatorSpace> initial_space
+    , const bool ignore_solutions_with_trivial_columns
+) {
     assert(number_of_qubits == initial_space->number_of_qubits);
     assert(number_of_operators == initial_space->number_of_operators);
 
@@ -93,20 +98,23 @@ template<unsigned int number_of_qubits, unsigned int number_of_operators> static
 
     typedef static_qec<number_of_qubits,number_of_operators> qec_t;
 
-    BOOST_FOREACH
-    (   auto_ptr<qec_t> code
-    ,   generateSolutionsFor(initial_space)
-            | transformed(computeOptimizedCodeForOperatorSpace<qec_t>)
-    ) {
-        const unsigned int
-            number_of_stabilizers = code->stabilizers.size(),
-            number_of_gauge_qubits = code->gauge_qubits.size(),
-            number_of_logical_qubits = code->logical_qubit_error_distances.size();
-        if((number_of_stabilizers > 0u || number_of_gauge_qubits > 0u || number_of_logical_qubits > 0u)
-        && (number_of_stabilizers + 2*number_of_gauge_qubits == number_of_operators)
-        ) {
-            codes.insert(Code(number_of_stabilizers,number_of_gauge_qubits,code->logical_qubit_error_distances));
-        }
+    if(ignore_solutions_with_trivial_columns) {
+        copy(
+             generateSolutionsFor(initial_space)
+                | filtered(hasNoTrivialColumns)
+                | transformed(computeOptimizedCodeForOperatorSpace<qec_t>)
+                | transformed(summarizeCode<qec_t>)
+                | filtered(bind(&Code::isNonTrivial,_1,number_of_operators))
+            ,inserter(codes,codes.end())
+        );
+    } else {
+        copy(
+             generateSolutionsFor(initial_space)
+                | transformed(computeOptimizedCodeForOperatorSpace<qec_t>)
+                | transformed(summarizeCode<qec_t>)
+                | filtered(bind(&Code::isNonTrivial,_1,number_of_operators))
+            ,inserter(codes,codes.end())
+        );
     }
 
     return codes;
@@ -114,7 +122,7 @@ template<unsigned int number_of_qubits, unsigned int number_of_operators> static
 
 typedef map<
      pair<unsigned int,unsigned int>
-    ,function<set<Code> (auto_ptr<OperatorSpace>)>
+    ,function<set<Code> (auto_ptr<OperatorSpace>,bool)>
     > gatherCodesImplsType;
 
 static const gatherCodesImplsType gatherCodesImpls = map_list_of
@@ -139,7 +147,10 @@ static const gatherCodesImplsType gatherCodesImpls = map_list_of
         (make_pair(5u,2u),gatherCodesImpl<5,2>)
         (make_pair(6u,1u),gatherCodesImpl<6,1>);
 
-set<Code> gatherCodes(auto_ptr<OperatorSpace> initial_space) {
+set<Code> gatherCodes(
+      auto_ptr<OperatorSpace> initial_space
+    , const bool ignore_solutions_with_trivial_columns
+) {
     const unsigned int number_of_qubits = initial_space->number_of_qubits
                      , number_of_operators = initial_space->number_of_operators
                      ;
@@ -147,7 +158,19 @@ set<Code> gatherCodes(auto_ptr<OperatorSpace> initial_space) {
     if(gatherCodesImplPtr == gatherCodesImpls.end()) {
         throw GatherCodesNotSupported(number_of_qubits,number_of_operators);
     }
-    return gatherCodesImplPtr->second(initial_space);
+    return gatherCodesImplPtr->second(initial_space,ignore_solutions_with_trivial_columns);
+}
+//@+node:gcross.20110121100120.1583: *3* hasNoTrivialColumns
+bool hasNoTrivialColumns(const OperatorSpace& space) {
+    if(space.number_of_operators <= 0) return false;
+    IntMatrix O_matrix = space.getOMatrix();
+    BOOST_FOREACH(const unsigned int col, irange(0u,space.number_of_qubits)) {
+        const int first_O = O_matrix(col,0).val();
+        BOOST_FOREACH(const unsigned int row, irange(1u,space.number_of_operators)) {
+            if(O_matrix(col,row).val() != first_O) return false;
+        }
+    }
+    return true;
 }
 //@-others
 

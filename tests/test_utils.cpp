@@ -36,12 +36,24 @@ using namespace std;
 //@+node:gcross.20101231214817.2058: ** Typedefs
 typedef map<pair<unsigned int,unsigned int>,set<Code> > CodeTable;
 //@+node:gcross.20101229110857.1592: ** Variables
-CodeTable operator_space_code_table;
+CodeTable operator_space_code_table, operator_space_without_trivial_columns_code_table;
 //@+node:gcross.20101224191604.2750: ** Functions
 //@+node:gcross.20101231214817.2055: *3* checkCodes
-void checkCodes(auto_ptr<OperatorSpace> initial_space) {
-    const set<Code>& operator_space_codes = fetchAllCodes(initial_space->number_of_qubits,initial_space->number_of_operators);
-    const set<Code> constrained_space_codes = gatherCodes(initial_space);
+void checkCodes(
+      auto_ptr<OperatorSpace> initial_space
+    , const bool ignore_solutions_with_trivial_columns
+) {
+    const set<Code>& operator_space_codes =
+        fetchAllCodes(
+             initial_space->number_of_qubits
+            ,initial_space->number_of_operators
+            ,ignore_solutions_with_trivial_columns
+        );
+    const set<Code> constrained_space_codes =
+        gatherCodes(
+             initial_space
+            ,ignore_solutions_with_trivial_columns
+        );
 
     vector<Code> missing_codes;
     set_difference(operator_space_codes,constrained_space_codes,back_inserter(missing_codes));
@@ -55,27 +67,21 @@ void checkCodesForConstraints(
       const unsigned int number_of_qubits
     , const unsigned int number_of_operators
     , const set<Constraint> constraints
+    , const bool ignore_solutions_with_trivial_columns
 ) {
-    const set<Code>& operator_space_codes = fetchAllCodes(number_of_qubits,number_of_operators);
-    set<Code> constrained_space_codes;
-
-    BOOST_LOCAL_FUNCTION(
-        (void) (process)(
-            (const StandardFormParameters&)(parameters)
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (bind)((&constrained_space_codes))
-        )
-    ) {
-        const set<Code> codes = gatherCodes(initial_space);
-        constrained_space_codes.insert(codes.begin(),codes.end());
-    } BOOST_LOCAL_FUNCTION_END(process)
-
-    forEachStandardForm(
-         number_of_qubits
-        ,number_of_operators
-        ,constraints
-        ,process
-    );
+    const set<Code>& operator_space_codes =
+        fetchAllCodes(
+             number_of_qubits
+            ,number_of_operators
+            ,ignore_solutions_with_trivial_columns
+        );
+    const set<Code> constrained_space_codes =
+        gatherAllCodesForConstraints(
+             number_of_qubits
+            ,number_of_operators
+            ,constraints
+            ,ignore_solutions_with_trivial_columns
+        );
 
     vector<Code> missing_codes;
     set_difference(operator_space_codes,constrained_space_codes,back_inserter(missing_codes));
@@ -223,30 +229,41 @@ matrix<unsigned int> extractFromIntMatrix(const IntMatrix& m) {
     return extracted_matrix;
 }
 //@+node:gcross.20101231214817.2057: *3* fetchAllCodes
-const set<Code>& fetchAllCodes(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
+const set<Code>& fetchAllCodes(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const bool ignore_solutions_with_trivial_columns
+) {
     typedef CodeTable::const_iterator CodeTablePosition;
 
     const pair<unsigned int,unsigned int> id = make_pair(number_of_operators,number_of_qubits);
 
-    CodeTablePosition operator_space_code_position = operator_space_code_table.find(id);
-    if(operator_space_code_position == operator_space_code_table.end()) {
-        operator_space_code_position =
-            operator_space_code_table.insert(
+    CodeTable& table =
+        ignore_solutions_with_trivial_columns
+            ? operator_space_without_trivial_columns_code_table
+            : operator_space_code_table
+    ;
+
+    CodeTablePosition position = table.find(id);
+    if(position == table.end()) {
+        position =
+            table.insert(
                 make_pair(
                     id,
                     gatherCodes(
-                        wrapAutoPtr(
+                         wrapAutoPtr(
                             new OperatorSpace(
                                     number_of_qubits,
                                     number_of_operators
                             )
-                        )
+                         )
+                        ,ignore_solutions_with_trivial_columns
                     )
                 )
             ).first;
     }
 
-    return operator_space_code_position->second;
+    return position->second;
 }
 //@+node:gcross.20110114154616.2066: *3* forEachOMatrix
 void forEachOMatrix(
@@ -281,6 +298,49 @@ void forEachOMatrix(
         ,number_of_operators
         ,postConstraint
         ,checkAllSolutions
+    );
+}
+//@+node:gcross.20110121100120.1556: *3* forEachOMatrix (fixed region size)
+void forEachOMatrix(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , function<void (OperatorSpace& initial_space
+                    ,IntMatrix region
+                    )
+              > postOMatrixConstraint
+    , function<void (auto_ptr<OperatorSpace> initial_space
+                    ,const unsigned int start_column
+                    ,const unsigned int end_column
+                    ,const unsigned int start_row
+                    ,const unsigned int end_row
+                    )
+              > checkAllSolutions
+    , const unsigned int number_of_rows
+    , const unsigned int number_of_columns
+) {
+    BOOST_LOCAL_FUNCTION(
+        (void) (filterAndCheckAllSolutions)(
+            (auto_ptr<OperatorSpace>)(initial_space)
+            (const unsigned int)(start_column)
+            (const unsigned int)(end_column)
+            (const unsigned int)(start_row)
+            (const unsigned int)(end_row)
+            (const bind)(
+                (checkAllSolutions)
+                (number_of_columns)
+                (number_of_rows)
+            )
+        )
+    ) {
+        if(end_column-start_column != number_of_columns) return;
+        if(end_row-start_row != number_of_rows) return;
+        checkAllSolutions(initial_space,start_column,end_column,start_row,end_row);
+    } BOOST_LOCAL_FUNCTION_END(filterAndCheckAllSolutions)
+    forEachOMatrix(
+         number_of_qubits
+        ,number_of_operators
+        ,postOMatrixConstraint
+        ,filterAndCheckAllSolutions
     );
 }
 //@+node:gcross.20110114154616.2068: *3* forEachOMatrixSolution

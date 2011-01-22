@@ -75,7 +75,20 @@ IntMatrix channelMatrix(Space& space,const BoolMatrix& matrix);
 
 unsigned long long countSolutions(auto_ptr<OperatorSpace> space, const Search::Options& options = Search::Options::def);
 
-set<Code> gatherCodes(auto_ptr<OperatorSpace> initial_space);
+set<Code> gatherCodes(
+      auto_ptr<OperatorSpace> initial_space
+    , const bool ignore_solutions_with_trivial_columns=false
+);
+
+bool hasNoTrivialColumns(const OperatorSpace& space);
+
+template<typename qec_t> Code summarizeCode(auto_ptr<qec_t> code) {
+    return
+        Code(code->stabilizers.size()
+            ,code->gauge_qubits.size()
+            ,code->logical_qubit_error_distances
+        );
+}
 
 template<typename T> auto_ptr<T> wrapAutoPtr(T* ptr) { return auto_ptr<T>(ptr); }
 template<typename T> shared_ptr<T> wrapSharedPtr(T* ptr) { return shared_ptr<T>(ptr); }

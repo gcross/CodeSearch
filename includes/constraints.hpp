@@ -65,6 +65,14 @@ void forEachStandardFormSolution(
 
 );
 
+struct Code;
+set<Code> gatherAllCodesForConstraints(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint> constraints
+    , const bool ignore_solutions_with_trivial_columns=false
+);
+
 BoolVarArgs postColumnOrderingConstraintOnRegion(
       OperatorSpace& space
     , BoolMatrix variables

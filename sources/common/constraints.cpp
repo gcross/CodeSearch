@@ -160,6 +160,36 @@ void forEachStandardFormSolution(
         ,checkAllSolutions
     );
 }
+//@+node:gcross.20110121100120.1573: *3* gatherAllCodesForConstraints
+set<Code> gatherAllCodesForConstraints(
+      const unsigned int number_of_qubits
+    , const unsigned int number_of_operators
+    , const set<Constraint> constraints
+    , const bool ignore_solutions_with_trivial_columns
+) {
+    set<Code> all_codes;
+
+    BOOST_LOCAL_FUNCTION(
+        (void) (process)(
+            (const StandardFormParameters&)(parameters)
+            (auto_ptr<OperatorSpace>)(initial_space)
+            (const bind)((ignore_solutions_with_trivial_columns))
+            (bind)((&all_codes))
+        )
+    ) {
+        const set<Code> codes = gatherCodes(initial_space,ignore_solutions_with_trivial_columns);
+        all_codes.insert(codes.begin(),codes.end());
+    } BOOST_LOCAL_FUNCTION_END(process)
+
+    forEachStandardForm(
+         number_of_qubits
+        ,number_of_operators
+        ,constraints
+        ,process
+    );
+
+    return all_codes;
+}
 //@+node:gcross.20110112003748.1559: *3* postColumnOrderingConstraintOnRegion
 BoolVarArgs postColumnOrderingConstraintOnRegion(OperatorSpace& space, BoolMatrix variables, BoolVarArgs initial_ties) {
     return postOrderingConstraint(space,variables,initial_ties);

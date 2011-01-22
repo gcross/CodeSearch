@@ -113,7 +113,7 @@ TEST_SUITE(correct_codes) {
              number_of_qubits
             ,number_of_operators
             ,bind(postWeightRowOrderingConstraintOnRegion,_1,4,_2,BoolVarArgs())
-            ,bind(checkCodes,_1)
+            ,bind(checkCodes,_1,false)
         );
     }
 
