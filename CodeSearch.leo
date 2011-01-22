@@ -30,6 +30,7 @@
 <v t="gcross.20110119165120.2306"><vh>@thin count-all-solutions.cpp</vh></v>
 <v t="gcross.20110120115216.2084"><vh>@thin print-code-summaries.cpp</vh></v>
 <v t="gcross.20110119225928.1517"><vh>@thin print-solutions.cpp</vh></v>
+<v t="gcross.20110121100120.1577"><vh>@thin print-solutions-with-code-summaries.cpp</vh></v>
 </v>
 </v>
 <v t="gcross.20101224191604.2598"><vh>@path tests</vh>
