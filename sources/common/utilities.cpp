@@ -55,6 +55,16 @@ bool Code::operator==(const Code& c) const {
     }
     return true;
 }
+//@+node:gcross.20110121100120.1580: *3* isNonTrivial/isTrivial
+bool Code::isNonTrivial(const unsigned int number_of_measurement_operators) const {
+    return
+        (number_of_stabilizers > 0u || number_of_gauge_qubits > 0u || logical_qubit_distances.size() > 0u)
+     && (number_of_stabilizers + 2*number_of_gauge_qubits == number_of_measurement_operators);
+}
+
+bool Code::isTrivial(const unsigned int number_of_measurement_operators) const {
+    return !isNonTrivial(number_of_measurement_operators);
+}
 //@+node:gcross.20110120115216.2106: *3* toString
 string Code::toString() const {
     ostringstream s;

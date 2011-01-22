@@ -56,6 +56,10 @@ struct Code {
 
     bool operator<(const Code& c) const;
     bool operator==(const Code& c) const;
+
+    bool isNonTrivial(const unsigned int number_of_measurement_operators) const;
+    bool isTrivial(const unsigned int number_of_measurement_operators) const;
+
     string toString() const;
 
 };
