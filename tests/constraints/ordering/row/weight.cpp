@@ -4,11 +4,13 @@
 
 //@+<< Includes >>
 //@+node:gcross.20110114154616.2053: ** << Includes >>
+#include <algorithm>
 #include <boost/assign/list_of.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/algorithm/for_each.hpp>
@@ -23,6 +25,7 @@
 using namespace CodeSearch;
 using namespace Gecode;
 using namespace boost;
+using namespace boost::adaptors;
 using namespace boost::assign;
 using namespace std;
 
@@ -77,12 +80,12 @@ TEST_SUITE(correct_solutions) {
             )
         ) {
             vector<unsigned int> weights;
-            BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)matrix.height())) {
-                unsigned int weight = 0;
-                BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)matrix.width())) {
-                    if(matrix(col,row).val() > 0) ++weight;
-                }
-                weights.push_back(weight);
+            BOOST_FOREACH(
+                 const IntVarArgs row
+                ,irange(0u,(unsigned int)matrix.height())
+                    | transformed(bind(&IntMatrix::row,matrix,_1))
+            ) {
+                weights.push_back(count_if(row.begin(),row.end(),bind(&IntVar::val,lambda::_1) > 0));
             }
             if(!is_sorted(weights | reversed)) {
                 ostringstream message;

@@ -34,9 +34,9 @@ TEST_SUITE(Constraints) { TEST_SUITE(EveryColumnHasConstraint) {
 //@+others
 //@+node:gcross.20110120115216.2138: *3* function checkRegion
 void checkRegion(const int O, const IntMatrix& region) {
-    BOOST_FOREACH(unsigned int col, irange(0u,(unsigned int)region.width())) {
-        BOOST_FOREACH(unsigned int row, irange(0u,(unsigned int)region.height())) {
-            if(region(col,row).val() == O) goto next_column;
+    BOOST_FOREACH(const unsigned int col, irange(0u,(unsigned int)region.width())) {
+        BOOST_FOREACH(const IntVar& var, (IntVarArgs)region.col(col)) {
+            if(var.val() == O) goto next_column;
         }
         FATALLY_FAIL((
             format("Did not see operator value %1% in column %2%.")

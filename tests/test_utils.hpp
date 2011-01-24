@@ -38,6 +38,9 @@ using boost::numeric::ublas::matrix;
 
 //@+others
 //@+node:gcross.20101224191604.2722: ** Functions
+void assertAllBoolVarsZero(const BoolVarArgs& args);
+void assertAllIntVarsZero(const IntVarArgs& args);
+
 void checkCodes(
       auto_ptr<OperatorSpace> initial_space
     , const bool ignore_solutions_with_trivial_columns=false

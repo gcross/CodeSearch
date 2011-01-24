@@ -38,6 +38,14 @@ typedef map<pair<unsigned int,unsigned int>,set<Code> > CodeTable;
 //@+node:gcross.20101229110857.1592: ** Variables
 CodeTable operator_space_code_table, operator_space_without_trivial_columns_code_table;
 //@+node:gcross.20101224191604.2750: ** Functions
+//@+node:gcross.20110123143403.1569: *3* assertAllXVarsZero
+void assertAllBoolVarsZero(const BoolVarArgs& args) {
+    BOOST_FOREACH(const BoolVar& var,args) { ASSERT_EQ(0,var.val()); }
+}
+
+void assertAllIntVarsZero(const IntVarArgs& args) {
+    BOOST_FOREACH(const IntVar& var,args) { ASSERT_EQ(0,var.val()); }
+}
 //@+node:gcross.20101231214817.2055: *3* checkCodes
 void checkCodes(
       auto_ptr<OperatorSpace> initial_space
