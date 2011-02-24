@@ -1,140 +1,136 @@
 
-// Copyright (C) 2009-2011 Lorenzo Caminiti
-// Use, modification, and distribution is subject to the
-// Boost Software License, Version 1.0
-// (see accompanying file LICENSE_1_0.txt or a copy at
-// http://www.boost.org/LICENSE_1_0.txt).
-
 /** @file
- * @brief Local functions allow to program functions locally within the scope
- *  where they are needed.
+ * @brief Local function references can be passed as function and template
+ *  parameters, they can be assigned to variables, etc.
  */
 
 #ifndef BOOST_LOCAL_FUNCTION_HPP_
 #define BOOST_LOCAL_FUNCTION_HPP_
 
-#include "aux_/function/decl.hpp"
-#include "aux_/function/end.hpp"
+#include "aux_/function_macros/params.hpp"
+#include "aux_/function_macros/name.hpp"
+#include <boost/preprocessor/facilities/empty.hpp>
+#include <boost/config.hpp> // For variadic macros.
+
+// Params.
+
+// Pass a parenthesized params seq `()()...` on C++. If variadic macros (C99, 
+// GCC, MVSC, etc) you can also pass a variable length tuple `..., ...` for
+// params and nothing `` for no params.
+#if defined(BOOST_NO_VARIADIC_MACROS)
+
+#define BOOST_LOCAL_FUNCTION_PARAMS(parameter_list) \
+    BOOST_LOCAL_AUX_FUNCTION_PARAMS(parameter_list, __LINE__, BOOST_PP_EMPTY())
+
+#define BOOST_LOCAL_FUNCTION_PARAMS_TPL(parameter_list) \
+    BOOST_LOCAL_AUX_FUNCTION_PARAMS(parameter_list, __LINE__, typename)
+
+#else // BOOST_NO_VARIADIC_MACROS
+
+#include "aux_/preprocessor/va.hpp"
+
+#define BOOST_LOCAL_FUNCTION_PARAMS(...) \
+    BOOST_LOCAL_AUX_FUNCTION_PARAMS(BOOST_LOCAL_AUX_PP_VA_TO_SEQ( \
+            (void) /* for empty seq */, __VA_ARGS__), \
+            __LINE__, BOOST_PP_EMPTY())
+
+#define BOOST_LOCAL_FUNCTION_PARAMS_TPL(...) \
+    BOOST_LOCAL_AUX_FUNCTION_PARAMS(BOOST_LOCAL_AUX_PP_VA_TO_SEQ( \
+            (void) /* for empty seq */, __VA_ARGS__), \
+            __LINE__, typename)
+
+#endif // BOOST_NO_VARIADIC_MACROS
+
+#define BOOST_LOCAL_FUNCTION_NAME(local_function_name) \
+    BOOST_LOCAL_AUX_FUNCTION_NAME(local_function_name)
+
+namespace boost { namespace local {
 
 /**
- * @brief This macro starts the declaration of a local function.
+ * @brief Template to hold a reference to a local function while supporting
+ *  eventual default function parameters.
  *
- * This macro must be used within a declarative context, it must be followed by
- * the local function body code <c>{ ... }</c> and then by either the
- * @RefMacro{BOOST_LOCAL_FUNCTION_END} or the
- * @RefMacro{BOOST_LOCAL_FUNCTION_END_RENAME} macro (see the
- * @RefSect{Tutorial} and @RefSect{Advanced} sections):
+ * This template defines several specializations to handle a generic number
+ * <c>N</c> of function parameters some of which can have default values.
+ * The number of supported function parameters goes from <c>0</c> (for a
+ * function with no parameter) to a maximum of
+ * @RefMacro{BOOST_LOCAL_CONFIG_FUNCTION_ARITY_MAX}.
+ *
+ * Each template specialization defines call operators <c>operator()(...)</c>
+ * with a different set of parameters to handle the number of default
+ * parameters specified by <c>defaults</c> (see @RefSect{Advanced} section):
  * @code
- *  { // Some declarative context.
- *      ...
+ *  template<typename Result, typename Arg1, ..., typename ArgN, size_t defaults = 0>
+ *  class function_ref<Result (Arg1, ..., ArgN), defaults> {
+ *  public:
+ *      Result operator()(Arg1, ..., ArgN-2, ArgN-1, ArgN);
+ *      // Call operators to handle default parameters:
+ *      Result operator()(Arg1, ..., ArgN-2, ArgN-1);       // iff defaults >= 1
+ *      Result operator()(Arg1, ..., ArgN-2);               // iff defaults >= 2
+ *      ...                                                 // etc
  *
- *      BOOST_LOCAL_FUNCTION(
- *      parenthesized_signature
- *      ) exception_specifications_optional {
- *          ... // Block body.
- *      } BOOST_LOCAL_FUNCTION_END(local_function_name)
- *
- *      ...
- *  }
+ *      // Copy constructor and assignment operator for local functions:
+ *      function_ref(local_function<F, defaults>& ref);
+ *      function_ref& operator=(local_function<F, defaults>& ref);
+ *  };
  * @endcode
- *
- * As usual, exception specifications can be optionally programmed before the
- * body code block (see the @RefSect{Advanced} section).
- *
- * Within templates, the special macro
- * @RefMacro{BOOST_LOCAL_FUNCTION_TPL} must be used instead of
- * @RefMacro{BOOST_LOCAL_FUNCTION}.
+ * Where:
+ * - <c>Result</c> is the function result type.
+ *   It can be <c>void</c>.
+ * - <c>ArgN</c> is the last function parameter type, <c>ArgN-1</c> is the
+ *   second last function parameter type, etc.
+ *   These are all optional (none is specified for a function with no
+ *   parameter, only <c>Arg1</c> is specified for a function with only one
+ *   parameter, etc).
+ * - The operator <c>Result operator()(Arg1, ..., ArgN-2, ArgN-1)</c> is
+ *   defined if and only if there are one or more default parameters
+ *   (<c>defaults >= 1</c>), the operator
+ *   <c>Result operator()(Arg1, ..., ArgN-2)</c> is defined if and only if
+ *   there are two or more default parameters (<c>defaults >= 2</c>), etc.
+ * - <c>local_function<F, defaults></c> is an internal type for a local
+ *   function with a signature matching <c>F</c> and with a number of default
+ *   parameters equal to <c>defaults</c>.
+ * - The copy constructor and assignment operator <c>operator=</c> allow to
+ *   assign this template to a reference to a local function with a signature
+ *   matching <c>F</c> and with a number of default parameters equal to
+ *   <c>defaults</c>.
+ * 
+ * @Warning Programmers must make sure that the local function survives the
+ *  scope of the function reference (otherwise the reference will be invalid
+ *  and its use will generate a run-time error as usual with C++ references).
  *
  * @Params
- * @Param{parenthesized_signature,
- *  A Boost.Preprocessor sequence that uses the parenthesized syntax to specify
- *  the local function signature and the variables in scope to bind (see the
- *  @RefSect{Grammar} section).
+ * @Param{F,
+ *  The function signature expressed using the Boost.Function's
+ *  preferred syntax: <c>F = Result (Arg1\, ...\, ArgN)</c>.
+ * }
+ * @Param{defaults,
+ *  The number of the function default parameters in
+ *  <c>[0\,</c>
+ *  @RefMacro{BOOST_LOCAL_CONFIG_FUNCTION_ARITY_MAX}<c>]</c>.
+ *  As usual in C++\, default parameters are counted starting from the last
+ *  parameter:
+ *  <c>defaults = 0</c> means that no parameter is optional\,
+ *  <c>defaults = 1</c> means that the last parameter is optional\,
+ *  <c>defaults = 2</c> means that the last two parameters are optional\, etc.
  * }
  * @EndParams
  *
- * @Note Local functions cannot be copied but it is possible to obtain a
- *  reference to a local function using
- *  @RefClass{boost::local::function_ref}.
- *
- * @See @RefSect{Tutorial} section, @RefSect{Advanced} section,
- *  @RefSect{Grammar} section, @RefMacro{BOOST_LOCAL_FUNCTION_TPL},
- *  @RefMacro{BOOST_LOCAL_FUNCTION_END},
- *  @RefMacro{BOOST_LOCAL_FUNCTION_END_RENAME},
- *  @RefClass{boost::local::function_ref}.
- */
-#define BOOST_LOCAL_FUNCTION(parenthesized_signature) \
-    BOOST_LOCAL_AUX_FUNCTION_DECL(parenthesized_signature, \
-            BOOST_PP_EMPTY() /* no typename keyword */)
-/**
- * @brief This macro is the same as @RefMacro{BOOST_LOCAL_FUNCTION}
- *  but it must be used when declaring local functions within templates.
- *
- * @See @RefMacro{BOOST_LOCAL_FUNCTION}, @RefSect{Tutorial} section.
- */
-#define BOOST_LOCAL_FUNCTION_TPL(parenthesized_signature) \
-    BOOST_LOCAL_AUX_FUNCTION_DECL(parenthesized_signature, \
-            typename)
-
-/**
- * @brief This macro ends the definition of a local function.
- *
- * This macro must follow the local function body code <c>{ ... }</c> as
- * shown in the @RefMacro{BOOST_LOCAL_FUNCTION} documentation.
- *
- * @Params
- * @Param{local_function_name,
- *  The name of the local function as it has been specified by the
- *  parenthesized signature passed to @RefMacro{BOOST_LOCAL_FUNCTION}
- *  (otherwise\, the compiler will generate an error).
- *  See the @RefMacro{BOOST_LOCAL_FUNCTION_END_RENAME} macro to relax
- *  this constraint.
- * }
- * @EndParams
- *
- * @See @RefMacro{BOOST_LOCAL_FUNCTION_END_RENAME},
- *  @RefMacro{BOOST_LOCAL_FUNCTION}, @RefSect{Tutorial} section.
- */
-#define BOOST_LOCAL_FUNCTION_END(local_function_name) \
-    BOOST_LOCAL_AUX_FUNCTION_END(local_function_name)
-
-/**
- * @brief This macro ends the definition of a local function while changing
- *  the function name.
- *
- * This macro must be used instead of the
- * @RefMacro{BOOST_LOCAL_FUNCTION_END} macro and it must follow the
- * local function body code <c>{ ... }</c> as shown in the
- * @RefMacro{BOOST_LOCAL_FUNCTION} documentation.
- *
- * @Params
- * @Param{new_local_function_name,
- *  This is the new local function name (see the @RefSect{Advanced} section).
- * }
- * @EndParams
- *
- * The original local function name (as specified by the parenthesized
- * signature passed to @RefMacro{BOOST_LOCAL_FUNCTION}) must still be
- * used within the local function body (e.g., for the local function to
- * recursively call itself).
- * However, within the enclosing scope the new local function as passed to
- * @RefMacro{BOOST_LOCAL_FUNCTION_END_RENAME} must be used (e.g., to
- * invoke the local function).
- *
- * @Warning Renamed local functions cannot be directly passed as template
- *  parameters (e.g., to STL algorithms).
- *  However, it is possible to workaround this limitation by getting a
- *  reference to the renamed local function using
- *  @RefClass{boost::local::function_ref} and then by passing the
- *  local function reference as template parameter.
+ * @Note This template is similar to <c>boost::function<></c> but it also
+ *  supports eventual default parameters.
  *
  * @See @RefSect{Advanced} section,
- *  @RefMacro{BOOST_LOCAL_FUNCTION_END},
+ *  @RefMacro{BOOST_LOCAL_CONFIG_FUNCTION_ARITY_MAX},
  *  @RefMacro{BOOST_LOCAL_FUNCTION},
- *  @RefClass{boost::local::function_ref}.
- */
-#define BOOST_LOCAL_FUNCTION_END_RENAME(new_local_function_name) \
-    BOOST_LOCAL_AUX_FUNCTION_END_RENAME(new_local_function_name)
+ *  <a href='http://www.boost.org/doc/libs/release/doc/html/function.html'>Boost.Function</a>.
+ */ 
+template<typename F, size_t defaults = 0> // Defaults count is opt.
+struct function {}; // Empty so never used directly.
+
+}} // namespace boost::local
+
+// Template specializations (must be #included here after the above template).
+#include "aux_/function.hpp"
 
 #endif // #include guard
 

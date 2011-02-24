@@ -71,11 +71,7 @@ TEST_SUITE(correct_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        BOOST_LOCAL_FUNCTION(
-            (void) (checkOMatrix)(
-                (const IntMatrix&)(matrix)
-            )
-        ) {
+        void BOOST_LOCAL_FUNCTION_PARAMS((const IntMatrix& matrix)) {
             vector<unsigned int> weights;
             BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)matrix.height())) {
                 unsigned int weight = 0;
@@ -89,7 +85,7 @@ TEST_SUITE(correct_solutions) {
                 message << "Bad weight order:";  for_each(weights,lambda::var(message) << " " << lambda::_1);
                 FATALLY_FAIL(message.str());
             }
-        } BOOST_LOCAL_FUNCTION_END(checkOMatrix)
+        } BOOST_LOCAL_FUNCTION_NAME(checkOMatrix)
 
         forEachOMatrixSolution(
              number_of_qubits
@@ -134,11 +130,9 @@ TEST_SUITE(correct_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        BOOST_LOCAL_FUNCTION(
-            (matrix<unsigned int>) (getOrdering)(
-                (const unsigned int)(maximum_bound)
-                (const matrix<unsigned int>&)(region)
-            )
+        matrix<unsigned int> BOOST_LOCAL_FUNCTION_PARAMS(
+            (const unsigned int maximum_bound)
+            (const matrix<unsigned int>& region)
         ) {
             matrix<unsigned int> ordering(region.size2(),1);
             BOOST_FOREACH(const size_t row, irange((size_t)0u,region.size2())) {
@@ -149,7 +143,7 @@ TEST_SUITE(correct_solutions) {
                 ordering(row,0) = weight;
             }
             return ordering;
-        } BOOST_LOCAL_FUNCTION_END(getOrdering)
+        } BOOST_LOCAL_FUNCTION_NAME(getOrdering)
         forEachStandardFormSolution(
              number_of_qubits
             ,number_of_operators

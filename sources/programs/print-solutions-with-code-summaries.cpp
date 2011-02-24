@@ -35,11 +35,10 @@ int main(int argc, char** argv) {
     const unsigned int  number_of_qubits = atoi(argv[1])
                       , number_of_operators = atoi(argv[2])
                       ;
-    BOOST_LOCAL_FUNCTION(
-        (void) (process)(
-            (const StandardFormParameters&)(parameters)
-            (const bind)((number_of_qubits)(number_of_operators))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+        (const StandardFormParameters& parameters)
+        (const bind number_of_qubits)
+        (const bind number_of_operators)
     ) {
         assert(parameters.x_bit_diagonal_size >= parameters.z_bit_diagonal_size);
         BOOST_FOREACH(
@@ -61,7 +60,7 @@ int main(int argc, char** argv) {
             cout << "  Code: " << summarizeCode<dynamic_qec>(computeOptimizedCodeForOperatorSpace<dynamic_qec>(space)) << endl;
             cout << endl;
         }
-    } BOOST_LOCAL_FUNCTION_END(process)
+    } BOOST_LOCAL_FUNCTION_NAME(process)
     if(argc == 4) {
         const unsigned int x_bit_diagonal_size = atoi(argv[3]);
         if(x_bit_diagonal_size > min(number_of_qubits,number_of_operators)) {

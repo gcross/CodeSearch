@@ -281,18 +281,16 @@ void forEachOMatrix(
                     )
               > checkAllSolutions
 ) {
-    BOOST_LOCAL_FUNCTION(
-        (void) (postConstraint)(
-            (OperatorSpace&)(initial_space)
-            (const unsigned int)(start_column)
-            (const unsigned int)(end_column)
-            (const unsigned int)(start_row)
-            (const unsigned int)(end_row)
-            (const bind)((postOMatrixConstraint))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+        (OperatorSpace& initial_space)
+        (const unsigned int start_column)
+        (const unsigned int end_column)
+        (const unsigned int start_row)
+        (const unsigned int end_row)
+        (const bind postOMatrixConstraint)
     ) {
         postOMatrixConstraint(initial_space,initial_space.getOMatrix().slice(start_column,end_column,start_row,end_row));
-    } BOOST_LOCAL_FUNCTION_END(postConstraint)
+    } BOOST_LOCAL_FUNCTION_NAME(postConstraint)
     forEachConstrainedRegion(
          number_of_qubits
         ,number_of_operators
@@ -318,24 +316,20 @@ void forEachOMatrix(
     , const unsigned int number_of_rows
     , const unsigned int number_of_columns
 ) {
-    BOOST_LOCAL_FUNCTION(
-        (void) (filterAndCheckAllSolutions)(
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (const unsigned int)(start_column)
-            (const unsigned int)(end_column)
-            (const unsigned int)(start_row)
-            (const unsigned int)(end_row)
-            (const bind)(
-                (checkAllSolutions)
-                (number_of_columns)
-                (number_of_rows)
-            )
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+        (auto_ptr<OperatorSpace> initial_space)
+        (const unsigned int start_column)
+        (const unsigned int end_column)
+        (const unsigned int start_row)
+        (const unsigned int end_row)
+        (const bind checkAllSolutions)
+        (const bind number_of_columns)
+        (const bind number_of_rows)
     ) {
         if(end_column-start_column != number_of_columns) return;
         if(end_row-start_row != number_of_rows) return;
         checkAllSolutions(initial_space,start_column,end_column,start_row,end_row);
-    } BOOST_LOCAL_FUNCTION_END(filterAndCheckAllSolutions)
+    } BOOST_LOCAL_FUNCTION_NAME(filterAndCheckAllSolutions)
     forEachOMatrix(
          number_of_qubits
         ,number_of_operators
@@ -353,20 +347,18 @@ void forEachOMatrixSolution(
               > postOMatrixConstraint
     , function<void (const IntMatrix& region)> checkOMatrix
 ) {
-    BOOST_LOCAL_FUNCTION(
-        (void) (checkAllSolutions)(
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (const unsigned int)(start_column)
-            (const unsigned int)(end_column)
-            (const unsigned int)(start_row)
-            (const unsigned int)(end_row)
-            (const bind)((checkOMatrix))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+        (auto_ptr<OperatorSpace> initial_space)
+        (const unsigned int start_column)
+        (const unsigned int end_column)
+        (const unsigned int start_row)
+        (const unsigned int end_row)
+        (const bind checkOMatrix)
     ) {
         BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
             checkOMatrix(space.getOMatrix().slice(start_column,end_column,start_row,end_row));
         }
-    } BOOST_LOCAL_FUNCTION_END(checkAllSolutions)
+    } BOOST_LOCAL_FUNCTION_NAME(checkAllSolutions)
     forEachOMatrix(
          number_of_qubits
         ,number_of_operators
@@ -390,18 +382,16 @@ void forEachZMatrix(
                     )
               > checkAllSolutions
 ) {
-    BOOST_LOCAL_FUNCTION(
-        (void) (postConstraint)(
-            (OperatorSpace&)(initial_space)
-            (const unsigned int)(start_column)
-            (const unsigned int)(end_column)
-            (const unsigned int)(start_row)
-            (const unsigned int)(end_row)
-            (const bind)((postZMatrixConstraint))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+        (OperatorSpace& initial_space)
+        (const unsigned int start_column)
+        (const unsigned int end_column)
+        (const unsigned int start_row)
+        (const unsigned int end_row)
+        (const bind postZMatrixConstraint)
     ) {
         postZMatrixConstraint(initial_space,initial_space.getZMatrix().slice(start_column,end_column,start_row,end_row));
-    } BOOST_LOCAL_FUNCTION_END(postConstraint)
+    } BOOST_LOCAL_FUNCTION_NAME(postConstraint)
     forEachConstrainedRegion(
          number_of_qubits
         ,number_of_operators
@@ -419,20 +409,18 @@ void forEachZMatrixSolution(
               > postZMatrixConstraint
     , function<void (const BoolMatrix& region)> checkZMatrix
 ) {
-    BOOST_LOCAL_FUNCTION(
-        (void) (checkAllSolutions)(
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (const unsigned int)(start_column)
-            (const unsigned int)(end_column)
-            (const unsigned int)(start_row)
-            (const unsigned int)(end_row)
-            (const bind)((checkZMatrix))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+        (auto_ptr<OperatorSpace> initial_space)
+        (const unsigned int start_column)
+        (const unsigned int end_column)
+        (const unsigned int start_row)
+        (const unsigned int end_row)
+        (const bind checkZMatrix)
     ) {
         BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
             checkZMatrix(space.getZMatrix().slice(start_column,end_column,start_row,end_row));
         }
-    } BOOST_LOCAL_FUNCTION_END(checkAllSolutions)
+    } BOOST_LOCAL_FUNCTION_NAME(checkAllSolutions)
     forEachZMatrix(
          number_of_qubits
         ,number_of_operators
@@ -490,15 +478,13 @@ void forEachConstrainedRegionSolution(
                     )
               > checkSolution
 ) {
-    BOOST_LOCAL_FUNCTION(
-        (void) (checkAllSolutions)(
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (const unsigned int)(start_column)
-            (const unsigned int)(end_column)
-            (const unsigned int)(start_row)
-            (const unsigned int)(end_row)
-            (const bind)((checkSolution))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+        (auto_ptr<OperatorSpace> initial_space)
+        (const unsigned int start_column)
+        (const unsigned int end_column)
+        (const unsigned int start_row)
+        (const unsigned int end_row)
+        (const bind checkSolution)
     ) {
         for_each(
               generateSolutionsFor(initial_space)
@@ -510,7 +496,7 @@ void forEachConstrainedRegionSolution(
                 , end_row
               )
         );
-    } BOOST_LOCAL_FUNCTION_END(checkAllSolutions)
+    } BOOST_LOCAL_FUNCTION_NAME(checkAllSolutions)
     forEachConstrainedRegion(
           number_of_qubits
         , number_of_operators

@@ -12,13 +12,16 @@
 
 // Users can exit a local block (and not enclosing function) using `return;`.
 #define BOOST_LOCAL_AUX_BLOCK( \
-        local_function_macro, parenthesized_binding) \
-    { /* start new code block to reuse same local function name */ \
-        local_function_macro( \
-        (void) (BOOST_LOCAL_AUX_SYMBOL_BLOCK_FUNCTION_NAME)( \
-                parenthesized_binding \
-            ) \
-        ) /* user block code `{ ... }` here */
+        local_function_params_macro, parenthesized_binding) \
+    void local_function_params_macro(parenthesized_binding) \
+    /* user block code `{ ... }` here */
+
+#define BOOST_LOCAL_AUX_BLOCK_END(id) \
+    /* user block code `{ ... }` here */ \
+    /* ends the local function declaration */ \
+    BOOST_LOCAL_FUNCTION_NAME(BOOST_LOCAL_AUX_SYMBOL_BLOCK_FUNCTION_NAME(id)) \
+    /* call local funciton and execute block's code imediately */ \
+    BOOST_LOCAL_AUX_SYMBOL_BLOCK_FUNCTION_NAME(id)(); \
 
 #endif // #include guard
 

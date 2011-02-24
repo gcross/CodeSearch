@@ -57,21 +57,17 @@ TEST_SUITE(number_of_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        BOOST_LOCAL_FUNCTION(
-            (void) (checkAllSolutions)(
-                (auto_ptr<OperatorSpace>)(initial_space)
-                (const unsigned int)(start_column)
-                (const unsigned int)(end_column)
-                (const unsigned int)(start_row)
-                (const unsigned int)(end_row)
-                (const bind)(
-                    (number_of_qubits)
-                    (number_of_operators)
-                )
-            )
+        void BOOST_LOCAL_FUNCTION_PARAMS(
+            (auto_ptr<OperatorSpace> initial_space)
+            (const unsigned int start_column)
+            (const unsigned int end_column)
+            (const unsigned int start_row)
+            (const unsigned int end_row)
+            (const bind number_of_qubits)
+            (const bind number_of_operators)
         ) {
             const unsigned int number_of_columns = end_column-start_column
-                              , number_of_rows = end_row-start_row
+                              ,number_of_rows = end_row-start_row
                               ;
             const unsigned long long observed_number_of_solutions = countSolutions(initial_space);
             unsigned long long number_of_solutions_in_each_region_column = 0u;
@@ -83,7 +79,7 @@ TEST_SUITE(number_of_solutions) {
              << 2*(number_of_qubits*number_of_operators-number_of_columns*number_of_rows)
             ;
             ASSERT_EQ(expected_number_of_solutions,observed_number_of_solutions);
-        } BOOST_LOCAL_FUNCTION_END(checkAllSolutions)
+        } BOOST_LOCAL_FUNCTION_NAME(checkAllSolutions)
         BOOST_FOREACH(const int O, irange(0,4)) {
             forEachOMatrix(
                  number_of_qubits
@@ -131,11 +127,9 @@ TEST_SUITE(correct_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        BOOST_LOCAL_FUNCTION(
-            (void) (checkSolution)(
-                (const StandardFormParameters&)(parameters)
-                (const OperatorSpace&)(space)
-            )
+        void BOOST_LOCAL_FUNCTION_PARAMS(
+            (const StandardFormParameters& parameters)
+            (const OperatorSpace& space)
         ) {
             checkRegion(X,space.getOMatrix().slice(
                  parameters.x_bit_diagonal_size
@@ -143,7 +137,7 @@ TEST_SUITE(correct_solutions) {
                 ,0u
                 ,parameters.x_bit_diagonal_size
             ));
-        } BOOST_LOCAL_FUNCTION_END(checkSolution)
+        } BOOST_LOCAL_FUNCTION_NAME(checkSolution)
         forEachStandardFormSolution(
              number_of_qubits
             ,number_of_operators
@@ -159,7 +153,6 @@ TEST_SUITE(correct_solutions) {
 TEST_SUITE(correct_codes) {
 
     void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
-        return;
         checkCodesForConstraints(
              number_of_qubits
             ,number_of_operators
@@ -184,11 +177,9 @@ TEST_SUITE(correct_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        BOOST_LOCAL_FUNCTION(
-            (void) (checkSolution)(
-                (const StandardFormParameters&)(parameters)
-                (const OperatorSpace&)(space)
-            )
+        void BOOST_LOCAL_FUNCTION_PARAMS(
+            (const StandardFormParameters& parameters)
+            (const OperatorSpace& space)
         ) {
             checkRegion(Z,space.getOMatrix().slice(
                  parameters.z_bit_diagonal_size
@@ -196,7 +187,7 @@ TEST_SUITE(correct_solutions) {
                 ,0u
                 ,space.number_of_operators
             ));
-        } BOOST_LOCAL_FUNCTION_END(checkSolution)
+        } BOOST_LOCAL_FUNCTION_NAME(checkSolution)
         forEachStandardFormSolution(
              number_of_qubits
             ,number_of_operators
@@ -212,7 +203,6 @@ TEST_SUITE(correct_solutions) {
 TEST_SUITE(correct_codes) {
 
     void runTest(const unsigned int number_of_qubits, const unsigned int number_of_operators) {
-        return;
         checkCodesForConstraints(
              number_of_qubits
             ,number_of_operators
@@ -237,11 +227,9 @@ TEST_SUITE(correct_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        BOOST_LOCAL_FUNCTION(
-            (void) (checkSolution)(
-                (const StandardFormParameters&)(parameters)
-                (const OperatorSpace&)(space)
-            )
+        void BOOST_LOCAL_FUNCTION_PARAMS(
+            (const StandardFormParameters& parameters)
+            (const OperatorSpace& space)
         ) {
             checkRegion(X,space.getOMatrix().slice(
                  parameters.x_bit_diagonal_size
@@ -255,7 +243,7 @@ TEST_SUITE(correct_solutions) {
                 ,0u
                 ,space.number_of_operators
             ));
-        } BOOST_LOCAL_FUNCTION_END(checkSolution)
+        } BOOST_LOCAL_FUNCTION_NAME(checkSolution)
         forEachStandardFormSolution(
              number_of_qubits
             ,number_of_operators
