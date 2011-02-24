@@ -5,7 +5,7 @@ project (CodeCategorize)
 
 SET(Boost_ADDITIONAL_VERSIONS "1.43" "1.43.0" "1.44" "1.44.0" "1.45" "1.45.0")
 
-find_package( Boost 1.45 COMPONENTS thread )
+find_package( Boost 1.45 COMPONENTS thread program_options REQUIRED )
 link_directories ( ${Boost_LIBRARY_DIRS} )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 
