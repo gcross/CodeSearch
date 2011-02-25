@@ -181,18 +181,16 @@ void forEachStandardFormSolution(
                     )
               > checkSolution
 ) {
-    BOOST_LOCAL_FUNCTION(
-        (void) (checkAllSolutions)(
-            (const StandardFormParameters&)(parameters)
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (const bind)((checkSolution))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+         const StandardFormParameters& parameters
+        ,auto_ptr<OperatorSpace> initial_space
+        ,const bind checkSolution
     ) {
         for_each(
              generateSolutionsFor(initial_space)
             ,bind(checkSolution,parameters,_1)
         );
-    } BOOST_LOCAL_FUNCTION_END(checkAllSolutions)
+    } BOOST_LOCAL_FUNCTION_NAME(checkAllSolutions)
     forEachStandardForm(
          number_of_qubits
         ,number_of_operators
@@ -209,17 +207,15 @@ set<Code> gatherAllCodesForConstraints(
 ) {
     set<Code> all_codes;
 
-    BOOST_LOCAL_FUNCTION(
-        (void) (process)(
-            (const StandardFormParameters&)(parameters)
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (const bind)((ignore_solutions_with_trivial_columns))
-            (bind)((&all_codes))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+         const StandardFormParameters& parameters
+        ,auto_ptr<OperatorSpace> initial_space
+        ,const bind ignore_solutions_with_trivial_columns
+        ,bind &all_codes
     ) {
         const set<Code> codes = gatherCodes(initial_space,ignore_solutions_with_trivial_columns);
         all_codes.insert(codes.begin(),codes.end());
-    } BOOST_LOCAL_FUNCTION_END(process)
+    } BOOST_LOCAL_FUNCTION_NAME(process)
 
     forEachStandardForm(
          number_of_qubits

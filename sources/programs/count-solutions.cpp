@@ -27,20 +27,19 @@ int main(int argc, char** argv) {
                       , number_of_operators = atoi(argv[2])
                       ;
     unsigned long long total_number_of_solutions = 0;
-    BOOST_LOCAL_FUNCTION(
-        (void) (processStandardForm)(
-            (const StandardFormParameters&)(parameters)
-            (auto_ptr<OperatorSpace>)(initial_space)
-            (const bind)((number_of_qubits)(number_of_operators))
-            (bind)((&total_number_of_solutions))
-        )
+    void BOOST_LOCAL_FUNCTION_PARAMS(
+         const StandardFormParameters& parameters
+        ,auto_ptr<OperatorSpace> initial_space
+        ,const bind number_of_qubits
+        ,const bind number_of_operators
+        ,bind &total_number_of_solutions
     ) {
         cout << parameters.x_bit_diagonal_size << "/" << parameters.z_bit_diagonal_size << ": ";
         cout.flush();
         const unsigned long long number_of_solutions = countSolutions(initial_space);
         cout << number_of_solutions << endl;
         total_number_of_solutions += number_of_solutions;
-    } BOOST_LOCAL_FUNCTION_END(processStandardForm);
+    } BOOST_LOCAL_FUNCTION_NAME(processStandardForm);
     forEachStandardForm(
          number_of_qubits
         ,number_of_operators

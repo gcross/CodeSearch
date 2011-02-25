@@ -8,11 +8,11 @@
 #ifndef BOOST_LOCAL_AUX_FILE_HPP_
 #define BOOST_LOCAL_AUX_FILE_HPP_
 
-#define BOOST_LOCAL_AUX_FILE_FUNCTION_BASE_HPP \
-    "boost/local/aux_/function/base.hpp"
+#define BOOST_LOCAL_AUX_FILE_ABSTRACT_FUNCTION_HPP \
+    "boost/local/aux_/abstract_function.hpp"
 
-#define BOOST_LOCAL_AUX_FILE_FUNCTION_REF_HPP \
-    "boost/local/aux_/function_ref.hpp"
+#define BOOST_LOCAL_AUX_FILE_FUNCTION_HPP \
+    "boost/local/aux_/function.hpp"
 
 #endif // #include guard
 
