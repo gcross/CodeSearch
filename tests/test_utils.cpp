@@ -282,12 +282,12 @@ void forEachOMatrix(
               > checkAllSolutions
 ) {
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (OperatorSpace& initial_space)
-        (const unsigned int start_column)
-        (const unsigned int end_column)
-        (const unsigned int start_row)
-        (const unsigned int end_row)
-        (const bind postOMatrixConstraint)
+         OperatorSpace& initial_space
+        ,const unsigned int start_column
+        ,const unsigned int end_column
+        ,const unsigned int start_row
+        ,const unsigned int end_row
+        ,const bind postOMatrixConstraint
     ) {
         postOMatrixConstraint(initial_space,initial_space.getOMatrix().slice(start_column,end_column,start_row,end_row));
     } BOOST_LOCAL_FUNCTION_NAME(postConstraint)
@@ -317,14 +317,14 @@ void forEachOMatrix(
     , const unsigned int number_of_columns
 ) {
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (auto_ptr<OperatorSpace> initial_space)
-        (const unsigned int start_column)
-        (const unsigned int end_column)
-        (const unsigned int start_row)
-        (const unsigned int end_row)
-        (const bind checkAllSolutions)
-        (const bind number_of_columns)
-        (const bind number_of_rows)
+         auto_ptr<OperatorSpace> initial_space
+        ,const unsigned int start_column
+        ,const unsigned int end_column
+        ,const unsigned int start_row
+        ,const unsigned int end_row
+        ,const bind checkAllSolutions
+        ,const bind number_of_columns
+        ,const bind number_of_rows
     ) {
         if(end_column-start_column != number_of_columns) return;
         if(end_row-start_row != number_of_rows) return;
@@ -348,12 +348,12 @@ void forEachOMatrixSolution(
     , function<void (const IntMatrix& region)> checkOMatrix
 ) {
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (auto_ptr<OperatorSpace> initial_space)
-        (const unsigned int start_column)
-        (const unsigned int end_column)
-        (const unsigned int start_row)
-        (const unsigned int end_row)
-        (const bind checkOMatrix)
+         auto_ptr<OperatorSpace> initial_space
+        ,const unsigned int start_column
+        ,const unsigned int end_column
+        ,const unsigned int start_row
+        ,const unsigned int end_row
+        ,const bind checkOMatrix
     ) {
         BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
             checkOMatrix(space.getOMatrix().slice(start_column,end_column,start_row,end_row));
@@ -383,12 +383,12 @@ void forEachZMatrix(
               > checkAllSolutions
 ) {
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (OperatorSpace& initial_space)
-        (const unsigned int start_column)
-        (const unsigned int end_column)
-        (const unsigned int start_row)
-        (const unsigned int end_row)
-        (const bind postZMatrixConstraint)
+         OperatorSpace& initial_space
+        ,const unsigned int start_column
+        ,const unsigned int end_column
+        ,const unsigned int start_row
+        ,const unsigned int end_row
+        ,const bind postZMatrixConstraint
     ) {
         postZMatrixConstraint(initial_space,initial_space.getZMatrix().slice(start_column,end_column,start_row,end_row));
     } BOOST_LOCAL_FUNCTION_NAME(postConstraint)
@@ -410,12 +410,12 @@ void forEachZMatrixSolution(
     , function<void (const BoolMatrix& region)> checkZMatrix
 ) {
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (auto_ptr<OperatorSpace> initial_space)
-        (const unsigned int start_column)
-        (const unsigned int end_column)
-        (const unsigned int start_row)
-        (const unsigned int end_row)
-        (const bind checkZMatrix)
+         auto_ptr<OperatorSpace> initial_space
+        ,const unsigned int start_column
+        ,const unsigned int end_column
+        ,const unsigned int start_row
+        ,const unsigned int end_row
+        ,const bind checkZMatrix
     ) {
         BOOST_FOREACH(const OperatorSpace& space, generateSolutionsFor(initial_space)) {
             checkZMatrix(space.getZMatrix().slice(start_column,end_column,start_row,end_row));
@@ -479,12 +479,12 @@ void forEachConstrainedRegionSolution(
               > checkSolution
 ) {
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (auto_ptr<OperatorSpace> initial_space)
-        (const unsigned int start_column)
-        (const unsigned int end_column)
-        (const unsigned int start_row)
-        (const unsigned int end_row)
-        (const bind checkSolution)
+         auto_ptr<OperatorSpace> initial_space
+        ,const unsigned int start_column
+        ,const unsigned int end_column
+        ,const unsigned int start_row
+        ,const unsigned int end_row
+        ,const bind checkSolution
     ) {
         for_each(
               generateSolutionsFor(initial_space)

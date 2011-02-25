@@ -36,9 +36,9 @@ int main(int argc, char** argv) {
                       , number_of_operators = atoi(argv[2])
                       ;
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (const StandardFormParameters& parameters)
-        (const bind number_of_qubits)
-        (const bind number_of_operators)
+         const StandardFormParameters& parameters
+        ,const bind number_of_qubits
+        ,const bind number_of_operators
     ) {
         assert(parameters.x_bit_diagonal_size >= parameters.z_bit_diagonal_size);
         BOOST_FOREACH(

@@ -182,9 +182,9 @@ void forEachStandardFormSolution(
               > checkSolution
 ) {
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (const StandardFormParameters& parameters)
-        (auto_ptr<OperatorSpace> initial_space)
-        (const bind checkSolution)
+         const StandardFormParameters& parameters
+        ,auto_ptr<OperatorSpace> initial_space
+        ,const bind checkSolution
     ) {
         for_each(
              generateSolutionsFor(initial_space)
@@ -208,10 +208,10 @@ set<Code> gatherAllCodesForConstraints(
     set<Code> all_codes;
 
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (const StandardFormParameters& parameters)
-        (auto_ptr<OperatorSpace> initial_space)
-        (const bind ignore_solutions_with_trivial_columns)
-        (bind &all_codes)
+         const StandardFormParameters& parameters
+        ,auto_ptr<OperatorSpace> initial_space
+        ,const bind ignore_solutions_with_trivial_columns
+        ,bind &all_codes
     ) {
         const set<Code> codes = gatherCodes(initial_space,ignore_solutions_with_trivial_columns);
         all_codes.insert(codes.begin(),codes.end());

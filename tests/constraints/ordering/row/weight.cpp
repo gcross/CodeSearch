@@ -71,7 +71,7 @@ TEST_SUITE(correct_solutions) {
         const unsigned int number_of_qubits
     ,   const unsigned int number_of_operators
     ) {
-        void BOOST_LOCAL_FUNCTION_PARAMS((const IntMatrix& matrix)) {
+        void BOOST_LOCAL_FUNCTION_PARAMS(const IntMatrix& matrix) {
             vector<unsigned int> weights;
             BOOST_FOREACH(const unsigned int row, irange(0u,(unsigned int)matrix.height())) {
                 unsigned int weight = 0;
@@ -131,8 +131,8 @@ TEST_SUITE(correct_solutions) {
     ,   const unsigned int number_of_operators
     ) {
         matrix<unsigned int> BOOST_LOCAL_FUNCTION_PARAMS(
-            (const unsigned int maximum_bound)
-            (const matrix<unsigned int>& region)
+             const unsigned int maximum_bound
+            ,const matrix<unsigned int>& region
         ) {
             matrix<unsigned int> ordering(region.size2(),1);
             BOOST_FOREACH(const size_t row, irange((size_t)0u,region.size2())) {

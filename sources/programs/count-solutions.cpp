@@ -28,11 +28,11 @@ int main(int argc, char** argv) {
                       ;
     unsigned long long total_number_of_solutions = 0;
     void BOOST_LOCAL_FUNCTION_PARAMS(
-        (const StandardFormParameters& parameters)
-        (auto_ptr<OperatorSpace> initial_space)
-        (const bind number_of_qubits)
-        (const bind number_of_operators)
-        (bind &total_number_of_solutions)
+         const StandardFormParameters& parameters
+        ,auto_ptr<OperatorSpace> initial_space
+        ,const bind number_of_qubits
+        ,const bind number_of_operators
+        ,bind &total_number_of_solutions
     ) {
         cout << parameters.x_bit_diagonal_size << "/" << parameters.z_bit_diagonal_size << ": ";
         cout.flush();

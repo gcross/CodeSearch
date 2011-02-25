@@ -58,13 +58,13 @@ TEST_SUITE(number_of_solutions) {
     ,   const unsigned int number_of_operators
     ) {
         void BOOST_LOCAL_FUNCTION_PARAMS(
-            (auto_ptr<OperatorSpace> initial_space)
-            (const unsigned int start_column)
-            (const unsigned int end_column)
-            (const unsigned int start_row)
-            (const unsigned int end_row)
-            (const bind number_of_qubits)
-            (const bind number_of_operators)
+             auto_ptr<OperatorSpace> initial_space
+            ,const unsigned int start_column
+            ,const unsigned int end_column
+            ,const unsigned int start_row
+            ,const unsigned int end_row
+            ,const bind number_of_qubits
+            ,const bind number_of_operators
         ) {
             const unsigned int number_of_columns = end_column-start_column
                               ,number_of_rows = end_row-start_row
@@ -128,8 +128,8 @@ TEST_SUITE(correct_solutions) {
     ,   const unsigned int number_of_operators
     ) {
         void BOOST_LOCAL_FUNCTION_PARAMS(
-            (const StandardFormParameters& parameters)
-            (const OperatorSpace& space)
+             const StandardFormParameters& parameters
+            ,const OperatorSpace& space
         ) {
             checkRegion(X,space.getOMatrix().slice(
                  parameters.x_bit_diagonal_size
@@ -178,8 +178,8 @@ TEST_SUITE(correct_solutions) {
     ,   const unsigned int number_of_operators
     ) {
         void BOOST_LOCAL_FUNCTION_PARAMS(
-            (const StandardFormParameters& parameters)
-            (const OperatorSpace& space)
+             const StandardFormParameters& parameters
+            ,const OperatorSpace& space
         ) {
             checkRegion(Z,space.getOMatrix().slice(
                  parameters.z_bit_diagonal_size
@@ -228,8 +228,8 @@ TEST_SUITE(correct_solutions) {
     ,   const unsigned int number_of_operators
     ) {
         void BOOST_LOCAL_FUNCTION_PARAMS(
-            (const StandardFormParameters& parameters)
-            (const OperatorSpace& space)
+             const StandardFormParameters& parameters
+            ,const OperatorSpace& space
         ) {
             checkRegion(X,space.getOMatrix().slice(
                  parameters.x_bit_diagonal_size

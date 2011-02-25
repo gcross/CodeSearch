@@ -115,10 +115,10 @@ TEST_SUITE(correct_solutions) {
     ,   const unsigned int number_of_operators
     ) {
         void BOOST_LOCAL_FUNCTION_PARAMS(
-            (const StandardFormParameters& parameters)
-            (const OperatorSpace& space)
-            (const bind number_of_qubits)
-            (const bind number_of_operators)
+             const StandardFormParameters& parameters
+            ,const OperatorSpace& space
+            ,const bind number_of_qubits
+            ,const bind number_of_operators
         ) {
             const unsigned int x_bit_diagonal_size = parameters.x_bit_diagonal_size
                              , z_bit_diagonal_size = parameters.z_bit_diagonal_size
